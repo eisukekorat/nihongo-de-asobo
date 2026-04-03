@@ -6,6 +6,10 @@
 <title>にほんご あそぼう！</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="にほんご">
+<meta name="theme-color" content="#ff6b6b">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -57,12 +61,17 @@
   .header-sub{font-size:0.8rem;color:#bbb;margin-top:2px;font-weight:700}
 
   /* ============ MASCOT ============ */
-  .mascot{position:fixed;bottom:16px;left:16px;z-index:50;font-size:2.8rem;cursor:pointer;user-select:none;animation:mascot-idle 3s ease-in-out infinite;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.15));transition:transform 0.2s}
+  .mascot{position:fixed;bottom:16px;left:16px;z-index:50;font-size:2.2rem;line-height:1.1;text-align:center;cursor:pointer;user-select:none;animation:mascot-idle 3s ease-in-out infinite;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.15));transition:transform 0.2s}
   .mascot:active{transform:scale(1.3) rotate(-10deg)!important}
   @keyframes mascot-idle{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-6px) rotate(-5deg)}75%{transform:translateY(-3px) rotate(5deg)}}
-  .mascot-speech{position:fixed;bottom:70px;left:16px;z-index:51;background:white;border-radius:20px;padding:10px 16px;font-size:1rem;font-weight:800;color:var(--dark);box-shadow:0 4px 20px rgba(0,0,0,0.1);opacity:0;transform:scale(0.8) translateY(10px);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;max-width:200px}
+  @keyframes mascot-levelup{0%{transform:scale(1)}20%{transform:scale(1.5) rotate(-15deg)}40%{transform:scale(1.3) rotate(10deg)}60%{transform:scale(1.4) rotate(-8deg)}80%{transform:scale(1.1) rotate(3deg)}100%{transform:scale(1) rotate(0deg)}}
+  .mascot.levelup{animation:mascot-levelup 0.8s ease!important}
+  .mascot-speech{position:fixed;bottom:80px;left:16px;z-index:51;background:white;border-radius:20px;padding:10px 16px;font-size:0.92rem;font-weight:800;color:var(--dark);box-shadow:0 4px 20px rgba(0,0,0,0.1);opacity:0;transform:scale(0.8) translateY(10px);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;max-width:210px}
   .mascot-speech::after{content:'';position:absolute;bottom:-8px;left:20px;width:16px;height:16px;background:white;transform:rotate(45deg);border-radius:2px}
   .mascot-speech.show{opacity:1;transform:scale(1) translateY(0)}
+  /* マスコットレベルバッジ */
+  .mascot-level-badge{position:fixed;bottom:14px;left:52px;z-index:52;background:var(--yellow);color:var(--dark);font-size:0.55rem;font-weight:900;padding:2px 6px;border-radius:50px;box-shadow:0 2px 6px rgba(0,0,0,0.15);pointer-events:none;opacity:0;transition:opacity 0.3s}
+  .mascot-level-badge.show{opacity:1}
 
   /* ============ CATEGORY TABS ============ */
   .cat-tabs{display:flex;gap:8px;padding:8px 16px 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:relative;z-index:1}
@@ -202,7 +211,7 @@
   @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
 
   /* ============ QUIZ DIFFICULTY TOGGLE ============ */
-  .quiz-diff{display:flex;justify-content:center;gap:8px;margin-bottom:14px}
+  .quiz-diff{display:flex;justify-content:center;gap:8px;margin-bottom:10px}
   .quiz-diff-btn{padding:8px 18px;border-radius:50px;border:3px solid #e0e0e0;background:white;font-size:0.85rem;font-weight:800;cursor:pointer;color:#bbb;transition:all 0.2s;box-shadow:0 3px 0 rgba(0,0,0,0.08)}
   .quiz-diff-btn.active{background:var(--c4);color:white;border-color:var(--c4)}
   .quiz-diff-btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,0.08)}
@@ -210,6 +219,14 @@
   .quiz-choices.two-choices .quiz-choice{padding:18px 12px}
   .quiz-choices.two-choices .choice-emoji{font-size:3.2rem}
   .quiz-choices.two-choices .choice-text{font-size:1.1rem}
+
+  /* ============ QUIZ DIRECTION TOGGLE ============ */
+  .quiz-direction{display:flex;justify-content:center;gap:8px;margin-bottom:14px}
+  .quiz-dir-btn{padding:8px 16px;border-radius:50px;border:3px solid #e0e0e0;background:white;font-size:0.82rem;font-weight:800;cursor:pointer;color:#bbb;transition:all 0.2s;box-shadow:0 3px 0 rgba(0,0,0,0.08)}
+  .quiz-dir-btn.active{background:var(--c5);color:white;border-color:var(--c5)}
+  .quiz-dir-btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,0.08)}
+  .quiz-thai-big{font-size:clamp(1.4rem,5.5vw,2.2rem);font-weight:900;color:var(--c5);text-align:center;margin:8px 0 4px;line-height:1.4;display:none}
+  .quiz-thai-big.show{display:block}
 
   /* ============ MEMORY GAME ============ */
   .memory-section{display:none;padding:0 14px 120px;position:relative;z-index:1}
@@ -291,6 +308,29 @@
 
   @media(min-width:600px){.cards-grid{grid-template-columns:repeat(3,1fr)}}
   @media(min-width:820px){.cards-grid{grid-template-columns:repeat(4,1fr)}}
+
+  /* ============ SONGS MODE ============ */
+  .songs-section{display:none;padding:0 14px 120px;position:relative;z-index:1}
+  .songs-section.active{display:block}
+  .songs-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(160px,44vw),1fr));gap:14px;max-width:600px;margin:0 auto}
+  .song-card{background:white;border-radius:var(--card-radius);box-shadow:var(--shadow);padding:20px 12px;text-align:center;cursor:pointer;border:3.5px solid rgba(255,169,77,0.35);user-select:none;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.2s}
+  .song-card:active{transform:scale(0.92);box-shadow:0 3px 0 rgba(0,0,0,0.1)}
+  .song-card .song-card-emoji{font-size:3.2rem;display:block;margin-bottom:8px}
+  .song-card .song-card-title{font-size:clamp(0.9rem,3vw,1.05rem);font-weight:900;color:var(--dark);line-height:1.3}
+  .song-card .song-card-thai{font-size:0.6rem;color:#bbb;font-weight:700;margin-top:3px}
+
+  .song-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#e3f2fd 0%,#fff7ed 100%);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+  .song-overlay.active{display:flex}
+  .song-close{position:absolute;top:20px;right:20px;width:52px;height:52px;border-radius:50%;background:white;border:3px solid #eee;font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 rgba(0,0,0,0.08);transition:all 0.15s}
+  .song-close:active{transform:scale(0.9)}
+  .song-counter{position:absolute;top:20px;left:20px;background:white;border-radius:50px;padding:8px 16px;font-weight:800;color:var(--dark);font-size:0.9rem;box-shadow:0 4px 0 rgba(0,0,0,0.08)}
+  .song-main-emoji{font-size:clamp(5rem,20vw,7.5rem);animation:float 3s ease-in-out infinite;filter:drop-shadow(0 6px 15px rgba(0,0,0,0.08))}
+  .song-title-label{font-size:clamp(1rem,3.5vw,1.4rem);font-weight:900;color:#888;margin:10px 0 20px;letter-spacing:0.02em}
+  .song-lyric-jp{font-size:clamp(1.6rem,7vw,2.8rem);font-weight:900;color:var(--dark);text-align:center;min-height:3.5rem;line-height:1.4;transition:opacity 0.2s}
+  .song-lyric-jp.fade{opacity:0}
+  .song-lyric-thai{font-size:clamp(0.8rem,2.5vw,1rem);color:#aaa;font-weight:700;margin-top:8px;min-height:1.5rem;text-align:center}
+  .song-progress-bar{position:absolute;bottom:0;left:0;height:7px;background:var(--c4);border-radius:0 3px 3px 0;transition:width 0.1s linear;min-width:0}
+  .song-tap-hint{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:0.8rem;color:#ccc;font-weight:700;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -298,6 +338,7 @@
 <div class="bubbles-bg" id="bubblesBg"></div>
 <div class="mascot" id="mascot" onclick="mascotTap()">🐻</div>
 <div class="mascot-speech" id="mascotSpeech"></div>
+<div class="mascot-level-badge" id="mascotLevelBadge"></div>
 
 <div class="header">
   <h1><span>に</span><span>ほ</span><span>ん</span><span>ご</span><span>あ</span><span>そ</span><span>ぼ</span><span>う</span><span>！</span></h1>
@@ -332,6 +373,7 @@
   <button class="mode-btn" onclick="startAutoplay(true)">🔁 2かい</button>
   <button class="mode-btn" onclick="startRoutine('morning')">🌅 あさ</button>
   <button class="mode-btn" onclick="startRoutine('evening')">🌙 よる</button>
+  <button class="mode-btn" onclick="setMode('songs',this)">🎵 うた</button>
 </div>
 
 <div class="hira-tabs" id="hiraTabs" style="display:none"></div>
@@ -339,13 +381,35 @@
   <div class="cards-grid" id="cardsGrid"></div>
 </div>
 
+<!-- ============ SONGS SECTION ============ -->
+<div class="songs-section" id="songsSection">
+  <div class="songs-list" id="songsList"></div>
+</div>
+
+<!-- ============ SONG PLAY OVERLAY ============ -->
+<div class="song-overlay" id="songOverlay">
+  <div class="song-counter" id="songCounter">1 / 6</div>
+  <button class="song-close" onclick="stopSong()">✕</button>
+  <span class="song-main-emoji" id="songMainEmoji">⭐</span>
+  <div class="song-title-label" id="songTitleLabel">きらきらぼし</div>
+  <div class="song-lyric-jp" id="songLyricJp"></div>
+  <div class="song-lyric-thai" id="songLyricThai"></div>
+  <div class="song-progress-bar" id="songProgressBar"></div>
+  <div class="song-tap-hint">タップで もういちど 🔊</div>
+</div>
+
 <div class="quiz-section" id="quizSection">
   <div class="quiz-diff">
     <button class="quiz-diff-btn active" id="quizDiff2" onclick="setQuizDiff(2)">2️⃣ 2たく</button>
     <button class="quiz-diff-btn" id="quizDiff4" onclick="setQuizDiff(4)">4️⃣ 4たく</button>
   </div>
+  <div class="quiz-direction">
+    <button class="quiz-dir-btn active" id="quizDirJp" onclick="setQuizDirection('jp')">🎌 えもじ→にほんご</button>
+    <button class="quiz-dir-btn" id="quizDirTh" onclick="setQuizDirection('thai')">🇹🇭 タイご→にほんご</button>
+  </div>
   <div class="quiz-question">
     <span class="quiz-emoji-big" id="quizEmoji">🐶</span>
+    <div class="quiz-thai-big" id="quizThaiBig"></div>
     <div class="quiz-full-text" id="quizFullText" style="display:none"></div>
     <div class="quiz-prompt" id="quizPrompt">どれかな？</div>
     <div class="quiz-prompt-thai" id="quizPromptThai"></div>
@@ -444,7 +508,7 @@ const data = {
     {emoji:'🐛',jp:'いもむし',thai:'หนอน'},
     {emoji:'🐜',jp:'あり',thai:'มด'},
     {emoji:'🐝',jp:'はち',thai:'ผึ้ง',sound:'ブーン！'},
-    {emoji:'🦂',jp:'かぶとむし',thai:'ด้วง'},
+    {emoji:'🪲',jp:'かぶとむし',thai:'ด้วง'},
     {emoji:'🐞',jp:'てんとうむし',thai:'เต่าทอง'},
     {emoji:'🦗',jp:'バッタ',thai:'ตั๊กแตน'},
     {emoji:'🕷️',jp:'くも',thai:'แมงมุม'},
@@ -500,11 +564,11 @@ const data = {
     {emoji:'🟦',jp:'しかく',thai:'สี่เหลี่ยม'},{emoji:'⭐',jp:'ほし',thai:'ดาว'},
     {emoji:'💎',jp:'ダイヤ',thai:'เพชร'},{emoji:'💗',jp:'ハート',thai:'หัวใจ'},
     {emoji:'🌙',jp:'つき（みかづき）',thai:'พระจันทร์เสี้ยว'},
-    {emoji:'➕',jp:'プラス',thai:'บวก'},{emoji:'⬬',jp:'だえん',thai:'วงรี'},
+    {emoji:'➕',jp:'プラス',thai:'บวก'},{emoji:'🏉',jp:'だえん',thai:'วงรี'},
     {emoji:'🔷',jp:'ひしがた',thai:'สี่เหลี่ยมขนมเปียกปูน'},
     // サイズ
-    {emoji:'🐘',jp:'おおきい',thai:'ใหญ่'},{emoji:'🐜',jp:'ちいさい',thai:'เล็ก'},
-    {emoji:'📏',jp:'ながい',thai:'ยาว'},{emoji:'🔴',jp:'みじかい',thai:'สั้น'},
+    {emoji:'🏔️',jp:'おおきい',thai:'ใหญ่'},{emoji:'🐁',jp:'ちいさい',thai:'เล็ก'},
+    {emoji:'📏',jp:'ながい',thai:'ยาว'},{emoji:'✏️',jp:'みじかい',thai:'สั้น'},
   ],
 
   greetings: [
@@ -512,10 +576,10 @@ const data = {
     {emoji:'🌙',jp:'おやすみ',thai:'ราตรีสวัสดิ์'},{emoji:'🙏',jp:'ありがとう',thai:'ขอบคุณ'},
     {emoji:'😄',jp:'はい',thai:'ใช่ / ครับ / ค่ะ'},{emoji:'🍽️',jp:'いただきます',thai:'ขอบคุณสำหรับอาหาร'},
     {emoji:'✋',jp:'バイバイ',thai:'บ๊ายบาย'},{emoji:'💪',jp:'がんばれ',thai:'สู้ๆ'},
-    {emoji:'😋',jp:'おいしい',thai:'อร่อย'},{emoji:'💕',jp:'だいすき',thai:'รักมากๆ'},
+    {emoji:'😋',jp:'おいしい',thai:'อร่อย'},
     {emoji:'😢',jp:'いやだ',thai:'ไม่ชอบ'},{emoji:'🥰',jp:'かわいい',thai:'น่ารัก'},
     {emoji:'😮',jp:'すごい',thai:'เก่งมาก'},{emoji:'🤝',jp:'いっしょに',thai:'ไปด้วยกัน'},
-    {emoji:'😊',jp:'うれしい',thai:'ดีใจ'},{emoji:'👍',jp:'いいね',thai:'ดีมาก'},
+    {emoji:'👍',jp:'いいね',thai:'ดีมาก'},
     // 追加
     {emoji:'🙇',jp:'ごめんね',thai:'ขอโทษ'},{emoji:'🤗',jp:'おかえり',thai:'กลับมาแล้ว'},
     {emoji:'🏠',jp:'ただいま',thai:'กลับถึงบ้านแล้ว'},{emoji:'🍱',jp:'ごちそうさま',thai:'อิ่มแล้ว'},
@@ -882,7 +946,70 @@ function mascotTap(){
 }
 
 // =========================================================
-//  TTS
+//  MASCOT EVOLUTION
+// =========================================================
+const mascotLevels=[
+  {min:0,   display:'🐻',       name:'くまちゃん',     nameThai:'หมีน้อย',    desc:null},
+  {min:10,  display:'🎀🐻',     name:'くまちゃん',     nameThai:'หมีน้อย',    desc:'リボンを つけたよ！'},
+  {min:30,  display:'🧢🐻',     name:'くまくん',       nameThai:'หมีจัง',     desc:'ぼうしを かぶったよ！'},
+  {min:60,  display:'👑🐻',     name:'くまさん',       nameThai:'คุณหมี',     desc:'おうかんを もらったよ！'},
+  {min:100, display:'✨👑🐻✨', name:'くまおう',       nameThai:'ราชาหมี',    desc:'くまの おうさまだ！'},
+  {min:200, display:'🌟🧸🌟',  name:'でんせつのくま', nameThai:'หมีตำนาน',  desc:'でんせつの くまに なった！'},
+];
+
+function getMascotLevel(){
+  const count=stickerData.count;
+  let level=mascotLevels[0];
+  for(const l of mascotLevels){if(count>=l.min)level=l;}
+  return level;
+}
+
+function getMascotLevelIndex(){
+  const count=stickerData.count;
+  let idx=0;
+  mascotLevels.forEach((l,i)=>{if(count>=l.min)idx=i;});
+  return idx;
+}
+
+function updateMascot(){
+  const level=getMascotLevel();
+  const mascotEl=document.getElementById('mascot');
+  const badgeEl=document.getElementById('mascotLevelBadge');
+  mascotEl.textContent=level.display;
+  // レベル1以上ならバッジ表示
+  if(getMascotLevelIndex()>0){
+    badgeEl.textContent=level.name;
+    badgeEl.classList.add('show');
+  }else{
+    badgeEl.classList.remove('show');
+  }
+}
+
+let prevMascotLevelIndex=-1;
+function checkMascotLevelUp(){
+  const newIdx=getMascotLevelIndex();
+  if(prevMascotLevelIndex>=0&&newIdx>prevMascotLevelIndex){
+    const level=getMascotLevel();
+    if(level.desc){
+      const sp=document.getElementById('mascotSpeech');
+      sp.textContent=level.desc;
+      sp.classList.add('show');
+      speak(level.desc);
+      clearTimeout(mascotTimeout);
+      mascotTimeout=setTimeout(()=>sp.classList.remove('show'),3200);
+      // レベルアップアニメーション
+      const mascotEl=document.getElementById('mascot');
+      mascotEl.classList.add('levelup');
+      setTimeout(()=>mascotEl.classList.remove('levelup'),900);
+      celebrate();
+    }
+  }
+  prevMascotLevelIndex=newIdx;
+  updateMascot();
+}
+
+// =========================================================
+//  TTS — ローカル (Web Speech API)
 // =========================================================
 const synth=window.speechSynthesis;
 let selectedVoice=null;
@@ -893,7 +1020,8 @@ function loadVoices(){
 }
 synth.addEventListener('voiceschanged',loadVoices);loadVoices();
 
-function speak(text,rate=0.72,pitch=1.25){
+// ローカルTTS（フォールバック用）
+function speakLocal(text,rate=0.72,pitch=1.25){
   synth.cancel();
   setTimeout(()=>{
     const u=new SpeechSynthesisUtterance(text);
@@ -907,19 +1035,89 @@ function speak(text,rate=0.72,pitch=1.25){
   },50);
 }
 
-// Speak with callback when done
-function speakWithCallback(text,rate,pitch,cb){
-  synth.cancel();
-  setTimeout(()=>{
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang='ja-JP';u.rate=rate||0.72;u.pitch=pitch||1.25;u.volume=1.0;
-    if(selectedVoice)u.voice=selectedVoice;
+// =========================================================
+//  GOOGLE CLOUD TTS + INDEXEDDB CACHE
+// =========================================================
+// ▼▼▼ Cloudflare Worker デプロイ後にURLを設定してください ▼▼▼
+const TTS_WORKER_URL = 'https://nihongo-tts-proxy.eisukeoseto.workers.dev';
+// ▲▲▲ Cloudflare Worker URL (自動設定済み) ▲▲▲
+
+const TTSCache={
+  db:null,
+  open(){
+    return new Promise((resolve)=>{
+      const req=indexedDB.open('nihongo-tts-cache',1);
+      req.onupgradeneeded=(e)=>{e.target.result.createObjectStore('audio');};
+      req.onsuccess=(e)=>{TTSCache.db=e.target.result;resolve();};
+      req.onerror=()=>resolve();
+    });
+  },
+  save(key,blob){
+    return new Promise((resolve)=>{
+      if(!TTSCache.db)return resolve();
+      const tx=TTSCache.db.transaction('audio','readwrite');
+      tx.objectStore('audio').put(blob,key);
+      tx.oncomplete=resolve;tx.onerror=resolve;
+    });
+  },
+  get(key){
+    return new Promise((resolve)=>{
+      if(!TTSCache.db)return resolve(null);
+      const tx=TTSCache.db.transaction('audio','readonly');
+      const req=tx.objectStore('audio').get(key);
+      req.onsuccess=()=>resolve(req.result||null);
+      req.onerror=()=>resolve(null);
+    });
+  }
+};
+
+function playAudioBlob(blob){
+  return new Promise((resolve)=>{
+    const url=URL.createObjectURL(blob);
+    const audio=new Audio(url);
     const sw=document.getElementById('soundWave');
     sw.classList.add('active');
-    u.onend=()=>{sw.classList.remove('active');if(cb)cb();};
-    u.onerror=()=>{sw.classList.remove('active');if(cb)cb();};
-    synth.speak(u);
-  },50);
+    audio.onended=()=>{sw.classList.remove('active');URL.revokeObjectURL(url);resolve();};
+    audio.onerror=()=>{sw.classList.remove('active');URL.revokeObjectURL(url);resolve();};
+    audio.play().catch(()=>{
+      sw.classList.remove('active');URL.revokeObjectURL(url);resolve();
+    });
+  });
+}
+
+async function speakGoogle(text,speed=0.85){
+  const cacheKey='g_'+text+'_'+speed.toFixed(2);
+  // 1. キャッシュ確認
+  const cached=await TTSCache.get(cacheKey);
+  if(cached){await playAudioBlob(cached);return;}
+  // 2. Worker 未設定ならフォールバック
+  if(!TTS_WORKER_URL){speakLocal(text);return;}
+  // 3. Google TTS API 呼び出し
+  try{
+    const res=await fetch(TTS_WORKER_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text,speed}),
+    });
+    if(!res.ok)throw new Error('TTS error '+res.status);
+    const blob=await res.blob();
+    await TTSCache.save(cacheKey,blob);
+    await playAudioBlob(blob);
+  }catch(e){
+    // エラー時はローカルTTSにフォールバック
+    speakLocal(text);
+  }
+}
+
+// メインの speak 関数: TTS_WORKER_URL が設定されていれば Google TTS を使用
+function speak(text,rate=0.72,pitch=1.25){
+  if(TTS_WORKER_URL){
+    // rate を Google TTS の speakingRate に変換（0.72→0.86、1.0→1.2 程度）
+    const speed=Math.max(0.5,Math.min(rate*1.18,1.5));
+    speakGoogle(text,speed);
+  }else{
+    speakLocal(text,rate,pitch);
+  }
 }
 
 // =========================================================
@@ -988,6 +1186,7 @@ function setMode(mode,btn){
   document.getElementById('cardsSection').style.display='none';
   document.getElementById('quizSection').classList.remove('active');
   document.getElementById('memorySection').classList.remove('active');
+  document.getElementById('songsSection').classList.remove('active');
   if(mode==='cards'){
     document.getElementById('cardsSection').style.display='block';
     renderCards();
@@ -999,6 +1198,9 @@ function setMode(mode,btn){
     startMemory();
   }else if(mode==='counting'){
     startCounting();
+  }else if(mode==='songs'){
+    document.getElementById('songsSection').classList.add('active');
+    renderSongsList();
   }
 }
 
@@ -1010,26 +1212,8 @@ function setQuizDiff(n){
 }
 
 // =========================================================
-//  CARDS
+//  CARDS (renderCards は後方で再定義)
 // =========================================================
-function renderCards(){
-  const grid=document.getElementById('cardsGrid');grid.innerHTML='';
-  grid.className=currentCat==='hiragana'?'cards-grid hiragana-grid':'cards-grid';
-  data[currentCat].forEach((item,idx)=>{
-    const card=document.createElement('div');card.className='word-card';
-    card.dataset.cat=currentCat;
-    card.innerHTML=`
-      <span class="card-emoji">${item.emoji}</span>
-      <div class="card-japanese">${item.jp}</div>
-      <div class="card-thai">${item.thai}</div>
-      ${item.sound?'<div class="card-sound-badge">🔊</div>':''}
-      <div class="sparkle-container"></div>
-      <div class="sound-ripple"></div>
-    `;
-    card.addEventListener('click',()=>tapCard(card,item));
-    grid.appendChild(card);
-  });
-}
 
 function tapCard(card,item){
   // Recording mode
@@ -1074,6 +1258,15 @@ function updateQuizScore(){
   el.innerHTML=`<div class="stars">${'⭐'.repeat(quizCorrect)}${'☆'.repeat(quizTotal-quizCorrect)}</div>`;
 }
 
+let quizDirection='jp';  // 'jp' = 絵文字→日本語, 'thai' = タイ語→日本語
+
+function setQuizDirection(dir){
+  quizDirection=dir;
+  document.getElementById('quizDirJp').classList.toggle('active',dir==='jp');
+  document.getElementById('quizDirTh').classList.toggle('active',dir==='thai');
+  startQuiz();
+}
+
 function showQuizCard(){
   if(quizIndex>=quizItems.length){quizItems=shuffle(quizItems);quizIndex=0;}
   const correct=quizItems[quizIndex];
@@ -1086,22 +1279,40 @@ function showQuizCard(){
   const wrongCount=quizChoiceCount-1;
   const choices=shuffle([correct,...shuffle(pool).slice(0,wrongCount)]);
 
-  document.getElementById('quizEmoji').textContent=correct.emoji;
   const isPhrase=currentCat==='phrases';
   const ft=document.getElementById('quizFullText');
-  ft.style.display=isPhrase?'block':'none';
-  if(isPhrase)ft.textContent=correct.jp;
+  const emojiEl=document.getElementById('quizEmoji');
+  const thaiBig=document.getElementById('quizThaiBig');
 
-  document.getElementById('quizPrompt').textContent=isPhrase?'なんていうの？':`「${correct.jp}」はどれ？`;
-  document.getElementById('quizPromptThai').textContent=isPhrase?'พูดว่าอะไรนะ?':`"${correct.jp}" คือตัวไหน?`;
+  if(quizDirection==='thai'){
+    // タイ語モード: タイ語テキストを大きく表示
+    emojiEl.textContent=correct.emoji;
+    emojiEl.style.fontSize='clamp(3.5rem,14vw,5.5rem)';
+    thaiBig.textContent=correct.thai;
+    thaiBig.classList.add('show');
+    ft.style.display='none';
+    document.getElementById('quizPrompt').textContent='にほんごで なんていう？';
+    document.getElementById('quizPromptThai').textContent='ภาษาญี่ปุ่น คือคำไหน?';
+    // タイ語モードでは音声を出さない（タイ語テキストを見て考えさせる）
+  }else{
+    // 通常モード（絵文字→日本語）
+    emojiEl.textContent=correct.emoji;
+    emojiEl.style.fontSize='';
+    thaiBig.classList.remove('show');
+    ft.style.display=isPhrase?'block':'none';
+    if(isPhrase)ft.textContent=correct.jp;
+    document.getElementById('quizPrompt').textContent=isPhrase?'なんていうの？':`「${correct.jp}」はどれ？`;
+    document.getElementById('quizPromptThai').textContent=isPhrase?'พูดว่าอะไรนะ?':`"${correct.jp}" คือตัวไหน?`;
+    setTimeout(()=>speak(correct.jp),500);
+  }
 
   const ch=document.getElementById('quizChoices');ch.innerHTML='';quizAnswered=false;
   ch.className=quizChoiceCount===2?'quiz-choices two-choices':'quiz-choices';
   document.getElementById('quizNext').classList.remove('show');
-  setTimeout(()=>speak(correct.jp),500);
 
   choices.forEach(item=>{
     const btn=document.createElement('div');btn.className='quiz-choice';
+    // タイ語モードでも選択肢は絵文字+日本語（日本語を覚えてもらう）
     btn.innerHTML=`<span class="choice-emoji">${item.emoji}</span><span class="choice-text">${item.jp}</span>`;
     btn.addEventListener('click',()=>{
       if(quizAnswered)return;quizAnswered=true;quizTotal++;
@@ -1316,6 +1527,196 @@ stopAutoplay=function(){
 };
 
 // =========================================================
+//  SONGS / 手遊びモード
+// =========================================================
+const songs = [
+  {
+    id: 'kirakira',
+    title: 'きらきらぼし',
+    titleThai: 'ดาวน้อยระยิบ',
+    emoji: '⭐',
+    lyrics: [
+      {jp:'きらきら ひかる',     thai:'แวววาว ส่องแสง',       duration:3200},
+      {jp:'おそらの ほしよ',     thai:'ดาวบนท้องฟ้า',         duration:3200},
+      {jp:'まばたき しては',     thai:'กะพริบ กะพริบ',        duration:3200},
+      {jp:'みんなを みてる',     thai:'มองดู ทุกคน',          duration:3200},
+      {jp:'きらきら ひかる',     thai:'แวววาว ส่องแสง',       duration:3200},
+      {jp:'おそらの ほしよ',     thai:'ดาวบนท้องฟ้า',         duration:3200},
+    ],
+  },
+  {
+    id: 'musunde',
+    title: 'むすんで ひらいて',
+    titleThai: 'กำ แล้วแบ',
+    emoji: '✊',
+    lyrics: [
+      {jp:'むすんで ひらいて',   thai:'กำ แล้วแบ',            duration:3000},
+      {jp:'てを うって むすんで',thai:'ตบมือ แล้วกำ',         duration:3200},
+      {jp:'また ひらいて',      thai:'แบ อีกครั้ง',          duration:2800},
+      {jp:'てを うって',        thai:'ตบมือ',                duration:2200},
+      {jp:'その てを うえに',   thai:'ยกมือ ขึ้นสูง',        duration:3000},
+      {jp:'むすんで ひらいて',   thai:'กำ แล้วแบ',            duration:3000},
+      {jp:'てを うって むすんで',thai:'ตบมือ แล้วกำ',         duration:3200},
+    ],
+  },
+  {
+    id: 'atama',
+    title: 'あたま かた ひざ',
+    titleThai: 'หัว ไหล่ เข่า',
+    emoji: '🙆',
+    lyrics: [
+      {jp:'あたま かた ひざ ポン',thai:'หัว ไหล่ เข่า ป๊อก', duration:3200},
+      {jp:'ひざ ポン',            thai:'เข่า ป๊อก',           duration:2000},
+      {jp:'あたま かた ひざ ポン',thai:'หัว ไหล่ เข่า ป๊อก', duration:3200},
+      {jp:'ひざ ポン',            thai:'เข่า ป๊อก',           duration:2000},
+      {jp:'め、みみ、はな、くち', thai:'ตา หู จมูก ปาก',      duration:3000},
+      {jp:'あたま かた ひざ ポン',thai:'หัว ไหล่ เข่า ป๊อก', duration:3200},
+      {jp:'ひざ ポン',            thai:'เข่า ป๊อก',           duration:2000},
+    ],
+  },
+  {
+    id: 'kaeru',
+    title: 'かえるのうた',
+    titleThai: 'เพลงกบ',
+    emoji: '🐸',
+    lyrics: [
+      {jp:'かえるの うたが',      thai:'เพลงของ กบ',           duration:2800},
+      {jp:'きこえて くるよ',      thai:'ได้ยิน มาแล้ว',        duration:2800},
+      {jp:'ゲロ ゲロ ゲロ ゲロ',  thai:'เกโระ เกโระ เกโระ เกโระ',duration:3000},
+      {jp:'ゲロ ゲロ ゲロ',       thai:'เกโระ เกโระ เกโระ',    duration:2500},
+      {jp:'かえるの うたが',      thai:'เพลงของ กบ',           duration:2800},
+      {jp:'きこえて くるよ',      thai:'ได้ยิน มาแล้ว',        duration:2800},
+    ],
+  },
+  {
+    id: 'chouchou',
+    title: 'ちょうちょう',
+    titleThai: 'ผีเสื้อ',
+    emoji: '🦋',
+    lyrics: [
+      {jp:'ちょうちょう ちょうちょう',thai:'ผีเสื้อ ผีเสื้อ',  duration:3200},
+      {jp:'なのはに とまれ',       thai:'เกาะที่ดอกไม้',        duration:3000},
+      {jp:'なのはに あいたら',     thai:'ถ้าเจอดอกไม้',         duration:3200},
+      {jp:'さくらに とまれ',       thai:'เกาะดอกซากุระ',        duration:3000},
+      {jp:'さくらの はなの',       thai:'ดอกซากุระ',            duration:2800},
+      {jp:'はなから はなへ',       thai:'จากดอก สู่ดอก',        duration:2800},
+      {jp:'とまれよ あそべ',       thai:'เกาะสิ เล่นสิ',        duration:2800},
+    ],
+  },
+  {
+    id: 'obentoubako',
+    title: 'おべんとうばこ',
+    titleThai: 'กล่องข้าว',
+    emoji: '🍱',
+    lyrics: [
+      {jp:'これくらいの おべんとうばこに',thai:'ในกล่องข้าว ขนาดนี้',  duration:3800},
+      {jp:'おにぎり おにぎり ちょいと つめて',thai:'ข้าวปั้น ข้าวปั้น ใส่เข้าไป',duration:3800},
+      {jp:'きざみしょうがに ごましおふって',thai:'ขิงหั่น โรยงาเกลือ',  duration:3800},
+      {jp:'にんじんさん さくらんぼさん',thai:'แครอท เชอร์รี่',          duration:3200},
+      {jp:'しいたけさん ごぼうさん',   thai:'เห็ดชิตาเกะ โกะโบ',       duration:3000},
+      {jp:'あなのあいた れんこんさん', thai:'รากบัว ที่มีรู',            duration:3200},
+      {jp:'すじのとおった ふーき！',   thai:'ฟุกิ ที่เป็นเส้น!',        duration:3200},
+    ],
+  },
+];
+
+let songTimer = null;
+let songLineIndex = 0;
+let currentSong = null;
+let songTotalLines = 0;
+
+function renderSongsList() {
+  const list = document.getElementById('songsList');
+  list.innerHTML = '';
+  songs.forEach(song => {
+    const card = document.createElement('div');
+    card.className = 'song-card';
+    card.innerHTML = `
+      <span class="song-card-emoji">${song.emoji}</span>
+      <div class="song-card-title">${song.title}</div>
+      <div class="song-card-thai">${song.titleThai}</div>
+    `;
+    card.addEventListener('click', () => playSong(song));
+    list.appendChild(card);
+  });
+}
+
+function playSong(song) {
+  currentSong = song;
+  songLineIndex = 0;
+  songTotalLines = song.lyrics.length;
+  document.getElementById('songOverlay').classList.add('active');
+  document.getElementById('songMainEmoji').textContent = song.emoji;
+  document.getElementById('songTitleLabel').textContent = song.title;
+  document.getElementById('songProgressBar').style.width = '0%';
+  showSongLine();
+}
+
+function showSongLine() {
+  if (!currentSong) return;
+  if (songLineIndex >= currentSong.lyrics.length) {
+    // 曲終了
+    celebrate();
+    earnSticker();
+    earnSticker();
+    setTimeout(() => stopSong(), 1800);
+    return;
+  }
+
+  const line = currentSong.lyrics[songLineIndex];
+  const jpEl = document.getElementById('songLyricJp');
+  const thaiEl = document.getElementById('songLyricThai');
+  const counterEl = document.getElementById('songCounter');
+  const progressEl = document.getElementById('songProgressBar');
+
+  // カウンター更新
+  counterEl.textContent = `${songLineIndex + 1} / ${songTotalLines}`;
+
+  // フェードイン
+  jpEl.classList.add('fade');
+  setTimeout(() => {
+    jpEl.textContent = line.jp;
+    thaiEl.textContent = line.thai;
+    jpEl.classList.remove('fade');
+  }, 200);
+
+  // 読み上げ
+  speak(line.jp, 0.78, 1.3);
+
+  // プログレスバー
+  progressEl.style.width = ((songLineIndex + 1) / songTotalLines * 100) + '%';
+
+  // 次の行へ
+  clearTimeout(songTimer);
+  songTimer = setTimeout(() => {
+    songLineIndex++;
+    showSongLine();
+  }, line.duration);
+}
+
+function stopSong() {
+  clearTimeout(songTimer);
+  document.getElementById('songOverlay').classList.remove('active');
+  synth.cancel();
+  currentSong = null;
+}
+
+// 曲オーバーレイをタップで再読み上げ
+document.addEventListener('DOMContentLoaded', () => {
+  const overlay = document.getElementById('songOverlay');
+  if (overlay) {
+    overlay.addEventListener('click', (e) => {
+      if (e.target.closest('.song-close')) return;
+      if (currentSong && currentSong.lyrics[songLineIndex]) {
+        speak(currentSong.lyrics[songLineIndex].jp, 0.78, 1.3);
+      } else if (currentSong && songLineIndex > 0) {
+        speak(currentSong.lyrics[songLineIndex - 1].jp, 0.78, 1.3);
+      }
+    });
+  }
+});
+
+// =========================================================
 //  MEMORY GAME
 // =========================================================
 let memCards=[],memRevealed=[],memMatched=0,memLocked=false;
@@ -1440,6 +1841,9 @@ function loadStickers(){
     if(s)stickerData=JSON.parse(s);
   }catch(e){}
   updateStickerUI();
+  // 初期マスコット状態を設定（レベルアップ演出なし）
+  prevMascotLevelIndex=getMascotLevelIndex();
+  updateMascot();
 }
 function saveStickers(){
   try{localStorage.setItem('nihongo_stickers',JSON.stringify(stickerData));}catch(e){}
@@ -1459,6 +1863,8 @@ function earnSticker(){
   el.innerHTML=`<span class="sticker-earned-emoji">${s}</span><span class="sticker-earned-text">シール ゲット！</span>`;
   document.body.appendChild(el);
   setTimeout(()=>el.remove(),2000);
+  // マスコットレベルアップチェック
+  checkMascotLevelUp();
 }
 function toggleStickerBook(){
   const ov=document.getElementById('stickerOverlay');
@@ -1668,7 +2074,17 @@ function createWordCard(item){
 // =========================================================
 loadStickers();
 initVoiceDB();
+TTSCache.open();  // Google TTS キャッシュDB を初期化
 renderCards();
+
+// =========================================================
+//  PWA: Service Worker 登録
+// =========================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
 </script>
 </body>
 </html>

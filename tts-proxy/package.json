@@ -1,0 +1,14 @@
+{
+  "name": "nihongo-tts-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Google Cloud TTS proxy for にほんごであそぼ",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "login": "wrangler login"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

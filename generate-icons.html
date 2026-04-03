@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>アイコン生成ツール</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; background: #fff7ed; }
+  h2 { color: #ff6b6b; }
+  canvas { border: 2px solid #ccc; margin: 10px; border-radius: 12px; }
+  .btn { display: inline-block; margin: 10px 5px; padding: 12px 24px; background: #ff6b6b; color: white; border-radius: 50px; text-decoration: none; font-weight: bold; cursor: pointer; }
+  .note { background: #ffe0e0; border-radius: 12px; padding: 16px; margin: 16px 0; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+<h2>🎨 アイコン生成ツール</h2>
+<div class="note">
+  ⚠️ このファイルをブラウザで開いて「ダウンロード」ボタンを押してください。<br>
+  生成された2つのPNGファイルを <code>icons/</code> フォルダに保存してください。
+</div>
+
+<canvas id="c192" width="192" height="192"></canvas>
+<canvas id="c512" width="512" height="512"></canvas>
+
+<br>
+<a class="btn" id="dl192" download="icon-192.png">📥 192×192 をダウンロード</a>
+<a class="btn" id="dl512" download="icon-512.png">📥 512×512 をダウンロード</a>
+
+<script>
+function drawIcon(canvas) {
+  const ctx = canvas.getContext('2d');
+  const s = canvas.width;
+  const r = s / 2;
+
+  // 背景（丸）
+  const grad = ctx.createRadialGradient(r, r * 0.8, 0, r, r, r);
+  grad.addColorStop(0, '#ff8e8e');
+  grad.addColorStop(1, '#ff5252');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.roundRect(0, 0, s, s, s * 0.22);
+  ctx.fill();
+
+  // メインの「あ」
+  ctx.fillStyle = 'white';
+  ctx.font = `900 ${s * 0.58}px "M PLUS Rounded 1c", "Noto Sans JP", sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.shadowColor = 'rgba(0,0,0,0.15)';
+  ctx.shadowBlur = s * 0.04;
+  ctx.shadowOffsetY = s * 0.03;
+  ctx.fillText('あ', r, r + s * 0.03);
+
+  // 星のアクセント
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.font = `${s * 0.14}px sans-serif`;
+  ctx.fillText('⭐', r * 0.45, r * 0.42);
+  ctx.fillText('✨', r * 1.6, r * 0.5);
+}
+
+window.addEventListener('load', () => {
+  // フォントロード待ち
+  document.fonts.ready.then(() => {
+    const c192 = document.getElementById('c192');
+    const c512 = document.getElementById('c512');
+    drawIcon(c192);
+    drawIcon(c512);
+
+    document.getElementById('dl192').href = c192.toDataURL('image/png');
+    document.getElementById('dl512').href = c512.toDataURL('image/png');
+  });
+});
+</script>
+</body>
+</html>
