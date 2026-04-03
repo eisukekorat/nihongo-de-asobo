@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>にほんご あそぼう！</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #fff7ed;
+    --c1: #ff6b6b; --c2: #ffa94d; --c3: #51cf66; --c4: #339af0;
+    --c5: #cc5de8; --c6: #f06595; --c7: #20c997; --c8: #ff922b;
+    --c9: #74c0fc; --c10: #a9e34b; --c11: #ffa8a8;
+    --c12: #845ef7; --c13: #e8590c; --c14: #15aabf; --c15: #fab005;
+    --yellow: #ffd43b; --dark: #2d3436;
+    --card-radius: 32px;
+    --shadow: 0 10px 0px rgba(0,0,0,0.12);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body {
+    background: var(--sky);
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    min-height:100vh; min-height:100dvh;
+    overflow-x:hidden;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(255,107,107,0.07) 0%, transparent 50%),
+      radial-gradient(circle at 90% 80%, rgba(51,154,240,0.07) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(255,212,59,0.05) 0%, transparent 60%);
+    position: relative;
+  }
+
+  /* ============ FLOATING BUBBLES ============ */
+  .bubbles-bg { position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden; }
+  .bubble { position:absolute;border-radius:50%;opacity:0.15;animation:bubble-float linear infinite; }
+  @keyframes bubble-float {
+    0%{transform:translateY(110vh) scale(0.3) rotate(0deg);opacity:0}
+    10%{opacity:0.15} 90%{opacity:0.15}
+    100%{transform:translateY(-10vh) scale(1) rotate(360deg);opacity:0}
+  }
+
+  /* ============ HEADER ============ */
+  .header { text-align:center;padding:20px 20px 8px;position:relative;z-index:1; }
+  .header h1 { font-size:clamp(2rem,7vw,3.2rem);font-weight:900;color:var(--dark);line-height:1.1; }
+  .header h1 span { display:inline-block;animation:bounce-letter 2.4s infinite ease-in-out; }
+  .header h1 span:nth-child(1){color:var(--c1);animation-delay:0s}
+  .header h1 span:nth-child(2){color:var(--c2);animation-delay:.1s}
+  .header h1 span:nth-child(3){color:var(--c3);animation-delay:.2s}
+  .header h1 span:nth-child(4){color:var(--c4);animation-delay:.3s}
+  .header h1 span:nth-child(5){color:var(--c5);animation-delay:.4s}
+  .header h1 span:nth-child(6){color:var(--c1);animation-delay:.5s}
+  .header h1 span:nth-child(7){color:var(--c2);animation-delay:.6s}
+  .header h1 span:nth-child(8){color:var(--yellow);animation-delay:.7s}
+  .header h1 span:nth-child(9){color:var(--c3);animation-delay:.8s}
+  @keyframes bounce-letter{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .header-sub{font-size:0.8rem;color:#bbb;margin-top:2px;font-weight:700}
+
+  /* ============ MASCOT ============ */
+  .mascot{position:fixed;bottom:16px;left:16px;z-index:50;font-size:2.8rem;cursor:pointer;user-select:none;animation:mascot-idle 3s ease-in-out infinite;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.15));transition:transform 0.2s}
+  .mascot:active{transform:scale(1.3) rotate(-10deg)!important}
+  @keyframes mascot-idle{0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-6px) rotate(-5deg)}75%{transform:translateY(-3px) rotate(5deg)}}
+  .mascot-speech{position:fixed;bottom:70px;left:16px;z-index:51;background:white;border-radius:20px;padding:10px 16px;font-size:1rem;font-weight:800;color:var(--dark);box-shadow:0 4px 20px rgba(0,0,0,0.1);opacity:0;transform:scale(0.8) translateY(10px);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;max-width:200px}
+  .mascot-speech::after{content:'';position:absolute;bottom:-8px;left:20px;width:16px;height:16px;background:white;transform:rotate(45deg);border-radius:2px}
+  .mascot-speech.show{opacity:1;transform:scale(1) translateY(0)}
+
+  /* ============ CATEGORY TABS ============ */
+  .cat-tabs{display:flex;gap:8px;padding:8px 16px 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:relative;z-index:1}
+  .cat-tabs::-webkit-scrollbar{display:none}
+  .cat-tab{padding:12px 16px;border-radius:50px;border:3px solid transparent;background:white;font-size:0.88rem;font-weight:800;cursor:pointer;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 0 rgba(0,0,0,0.1);color:var(--dark);user-select:none;white-space:nowrap;flex-shrink:0}
+  .cat-tab:active{transform:translateY(3px) scale(0.95);box-shadow:0 1px 0 rgba(0,0,0,0.1)}
+  .cat-tab[data-cat="animals"].active{background:#ffebe9;border-color:var(--c1);color:var(--c1)}
+  .cat-tab[data-cat="food"].active{background:#fff3e0;border-color:var(--c2);color:var(--c2)}
+  .cat-tab[data-cat="numbers"].active{background:#e8f5e9;border-color:var(--c3);color:var(--c3)}
+  .cat-tab[data-cat="greetings"].active{background:#e3f2fd;border-color:var(--c4);color:var(--c4)}
+  .cat-tab[data-cat="phrases"].active{background:#f3e5f5;border-color:var(--c5);color:var(--c5)}
+  .cat-tab[data-cat="body"].active{background:#fce4ec;border-color:var(--c6);color:var(--c6)}
+  .cat-tab[data-cat="feelings"].active{background:#e0f7fa;border-color:var(--c7);color:var(--c7)}
+  .cat-tab[data-cat="vehicles"].active{background:#fff3e0;border-color:var(--c8);color:var(--c8)}
+  .cat-tab[data-cat="family"].active{background:#e8f4fd;border-color:var(--c9);color:var(--c9)}
+  .cat-tab[data-cat="weather"].active{background:#f0fff4;border-color:var(--c10);color:var(--c10)}
+  .cat-tab[data-cat="actions"].active{background:#fff0f0;border-color:var(--c11);color:var(--c11)}
+  .cat-tab[data-cat="house"].active{background:#f3e8ff;border-color:var(--c12);color:var(--c12)}
+  .cat-tab[data-cat="toys"].active{background:#fff4e6;border-color:var(--c13);color:var(--c13)}
+  .cat-tab[data-cat="clothes"].active{background:#e3fafc;border-color:var(--c14);color:var(--c14)}
+  .cat-tab[data-cat="shapes"].active{background:#fff9db;border-color:var(--c15);color:var(--c15)}
+  .cat-tab[data-cat="hiragana"].active{background:#fffbe0;border-color:var(--yellow);color:#d4a000}
+
+  /* ============ MODE TOGGLE ============ */
+  .mode-toggle{display:flex;justify-content:center;gap:8px;margin-bottom:14px;position:relative;z-index:1;flex-wrap:wrap;padding:0 16px}
+  .mode-btn{padding:11px 20px;border-radius:50px;border:3px solid #e0e0e0;background:white;font-size:0.95rem;font-weight:800;cursor:pointer;color:#bbb;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 0 rgba(0,0,0,0.08)}
+  .mode-btn.active{background:var(--dark);color:white;border-color:var(--dark)}
+  .mode-btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,0.08)}
+  .repeat-badge{display:inline-block;background:var(--c1);color:white;font-size:0.6rem;padding:1px 5px;border-radius:10px;vertical-align:super;margin-left:2px}
+
+  /* ============ CARDS ============ */
+  .cards-section{padding:0 14px 120px;position:relative;z-index:1}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(148px,42vw),1fr));gap:14px;max-width:900px;margin:0 auto}
+  .cards-grid.hiragana-grid{grid-template-columns:repeat(auto-fill,minmax(min(100px,28vw),1fr));gap:10px}
+
+  .word-card{background:white;border-radius:var(--card-radius);box-shadow:var(--shadow);padding:16px 8px 12px;text-align:center;cursor:pointer;transition:transform 0.15s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.15s;border:3.5px solid transparent;user-select:none;position:relative;overflow:hidden}
+  .word-card:active{transform:scale(0.92)!important;box-shadow:0 3px 0 rgba(0,0,0,0.1)}
+  .word-card.playing{animation:card-mega-pop 0.6s cubic-bezier(0.34,1.56,0.64,1)}
+  @keyframes card-mega-pop{0%{transform:scale(1)}20%{transform:scale(1.15) rotate(-3deg)}40%{transform:scale(0.95) rotate(2deg)}60%{transform:scale(1.08) rotate(-1deg)}80%{transform:scale(0.98)}100%{transform:scale(1) rotate(0deg)}}
+  .word-card.playing .card-emoji{animation:emoji-wiggle 0.6s ease}
+  @keyframes emoji-wiggle{0%{transform:scale(1) rotate(0)}15%{transform:scale(1.3) rotate(-15deg)}30%{transform:scale(1.2) rotate(10deg)}45%{transform:scale(1.25) rotate(-8deg)}60%{transform:scale(1.1) rotate(5deg)}80%{transform:scale(1.05) rotate(-2deg)}100%{transform:scale(1) rotate(0)}}
+
+  .word-card[data-cat="animals"]{border-color:rgba(255,107,107,0.35)}
+  .word-card[data-cat="food"]{border-color:rgba(255,169,77,0.35)}
+  .word-card[data-cat="numbers"]{border-color:rgba(81,207,102,0.35)}
+  .word-card[data-cat="greetings"]{border-color:rgba(51,154,240,0.35)}
+  .word-card[data-cat="phrases"]{border-color:rgba(204,93,232,0.35)}
+  .word-card[data-cat="body"]{border-color:rgba(240,101,149,0.35)}
+  .word-card[data-cat="feelings"]{border-color:rgba(32,201,151,0.35)}
+  .word-card[data-cat="vehicles"]{border-color:rgba(255,146,43,0.35)}
+  .word-card[data-cat="family"]{border-color:rgba(116,192,252,0.45)}
+  .word-card[data-cat="weather"]{border-color:rgba(169,227,75,0.45)}
+  .word-card[data-cat="actions"]{border-color:rgba(255,168,168,0.45)}
+  .word-card[data-cat="house"]{border-color:rgba(132,94,247,0.35)}
+  .word-card[data-cat="toys"]{border-color:rgba(232,89,12,0.35)}
+  .word-card[data-cat="clothes"]{border-color:rgba(21,170,191,0.35)}
+  .word-card[data-cat="shapes"]{border-color:rgba(250,176,5,0.4)}
+  .word-card[data-cat="hiragana"]{border-color:rgba(255,212,59,0.5)}
+
+  .card-emoji{font-size:clamp(2.8rem,10vw,3.8rem);line-height:1;margin-bottom:6px;display:block;transition:transform 0.15s}
+  .card-japanese{font-size:clamp(1rem,3.6vw,1.35rem);font-weight:900;color:var(--dark);margin-bottom:2px;line-height:1.3}
+  .card-thai{font-size:clamp(0.55rem,1.6vw,0.68rem);color:#ccc;font-weight:700;background:#f8f8f8;border-radius:8px;padding:2px 6px;display:inline-block}
+  .card-sound-badge{position:absolute;top:6px;right:6px;font-size:0.7rem;opacity:0.5}
+
+  .word-card[data-cat="hiragana"] .card-japanese{font-size:clamp(2rem,8vw,2.8rem)}
+  .word-card[data-cat="hiragana"] .card-emoji{font-size:clamp(1.6rem,5vw,2rem)}
+  .word-card[data-cat="hiragana"] .card-thai{font-size:0.55rem}
+
+  .sparkle-container{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:10}
+  .sparkle{position:absolute;font-size:1.2rem;animation:sparkle-fly 0.8s ease-out forwards;pointer-events:none}
+  @keyframes sparkle-fly{0%{transform:translate(0,0) scale(0) rotate(0deg);opacity:1}50%{opacity:1}100%{transform:translate(var(--sx),var(--sy)) scale(1.2) rotate(var(--sr));opacity:0}}
+  .sound-ripple{position:absolute;top:50%;left:50%;width:10px;height:10px;background:rgba(255,220,100,0.6);border-radius:50%;transform:translate(-50%,-50%) scale(0);pointer-events:none}
+  .sound-ripple.animate{animation:ripple-out 0.6s ease-out forwards}
+  @keyframes ripple-out{to{transform:translate(-50%,-50%) scale(25);opacity:0}}
+
+  /* ============ AUTOPLAY ============ */
+  .autoplay-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#fff7ed 0%,#fef0e0 100%);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center}
+  .autoplay-overlay.active{display:flex}
+  .autoplay-emoji{font-size:clamp(6rem,28vw,10rem);animation:autoplay-bounce 0.8s cubic-bezier(0.34,1.56,0.64,1);filter:drop-shadow(0 8px 20px rgba(0,0,0,0.1))}
+  @keyframes autoplay-bounce{0%{transform:scale(0) rotate(-20deg);opacity:0}60%{transform:scale(1.1) rotate(5deg)}100%{transform:scale(1) rotate(0deg);opacity:1}}
+  .autoplay-text{font-size:clamp(2rem,7vw,3.5rem);font-weight:900;color:var(--dark);margin-top:16px;animation:autoplay-text-in 0.5s 0.3s ease both}
+  @keyframes autoplay-text-in{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .autoplay-thai-text{font-size:clamp(0.9rem,2.5vw,1.1rem);font-weight:700;color:#bbb;margin-top:6px;animation:autoplay-text-in 0.5s 0.5s ease both}
+  .autoplay-repeat-label{font-size:0.8rem;font-weight:800;color:var(--c4);margin-top:10px;opacity:0;transition:opacity 0.3s}
+  .autoplay-repeat-label.show{opacity:1}
+  .autoplay-progress{position:absolute;bottom:0;left:0;height:6px;background:var(--yellow);border-radius:3px;animation:progress-bar var(--autoplay-duration) linear}
+  @keyframes progress-bar{from{width:0}to{width:100%}}
+  .autoplay-close{position:absolute;top:20px;right:20px;width:52px;height:52px;border-radius:50%;background:white;border:3px solid #eee;font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 rgba(0,0,0,0.08);transition:all 0.15s}
+  .autoplay-close:active{transform:scale(0.9)}
+  .autoplay-counter{position:absolute;top:20px;left:20px;background:white;border-radius:50px;padding:8px 16px;font-weight:800;color:var(--dark);font-size:0.9rem;box-shadow:0 4px 0 rgba(0,0,0,0.08)}
+  .autoplay-sparkles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden}
+  .autoplay-sparkle{position:absolute;font-size:1.5rem;animation:auto-sparkle-float 3s ease-in-out infinite;opacity:0.3}
+  @keyframes auto-sparkle-float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-30px) rotate(180deg)}}
+
+  /* ============ QUIZ ============ */
+  .quiz-section{display:none;padding:0 20px 120px;max-width:600px;margin:0 auto;position:relative;z-index:1}
+  .quiz-section.active{display:block}
+  .quiz-question{text-align:center;margin-bottom:18px}
+  .quiz-emoji-big{font-size:clamp(5rem,20vw,7.5rem);line-height:1;margin-bottom:8px;display:block;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 6px 15px rgba(0,0,0,0.08))}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  .quiz-prompt{font-size:clamp(1.2rem,4.5vw,1.6rem);font-weight:900;color:var(--dark);line-height:1.4}
+  .quiz-prompt-thai{font-size:0.82rem;color:#bbb;font-weight:700;margin-top:2px}
+  .quiz-full-text{font-size:clamp(1rem,3.5vw,1.3rem);font-weight:800;color:var(--c5);margin-top:6px;line-height:1.5}
+  .quiz-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .quiz-choice{background:white;border:3.5px solid #e8e8e8;border-radius:24px;padding:14px 8px;text-align:center;cursor:pointer;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 6px 0 rgba(0,0,0,0.08);user-select:none}
+  .quiz-choice:active{transform:translateY(4px) scale(0.96);box-shadow:0 2px 0 rgba(0,0,0,0.08)}
+  .quiz-choice .choice-emoji{font-size:2.5rem;display:block;margin-bottom:5px}
+  .quiz-choice .choice-text{font-size:0.95rem;font-weight:800;color:var(--dark)}
+  .quiz-choice.correct{background:#e8fdf0;border-color:var(--c3);animation:correct-mega-pop 0.6s cubic-bezier(0.34,1.56,0.64,1)}
+  .quiz-choice.wrong{background:#ffeef0;border-color:var(--c1);animation:shake 0.5s ease}
+  @keyframes correct-mega-pop{0%{transform:scale(1)}30%{transform:scale(1.12) rotate(-3deg)}60%{transform:scale(0.96) rotate(2deg)}100%{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+  .quiz-score{text-align:center;margin-top:12px;font-weight:800;color:var(--c4);font-size:1rem}
+  .quiz-score .stars{font-size:1.4rem;letter-spacing:3px}
+  .quiz-next{display:none;margin:18px auto 0;padding:16px 38px;background:var(--c4);color:white;border:none;border-radius:50px;font-size:1.15rem;font-weight:800;cursor:pointer;box-shadow:0 5px 0 #1a7bc4;transition:all 0.15s}
+  .quiz-next:active{transform:translateY(4px);box-shadow:0 1px 0 #1a7bc4}
+  .quiz-next.show{display:block}
+
+  /* ============ CELEBRATION ============ */
+  .celebration{position:fixed;top:0;left:0;right:0;bottom:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,0.93);z-index:100;pointer-events:none}
+  .celebration.show{display:flex;animation:fade-in 0.2s ease}
+  @keyframes fade-in{from{opacity:0}to{opacity:1}}
+  .celebration-emoji{font-size:6rem;animation:celebration-spin 0.6s cubic-bezier(0.34,1.56,0.64,1)}
+  @keyframes celebration-spin{from{transform:scale(0) rotate(-45deg)}to{transform:scale(1) rotate(0deg)}}
+  .celebration-text{font-size:2.6rem;font-weight:900;color:var(--c3);margin-top:14px;animation:pop-in 0.3s 0.1s ease both}
+  @keyframes pop-in{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+  .celebration-stars{position:absolute;width:100%;height:100%;pointer-events:none}
+  .cel-star{position:absolute;font-size:2rem;animation:cel-star-fly 1s ease-out forwards}
+  @keyframes cel-star-fly{0%{transform:translate(0,0) scale(0);opacity:1}100%{transform:translate(var(--cx),var(--cy)) scale(1.5);opacity:0}}
+
+  .confetti-container{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:99;overflow:hidden}
+  .confetti-piece{position:absolute;width:14px;height:14px;top:-20px;border-radius:2px;animation:confetti-fall linear forwards}
+  @keyframes confetti-fall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+  .sound-wave{position:fixed;bottom:20px;right:20px;width:52px;height:52px;background:var(--yellow);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 4px 0 rgba(0,0,0,0.12);opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:50}
+  .sound-wave.active{opacity:1;animation:pulse 0.7s ease infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+
+  /* ============ QUIZ DIFFICULTY TOGGLE ============ */
+  .quiz-diff{display:flex;justify-content:center;gap:8px;margin-bottom:14px}
+  .quiz-diff-btn{padding:8px 18px;border-radius:50px;border:3px solid #e0e0e0;background:white;font-size:0.85rem;font-weight:800;cursor:pointer;color:#bbb;transition:all 0.2s;box-shadow:0 3px 0 rgba(0,0,0,0.08)}
+  .quiz-diff-btn.active{background:var(--c4);color:white;border-color:var(--c4)}
+  .quiz-diff-btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,0.08)}
+  .quiz-choices.two-choices{grid-template-columns:1fr;max-width:320px;margin:0 auto;gap:14px}
+  .quiz-choices.two-choices .quiz-choice{padding:18px 12px}
+  .quiz-choices.two-choices .choice-emoji{font-size:3.2rem}
+  .quiz-choices.two-choices .choice-text{font-size:1.1rem}
+
+  /* ============ MEMORY GAME ============ */
+  .memory-section{display:none;padding:0 14px 120px;position:relative;z-index:1}
+  .memory-section.active{display:block}
+  .memory-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:500px;margin:0 auto}
+  .memory-card{background:white;border-radius:var(--card-radius);box-shadow:var(--shadow);padding:20px 8px;text-align:center;cursor:pointer;border:3.5px solid #e0e0e0;user-select:none;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1)}
+  .memory-card:active{transform:scale(0.92)!important}
+  .memory-card .mem-emoji{font-size:clamp(2.5rem,10vw,3.5rem);transition:transform 0.3s}
+  .memory-card .mem-text{font-size:clamp(0.85rem,3vw,1.1rem);font-weight:900;color:var(--dark);margin-top:4px}
+  .memory-card.face-down{background:#f0f0f0;border-color:#ddd}
+  .memory-card.face-down .mem-emoji{font-size:clamp(2.8rem,12vw,4rem)}
+  .memory-card.revealed{animation:card-mega-pop 0.5s cubic-bezier(0.34,1.56,0.64,1)}
+  .memory-card.matched{border-color:var(--c3);background:#e8fdf0}
+  .memory-card.matched .mem-emoji{animation:emoji-wiggle 0.6s ease}
+  .memory-status{text-align:center;margin:16px 0 8px;font-weight:800;font-size:1rem;color:var(--dark)}
+  .memory-restart{display:block;margin:12px auto;padding:14px 32px;background:var(--c3);color:white;border:none;border-radius:50px;font-size:1.05rem;font-weight:800;cursor:pointer;box-shadow:0 5px 0 #2ea84e;transition:all 0.15s}
+  .memory-restart:active{transform:translateY(4px);box-shadow:0 1px 0 #2ea84e}
+
+  /* ============ COUNTING GAME ============ */
+  .counting-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#e8fdf0 0%,#e3f2fd 100%);z-index:200;display:none;flex-direction:column;align-items:center;justify-content:center}
+  .counting-overlay.active{display:flex}
+  .counting-close{position:absolute;top:20px;right:20px;width:52px;height:52px;border-radius:50%;background:white;border:3px solid #eee;font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 rgba(0,0,0,0.08);z-index:5}
+  .counting-close:active{transform:scale(0.9)}
+  .counting-prompt{font-size:clamp(1.2rem,4vw,1.6rem);font-weight:900;color:var(--dark);margin-bottom:20px;text-align:center}
+  .counting-counter{position:absolute;top:20px;left:20px;background:white;border-radius:50px;padding:8px 16px;font-weight:800;color:var(--dark);font-size:0.9rem;box-shadow:0 4px 0 rgba(0,0,0,0.08)}
+  .counting-area{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;max-width:400px;padding:20px}
+  .counting-item{font-size:clamp(3.5rem,14vw,5rem);cursor:pointer;transition:all 0.2s cubic-bezier(0.34,1.56,0.64,1);filter:drop-shadow(0 4px 8px rgba(0,0,0,0.1));user-select:none;position:relative}
+  .counting-item:active{transform:scale(0.85)!important}
+  .counting-item.counted{animation:count-pop 0.5s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;cursor:default}
+  .counting-item.counted::after{content:'✓';position:absolute;top:-5px;right:-5px;font-size:1.2rem;background:var(--c3);color:white;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+  @keyframes count-pop{0%{transform:scale(1)}30%{transform:scale(1.3) rotate(-10deg)}60%{transform:scale(0.9) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
+  .counting-result{font-size:clamp(1.5rem,5vw,2.2rem);font-weight:900;color:var(--c3);margin-top:16px;opacity:0;transition:opacity 0.3s}
+  .counting-result.show{opacity:1}
+
+  /* ============ STICKER SYSTEM ============ */
+  .sticker-btn{position:fixed;bottom:80px;right:16px;z-index:50;width:56px;height:56px;background:white;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.15);cursor:pointer;border:3px solid var(--yellow);transition:transform 0.2s;user-select:none}
+  .sticker-btn:active{transform:scale(0.9)}
+  .sticker-btn .sticker-icon{font-size:1.4rem;line-height:1}
+  .sticker-btn .sticker-count{font-size:0.6rem;font-weight:900;color:var(--dark)}
+  .sticker-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#fffbe6 0%,#fff7ed 100%);z-index:300;display:none;flex-direction:column;align-items:center;overflow-y:auto;padding:20px}
+  .sticker-overlay.active{display:flex}
+  .sticker-close{position:fixed;top:20px;right:20px;width:52px;height:52px;border-radius:50%;background:white;border:3px solid #eee;font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 0 rgba(0,0,0,0.08);z-index:301}
+  .sticker-title{font-size:clamp(1.6rem,5vw,2.2rem);font-weight:900;color:var(--dark);margin:10px 0 4px}
+  .sticker-subtitle{font-size:1rem;font-weight:800;color:var(--c2);margin-bottom:16px}
+  .sticker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:10px;max-width:500px;width:100%;padding-bottom:80px}
+  .sticker-cell{width:60px;height:60px;display:flex;align-items:center;justify-content:center;font-size:2.2rem;background:white;border-radius:16px;box-shadow:0 3px 0 rgba(0,0,0,0.06);border:2px solid #f0f0f0}
+  .sticker-cell.empty{opacity:0.2;font-size:1.5rem}
+  .sticker-earned{position:fixed;bottom:50%;left:50%;transform:translateX(-50%);z-index:400;display:flex;flex-direction:column;align-items:center;animation:sticker-float-up 1.8s ease-out forwards;pointer-events:none}
+  .sticker-earned-emoji{font-size:4rem;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.2))}
+  .sticker-earned-text{font-size:1rem;font-weight:900;color:var(--c2);background:white;padding:4px 14px;border-radius:50px;margin-top:6px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+  @keyframes sticker-float-up{0%{opacity:0;transform:translateX(-50%) translateY(40px) scale(0.5)}20%{opacity:1;transform:translateX(-50%) translateY(0) scale(1.2)}40%{transform:translateX(-50%) translateY(-10px) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(-120px) scale(0.8)}}
+
+  /* ============ RECORDING MODE ============ */
+  .rec-toggle{position:fixed;bottom:16px;right:80px;z-index:50;width:52px;height:52px;background:white;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 4px 0 rgba(0,0,0,0.12);cursor:pointer;border:3px solid #e0e0e0;transition:all 0.2s;user-select:none}
+  .rec-toggle.supported{display:flex}
+  .rec-toggle:active{transform:scale(0.9)}
+  .rec-toggle.rec-active{border-color:var(--c1);background:#fff0f0;animation:rec-pulse 1.5s ease infinite}
+  @keyframes rec-pulse{0%,100%{box-shadow:0 4px 0 rgba(0,0,0,0.12)}50%{box-shadow:0 4px 15px rgba(255,107,107,0.4)}}
+  .rec-indicator{position:fixed;bottom:72px;right:60px;z-index:50;background:var(--c1);color:white;font-size:0.75rem;font-weight:800;padding:5px 12px;border-radius:50px;opacity:0;transition:opacity 0.3s;pointer-events:none}
+  .rec-indicator.show{opacity:1}
+  .card-rec-badge{position:absolute;top:6px;left:6px;font-size:0.65rem;opacity:0.7;background:rgba(255,107,107,0.15);border-radius:8px;padding:1px 4px}
+  .card-recording-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(255,107,107,0.15);border-radius:var(--card-radius);display:flex;align-items:center;justify-content:center;font-size:2.5rem;font-weight:900;color:var(--c1);z-index:20;animation:fade-in 0.2s ease}
+
+  /* ============ HIRAGANA ROW TABS ============ */
+  .hira-tabs{display:flex;gap:6px;padding:4px 14px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:relative;z-index:1}
+  .hira-tabs::-webkit-scrollbar{display:none}
+  .hira-tab{padding:8px 12px;border-radius:50px;border:2.5px solid transparent;background:white;font-size:0.8rem;font-weight:800;cursor:pointer;transition:all 0.2s;box-shadow:0 3px 0 rgba(0,0,0,0.06);color:var(--dark);user-select:none;white-space:nowrap;flex-shrink:0;text-align:center;line-height:1.3}
+  .hira-tab:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,0.06)}
+  .hira-tab.active{background:#fffbe0;border-color:var(--yellow);color:#d4a000}
+  .hira-tab .hira-tab-thai{font-size:0.5rem;color:#bbb;display:block;font-weight:700}
+  .hira-row-header{grid-column:1/-1;text-align:center;font-weight:900;font-size:0.9rem;color:var(--dark);padding:10px 0 2px;border-top:2px dashed #e0e0e0;margin-top:6px}
+  .hira-row-header:first-child{border-top:none;margin-top:0}
+  .hira-row-header .hira-header-thai{font-size:0.55rem;color:#bbb;font-weight:700}
+
+  /* ============ MODE TOGGLE SCROLL ============ */
+  .mode-toggle{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;justify-content:flex-start;padding:0 16px 14px;flex-wrap:nowrap}
+  .mode-toggle::-webkit-scrollbar{display:none}
+  .mode-btn{flex-shrink:0}
+
+  @media(min-width:600px){.cards-grid{grid-template-columns:repeat(3,1fr)}}
+  @media(min-width:820px){.cards-grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+
+<div class="bubbles-bg" id="bubblesBg"></div>
+<div class="mascot" id="mascot" onclick="mascotTap()">🐻</div>
+<div class="mascot-speech" id="mascotSpeech"></div>
+
+<div class="header">
+  <h1><span>に</span><span>ほ</span><span>ん</span><span>ご</span><span>あ</span><span>そ</span><span>ぼ</span><span>う</span><span>！</span></h1>
+  <p class="header-sub">เรียนภาษาญี่ปุ่นกัน 🇯🇵</p>
+</div>
+
+<div class="cat-tabs" id="catTabs">
+  <button class="cat-tab active" data-cat="animals"   onclick="setCategory('animals',this)">🐾 どうぶつ</button>
+  <button class="cat-tab" data-cat="food"      onclick="setCategory('food',this)">🍎 たべもの</button>
+  <button class="cat-tab" data-cat="numbers"   onclick="setCategory('numbers',this)">🔢 かず・いろ</button>
+  <button class="cat-tab" data-cat="shapes"    onclick="setCategory('shapes',this)">🔷 かたち</button>
+  <button class="cat-tab" data-cat="greetings" onclick="setCategory('greetings',this)">👋 あいさつ</button>
+  <button class="cat-tab" data-cat="phrases"   onclick="setCategory('phrases',this)">💬 かいわ</button>
+  <button class="cat-tab" data-cat="body"      onclick="setCategory('body',this)">👁️ からだ</button>
+  <button class="cat-tab" data-cat="feelings"  onclick="setCategory('feelings',this)">😊 きもち</button>
+  <button class="cat-tab" data-cat="vehicles"  onclick="setCategory('vehicles',this)">🚗 のりもの</button>
+  <button class="cat-tab" data-cat="family"    onclick="setCategory('family',this)">👨‍👩‍👦 かぞく</button>
+  <button class="cat-tab" data-cat="house"     onclick="setCategory('house',this)">🏠 おうち</button>
+  <button class="cat-tab" data-cat="toys"      onclick="setCategory('toys',this)">🧸 おもちゃ</button>
+  <button class="cat-tab" data-cat="clothes"   onclick="setCategory('clothes',this)">👗 ふく</button>
+  <button class="cat-tab" data-cat="weather"   onclick="setCategory('weather',this)">🌤️ てんき</button>
+  <button class="cat-tab" data-cat="actions"   onclick="setCategory('actions',this)">🏃 どうさ</button>
+  <button class="cat-tab" data-cat="hiragana"  onclick="setCategory('hiragana',this)">あ ひらがな</button>
+</div>
+
+<div class="mode-toggle">
+  <button class="mode-btn active" onclick="setMode('cards',this)">🃏 カード</button>
+  <button class="mode-btn" onclick="setMode('quiz',this)">🎯 クイズ</button>
+  <button class="mode-btn" onclick="setMode('memory',this)">🧩 ペア</button>
+  <button class="mode-btn" onclick="setMode('counting',this)">🔢 かぞえ</button>
+  <button class="mode-btn" onclick="startAutoplay(false)">▶️ じどう</button>
+  <button class="mode-btn" onclick="startAutoplay(true)">🔁 2かい</button>
+  <button class="mode-btn" onclick="startRoutine('morning')">🌅 あさ</button>
+  <button class="mode-btn" onclick="startRoutine('evening')">🌙 よる</button>
+</div>
+
+<div class="hira-tabs" id="hiraTabs" style="display:none"></div>
+<div class="cards-section" id="cardsSection">
+  <div class="cards-grid" id="cardsGrid"></div>
+</div>
+
+<div class="quiz-section" id="quizSection">
+  <div class="quiz-diff">
+    <button class="quiz-diff-btn active" id="quizDiff2" onclick="setQuizDiff(2)">2️⃣ 2たく</button>
+    <button class="quiz-diff-btn" id="quizDiff4" onclick="setQuizDiff(4)">4️⃣ 4たく</button>
+  </div>
+  <div class="quiz-question">
+    <span class="quiz-emoji-big" id="quizEmoji">🐶</span>
+    <div class="quiz-full-text" id="quizFullText" style="display:none"></div>
+    <div class="quiz-prompt" id="quizPrompt">どれかな？</div>
+    <div class="quiz-prompt-thai" id="quizPromptThai"></div>
+  </div>
+  <div class="quiz-choices" id="quizChoices"></div>
+  <div class="quiz-score" id="quizScore"></div>
+  <div style="text-align:center"><button class="quiz-next" id="quizNext" onclick="nextQuiz()">つぎ ➜</button></div>
+</div>
+
+<div class="memory-section" id="memorySection">
+  <div class="memory-status" id="memoryStatus"></div>
+  <div class="memory-grid" id="memoryGrid"></div>
+  <button class="memory-restart" id="memoryRestart" onclick="startMemory()">もういっかい 🔄</button>
+</div>
+
+<div class="counting-overlay" id="countingOverlay">
+  <div class="counting-counter" id="countingCounter">1 / 5</div>
+  <button class="counting-close" onclick="stopCounting()">✕</button>
+  <div class="counting-prompt" id="countingPrompt">タップして かぞえよう！</div>
+  <div class="counting-area" id="countingArea"></div>
+  <div class="counting-result" id="countingResult"></div>
+</div>
+
+<div class="autoplay-overlay" id="autoplayOverlay">
+  <div class="autoplay-sparkles" id="autoplaySparkles"></div>
+  <div class="autoplay-counter" id="autoplayCounter">1 / 10</div>
+  <button class="autoplay-close" onclick="stopAutoplay()">✕</button>
+  <span class="autoplay-emoji" id="autoplayEmoji">🐶</span>
+  <div class="autoplay-text" id="autoplayText">いぬ</div>
+  <div class="autoplay-thai-text" id="autoplayThai">สุนัข</div>
+  <div class="autoplay-repeat-label" id="autoplayRepeatLabel">🔁 もういっかい！</div>
+  <div class="autoplay-progress" id="autoplayProgress"></div>
+</div>
+
+<div class="celebration" id="celebration">
+  <div class="celebration-stars" id="celStars"></div>
+  <div class="celebration-emoji">⭐</div>
+  <div class="celebration-text">すごい！</div>
+</div>
+<div class="confetti-container" id="confettiContainer"></div>
+<div class="sound-wave" id="soundWave">🔊</div>
+
+<div class="sticker-btn" id="stickerBtn" onclick="toggleStickerBook()">
+  <span class="sticker-icon">🎖️</span>
+  <span class="sticker-count" id="stickerCountLabel">0</span>
+</div>
+
+<div class="sticker-overlay" id="stickerOverlay">
+  <button class="sticker-close" onclick="toggleStickerBook()">✕</button>
+  <div class="sticker-title">🎖️ シールちょう</div>
+  <div class="sticker-subtitle" id="stickerSubtitle">0こ あつめたよ！</div>
+  <div class="sticker-grid" id="stickerGrid"></div>
+</div>
+
+<div class="rec-toggle" id="recToggle" onclick="toggleRecMode()">🎙️</div>
+<div class="rec-indicator" id="recIndicator">🎙️ ろくおん</div>
+
+<script>
+// =========================================================
+//  DATA — MASSIVELY EXPANDED v7
+// =========================================================
+const data = {
+  animals: [
+    // 基本どうぶつ
+    {emoji:'🐶',jp:'いぬ',thai:'สุนัข',sound:'ワンワン！'},
+    {emoji:'🐱',jp:'ねこ',thai:'แมว',sound:'ニャー！'},
+    {emoji:'🐘',jp:'ぞう',thai:'ช้าง',sound:'パオーン！'},
+    {emoji:'🐯',jp:'とら',thai:'เสือ',sound:'ガオー！'},
+    {emoji:'🐸',jp:'かえる',thai:'กบ',sound:'ケロケロ！'},
+    {emoji:'🐧',jp:'ペンギン',thai:'เพนกวิน'},
+    {emoji:'🐠',jp:'さかな',thai:'ปลา'},
+    {emoji:'🐒',jp:'さる',thai:'ลิง',sound:'ウキキー！'},
+    {emoji:'🐮',jp:'うし',thai:'วัว',sound:'モーモー！'},
+    {emoji:'🐷',jp:'ぶた',thai:'หมู',sound:'ブーブー！'},
+    {emoji:'🐰',jp:'うさぎ',thai:'กระต่าย'},
+    {emoji:'🦁',jp:'ライオン',thai:'สิงโต',sound:'ガオー！'},
+    {emoji:'🦒',jp:'きりん',thai:'ยีราฟ'},
+    {emoji:'🐻',jp:'くま',thai:'หมี'},
+    {emoji:'🐦',jp:'とり',thai:'นก',sound:'チュンチュン！'},
+    {emoji:'🐢',jp:'かめ',thai:'เต่า'},
+    {emoji:'🐴',jp:'うま',thai:'ม้า',sound:'ヒヒーン！'},
+    {emoji:'🐏',jp:'ひつじ',thai:'แกะ',sound:'メェー！'},
+    {emoji:'🐔',jp:'にわとり',thai:'ไก่',sound:'コケコッコー！'},
+    {emoji:'🦆',jp:'あひる',thai:'เป็ด',sound:'ガーガー！'},
+    {emoji:'🐺',jp:'おおかみ',thai:'หมาป่า',sound:'ウォーン！'},
+    {emoji:'🦊',jp:'きつね',thai:'สุนัขจิ้งจอก',sound:'コンコン！'},
+    {emoji:'🐿️',jp:'りす',thai:'กระรอก'},
+    {emoji:'🦜',jp:'おうむ',thai:'นกแก้ว'},
+    {emoji:'🐊',jp:'わに',thai:'จระเข้'},
+    {emoji:'🐍',jp:'へび',thai:'งู',sound:'シャー！'},
+    {emoji:'🦈',jp:'サメ',thai:'ฉลาม'},
+    {emoji:'🐬',jp:'イルカ',thai:'โลมา'},
+    {emoji:'🐳',jp:'くじら',thai:'ปลาวาฬ'},
+    // 虫
+    {emoji:'🦋',jp:'ちょうちょ',thai:'ผีเสื้อ'},
+    {emoji:'🐛',jp:'いもむし',thai:'หนอน'},
+    {emoji:'🐜',jp:'あり',thai:'มด'},
+    {emoji:'🐝',jp:'はち',thai:'ผึ้ง',sound:'ブーン！'},
+    {emoji:'🦂',jp:'かぶとむし',thai:'ด้วง'},
+    {emoji:'🐞',jp:'てんとうむし',thai:'เต่าทอง'},
+    {emoji:'🦗',jp:'バッタ',thai:'ตั๊กแตน'},
+    {emoji:'🕷️',jp:'くも',thai:'แมงมุม'},
+    // タイで身近な動物
+    {emoji:'🦎',jp:'とかげ',thai:'จิ้งจก'},
+    {emoji:'🐃',jp:'すいぎゅう',thai:'ควาย'},
+  ],
+
+  food: [
+    {emoji:'🍎',jp:'りんご',thai:'แอปเปิ้ล'},{emoji:'🍌',jp:'バナナ',thai:'กล้วย'},
+    {emoji:'🍚',jp:'ごはん',thai:'ข้าว'},{emoji:'🍜',jp:'ラーメン',thai:'ราเม็ง'},
+    {emoji:'🍰',jp:'ケーキ',thai:'เค้ก'},{emoji:'🍦',jp:'アイスクリーム',thai:'ไอศกรีม'},
+    {emoji:'🥚',jp:'たまご',thai:'ไข่'},{emoji:'🍞',jp:'パン',thai:'ขนมปัง'},
+    {emoji:'🥛',jp:'ぎゅうにゅう',thai:'นม'},{emoji:'🍇',jp:'ぶどう',thai:'องุ่น'},
+    {emoji:'🍓',jp:'いちご',thai:'สตรอว์เบอร์รี่'},{emoji:'🥕',jp:'にんじん',thai:'แครอท'},
+    {emoji:'🍊',jp:'みかん',thai:'ส้ม'},{emoji:'🍉',jp:'すいか',thai:'แตงโม'},
+    {emoji:'🍙',jp:'おにぎり',thai:'ข้าวปั้น'},{emoji:'🍫',jp:'チョコレート',thai:'ช็อกโกแลต'},
+    // 追加
+    {emoji:'🍛',jp:'カレー',thai:'แกงกะหรี่'},{emoji:'🍲',jp:'おなべ',thai:'หม้อไฟ'},
+    {emoji:'🍝',jp:'スパゲッティ',thai:'สปาเก็ตตี้'},{emoji:'🍕',jp:'ピザ',thai:'พิซซ่า'},
+    {emoji:'🌽',jp:'とうもろこし',thai:'ข้าวโพด'},{emoji:'🥒',jp:'きゅうり',thai:'แตงกวา'},
+    {emoji:'🍠',jp:'さつまいも',thai:'มันเทศ'},{emoji:'🧈',jp:'バター',thai:'เนย'},
+    {emoji:'🧀',jp:'チーズ',thai:'ชีส'},{emoji:'🍔',jp:'ハンバーガー',thai:'แฮมเบอร์เกอร์'},
+    {emoji:'🍟',jp:'フライドポテト',thai:'เฟรนช์ฟรายส์'},{emoji:'🌭',jp:'ホットドッグ',thai:'ฮอทดอก'},
+    {emoji:'🥗',jp:'サラダ',thai:'สลัด'},{emoji:'🍩',jp:'ドーナツ',thai:'โดนัท'},
+    {emoji:'🍪',jp:'クッキー',thai:'คุกกี้'},{emoji:'🍡',jp:'おだんご',thai:'ดังโงะ'},
+    {emoji:'🥞',jp:'ホットケーキ',thai:'แพนเค้ก'},{emoji:'🍿',jp:'ポップコーン',thai:'ป๊อปคอร์น'},
+    {emoji:'🧃',jp:'ジュース',thai:'น้ำผลไม้'},{emoji:'🍵',jp:'おちゃ',thai:'ชา'},
+    {emoji:'🥤',jp:'のみもの',thai:'เครื่องดื่ม'},
+    {emoji:'🥟',jp:'ぎょうざ',thai:'เกี๊ยว'},{emoji:'🍤',jp:'エビフライ',thai:'กุ้งทอด'},
+    {emoji:'🍣',jp:'おすし',thai:'ซูชิ'},{emoji:'🥐',jp:'クロワッサン',thai:'ครัวซองต์'},
+    {emoji:'🥜',jp:'まめ',thai:'ถั่ว'},{emoji:'🥦',jp:'ブロッコリー',thai:'บร็อคโคลี่'},
+    {emoji:'🍑',jp:'もも',thai:'ลูกท้อ'},{emoji:'🥭',jp:'マンゴー',thai:'มะม่วง'},
+  ],
+
+  numbers: [
+    {emoji:'1️⃣',jp:'いち',thai:'หนึ่ง (1)'},{emoji:'2️⃣',jp:'に',thai:'สอง (2)'},
+    {emoji:'3️⃣',jp:'さん',thai:'สาม (3)'},{emoji:'4️⃣',jp:'よん',thai:'สี่ (4)'},
+    {emoji:'5️⃣',jp:'ご',thai:'ห้า (5)'},{emoji:'6️⃣',jp:'ろく',thai:'หก (6)'},
+    {emoji:'7️⃣',jp:'なな',thai:'เจ็ด (7)'},{emoji:'8️⃣',jp:'はち',thai:'แปด (8)'},
+    {emoji:'9️⃣',jp:'きゅう',thai:'เก้า (9)'},{emoji:'🔟',jp:'じゅう',thai:'สิบ (10)'},
+    {emoji:'🔴',jp:'あか',thai:'สีแดง'},{emoji:'🔵',jp:'あお',thai:'สีน้ำเงิน'},
+    {emoji:'🟡',jp:'きいろ',thai:'สีเหลือง'},{emoji:'🟢',jp:'みどり',thai:'สีเขียว'},
+    {emoji:'⚫',jp:'くろ',thai:'สีดำ'},{emoji:'⚪',jp:'しろ',thai:'สีขาว'},
+    {emoji:'🟠',jp:'オレンジ',thai:'สีส้ม'},{emoji:'🟣',jp:'むらさき',thai:'สีม่วง'},
+    {emoji:'🩷',jp:'ピンク',thai:'สีชมพู'},{emoji:'🟤',jp:'ちゃいろ',thai:'สีน้ำตาล'},
+    {emoji:'💙',jp:'みずいろ',thai:'สีฟ้าอ่อน'},{emoji:'💛',jp:'きんいろ',thai:'สีทอง'},
+    {emoji:'🔘',jp:'はいいろ',thai:'สีเทา'},
+  ],
+
+  shapes: [
+    {emoji:'⭕',jp:'まる',thai:'วงกลม'},{emoji:'🔺',jp:'さんかく',thai:'สามเหลี่ยม'},
+    {emoji:'🟦',jp:'しかく',thai:'สี่เหลี่ยม'},{emoji:'⭐',jp:'ほし',thai:'ดาว'},
+    {emoji:'💎',jp:'ダイヤ',thai:'เพชร'},{emoji:'💗',jp:'ハート',thai:'หัวใจ'},
+    {emoji:'🌙',jp:'つき（みかづき）',thai:'พระจันทร์เสี้ยว'},
+    {emoji:'➕',jp:'プラス',thai:'บวก'},{emoji:'⬬',jp:'だえん',thai:'วงรี'},
+    {emoji:'🔷',jp:'ひしがた',thai:'สี่เหลี่ยมขนมเปียกปูน'},
+    // サイズ
+    {emoji:'🐘',jp:'おおきい',thai:'ใหญ่'},{emoji:'🐜',jp:'ちいさい',thai:'เล็ก'},
+    {emoji:'📏',jp:'ながい',thai:'ยาว'},{emoji:'🔴',jp:'みじかい',thai:'สั้น'},
+  ],
+
+  greetings: [
+    {emoji:'🌅',jp:'おはよう',thai:'อรุณสวัสดิ์'},{emoji:'🌞',jp:'こんにちは',thai:'สวัสดีตอนกลางวัน'},
+    {emoji:'🌙',jp:'おやすみ',thai:'ราตรีสวัสดิ์'},{emoji:'🙏',jp:'ありがとう',thai:'ขอบคุณ'},
+    {emoji:'😄',jp:'はい',thai:'ใช่ / ครับ / ค่ะ'},{emoji:'🍽️',jp:'いただきます',thai:'ขอบคุณสำหรับอาหาร'},
+    {emoji:'✋',jp:'バイバイ',thai:'บ๊ายบาย'},{emoji:'💪',jp:'がんばれ',thai:'สู้ๆ'},
+    {emoji:'😋',jp:'おいしい',thai:'อร่อย'},{emoji:'💕',jp:'だいすき',thai:'รักมากๆ'},
+    {emoji:'😢',jp:'いやだ',thai:'ไม่ชอบ'},{emoji:'🥰',jp:'かわいい',thai:'น่ารัก'},
+    {emoji:'😮',jp:'すごい',thai:'เก่งมาก'},{emoji:'🤝',jp:'いっしょに',thai:'ไปด้วยกัน'},
+    {emoji:'😊',jp:'うれしい',thai:'ดีใจ'},{emoji:'👍',jp:'いいね',thai:'ดีมาก'},
+    // 追加
+    {emoji:'🙇',jp:'ごめんね',thai:'ขอโทษ'},{emoji:'🤗',jp:'おかえり',thai:'กลับมาแล้ว'},
+    {emoji:'🏠',jp:'ただいま',thai:'กลับถึงบ้านแล้ว'},{emoji:'🍱',jp:'ごちそうさま',thai:'อิ่มแล้ว'},
+    {emoji:'🚪',jp:'いってきます',thai:'ไปแล้วนะ'},{emoji:'👋',jp:'いってらっしゃい',thai:'เดินทางปลอดภัยนะ'},
+    {emoji:'🌸',jp:'おめでとう',thai:'ยินดีด้วย'},{emoji:'🤕',jp:'だいじょうぶ？',thai:'ไม่เป็นไรนะ?'},
+    {emoji:'🤞',jp:'おねがい',thai:'ช่วยด้วย / ขอร้อง'},{emoji:'🙂',jp:'どういたしまして',thai:'ไม่เป็นไร'},
+  ],
+
+  phrases: [
+    {emoji:'🍌',jp:'バナナ、ちょうだい！',thai:'ขอกล้วยหน่อย'},
+    {emoji:'🚽',jp:'トイレ、いきたい！',thai:'อยากไปห้องน้ำ'},
+    {emoji:'😴',jp:'ねむい〜',thai:'ง่วงนอน'},
+    {emoji:'🍽️',jp:'おなか、すいた！',thai:'หิวข้าวแล้ว'},
+    {emoji:'🤗',jp:'だっこして！',thai:'อยากให้อุ้ม'},
+    {emoji:'🎵',jp:'うた、うたって！',thai:'ร้องเพลงให้ฟัง'},
+    {emoji:'🌟',jp:'みて！ みて！',thai:'ดูๆ ดูๆ'},
+    {emoji:'📚',jp:'えほん、よんで！',thai:'อ่านหนังสือให้ฟัง'},
+    {emoji:'🍬',jp:'おかし、たべたい！',thai:'อยากกินขนม'},
+    {emoji:'🤣',jp:'もっかい！',thai:'อีกรอบ'},
+    {emoji:'❤️',jp:'だいすき、パパ！',thai:'รักพ่อมากๆ'},
+    {emoji:'🌙',jp:'おやすみ、また あした！',thai:'ราตรี พบกันพรุ่งนี้'},
+    {emoji:'🥺',jp:'いたい〜',thai:'เจ็บ'},
+    {emoji:'😊',jp:'たのしい！',thai:'สนุกมาก'},
+    {emoji:'🛁',jp:'おふろ、はいる！',thai:'อาบน้ำแล้ว'},
+    {emoji:'👕',jp:'きがえたい！',thai:'อยากเปลี่ยนเสื้อผ้า'},
+    {emoji:'🌡️',jp:'あつい〜',thai:'ร้อนจัง'},
+    {emoji:'🥶',jp:'さむい〜',thai:'หนาวจัง'},
+    {emoji:'💧',jp:'みず、ちょうだい！',thai:'ขอน้ำหน่อย'},
+    {emoji:'🎒',jp:'いこう！',thai:'ไปกันเถอะ'},
+    {emoji:'😭',jp:'やだ！ やだ！',thai:'ไม่เอา ไม่เอา'},
+    {emoji:'🤝',jp:'いっしょに あそぼ！',thai:'เล่นด้วยกันนะ'},
+    {emoji:'🐾',jp:'ワンワン、みたい！',thai:'อยากดูหมา'},
+    {emoji:'📺',jp:'テレビ、みたい！',thai:'อยากดูทีวี'},
+    // 大幅追加
+    {emoji:'💦',jp:'おしっこ！',thai:'ฉี่'},
+    {emoji:'💩',jp:'うんち！',thai:'อึ'},
+    {emoji:'😫',jp:'のど、かわいた！',thai:'คอแห้ง'},
+    {emoji:'🏞️',jp:'おそと、いきたい！',thai:'อยากออกไปข้างนอก'},
+    {emoji:'👉',jp:'あっち いきたい！',thai:'อยากไปทางนั้น'},
+    {emoji:'❓',jp:'なに これ？',thai:'นี่อะไร?'},
+    {emoji:'📍',jp:'どこ？',thai:'อยู่ไหน?'},
+    {emoji:'👤',jp:'だれ？',thai:'ใคร?'},
+    {emoji:'🤔',jp:'なんで？',thai:'ทำไม?'},
+    {emoji:'🙋',jp:'やりたい！',thai:'อยากทำ'},
+    {emoji:'🚫',jp:'やめて！',thai:'หยุดนะ'},
+    {emoji:'😤',jp:'ぼくの！わたしの！',thai:'ของหนู!'},
+    {emoji:'🤲',jp:'かして！',thai:'ขอยืมหน่อย'},
+    {emoji:'↩️',jp:'かえして！',thai:'คืนมา'},
+    {emoji:'🙏',jp:'ごめんなさい',thai:'ขอโทษ'},
+    {emoji:'😖',jp:'できない〜',thai:'ทำไม่ได้'},
+    {emoji:'💪',jp:'できた！',thai:'ทำได้แล้ว!'},
+    {emoji:'🆘',jp:'たすけて！',thai:'ช่วยด้วย'},
+    {emoji:'👆',jp:'あれ、なに？',thai:'นั่นอะไร?'},
+    {emoji:'🤢',jp:'きもちわるい〜',thai:'ไม่สบาย'},
+    {emoji:'😰',jp:'こわい〜',thai:'กลัว'},
+    {emoji:'🥱',jp:'つかれた〜',thai:'เหนื่อยแล้ว'},
+    {emoji:'👩',jp:'ママ、きて！',thai:'แม่มาหน่อย'},
+    {emoji:'👨',jp:'パパ、みて！',thai:'พ่อดูหน่อย'},
+    {emoji:'🍭',jp:'もっと ちょうだい！',thai:'ขออีกหน่อย'},
+    {emoji:'💕',jp:'ぎゅーして！',thai:'กอดหน่อย'},
+    {emoji:'🎮',jp:'あそびたい！',thai:'อยากเล่น'},
+    {emoji:'🐶',jp:'いぬ、さわりたい！',thai:'อยากจับหมา'},
+    {emoji:'🎂',jp:'おたんじょうび おめでとう！',thai:'สุขสันต์วันเกิด'},
+  ],
+
+  body: [
+    {emoji:'🙂',jp:'かお',thai:'หน้า'},{emoji:'👁️',jp:'め',thai:'ตา'},
+    {emoji:'👃',jp:'はな',thai:'จมูก'},{emoji:'👄',jp:'くち',thai:'ปาก'},
+    {emoji:'👂',jp:'みみ',thai:'หู'},{emoji:'🦷',jp:'は',thai:'ฟัน'},
+    {emoji:'💇',jp:'かみ',thai:'ผม'},{emoji:'💪',jp:'うで',thai:'แขน'},
+    {emoji:'✋',jp:'て',thai:'มือ'},{emoji:'☝️',jp:'ゆび',thai:'นิ้ว'},
+    {emoji:'🦵',jp:'あし',thai:'ขา'},{emoji:'🦶',jp:'あしのうら',thai:'ฝ่าเท้า'},
+    {emoji:'🤰',jp:'おなか',thai:'ท้อง'},{emoji:'🧒',jp:'あたま',thai:'หัว'},
+    {emoji:'👤',jp:'せなか',thai:'หลัง'},{emoji:'🧍',jp:'からだ',thai:'ร่างกาย'},
+    // 追加
+    {emoji:'👅',jp:'した',thai:'ลิ้น'},{emoji:'👚',jp:'むね',thai:'หน้าอก'},
+    {emoji:'🦴',jp:'ほね',thai:'กระดูก'},{emoji:'🧠',jp:'あたまのなか',thai:'สมอง'},
+    {emoji:'❤️',jp:'しんぞう',thai:'หัวใจ'},{emoji:'👣',jp:'あしあと',thai:'รอยเท้า'},
+    {emoji:'💅',jp:'つめ',thai:'เล็บ'},{emoji:'🤦',jp:'おでこ',thai:'หน้าผาก'},
+    {emoji:'🦻',jp:'ほっぺ',thai:'แก้ม'},{emoji:'🖐️',jp:'てのひら',thai:'ฝ่ามือ'},
+    {emoji:'🧎',jp:'ひざ',thai:'หัวเข่า'},{emoji:'🦿',jp:'かかと',thai:'ส้นเท้า'},
+    {emoji:'💄',jp:'くちびる',thai:'ริมฝีปาก'},{emoji:'👁️‍🗨️',jp:'まゆげ',thai:'คิ้ว'},
+    {emoji:'✊',jp:'ひじ',thai:'ข้อศอก'},
+  ],
+
+  feelings: [
+    {emoji:'😊',jp:'うれしい',thai:'ดีใจ'},{emoji:'😢',jp:'かなしい',thai:'เศร้า'},
+    {emoji:'😠',jp:'おこった',thai:'โกรธ'},{emoji:'😨',jp:'こわい',thai:'กลัว'},
+    {emoji:'😄',jp:'たのしい',thai:'สนุก'},{emoji:'😴',jp:'ねむい',thai:'ง่วงนอน'},
+    {emoji:'🤒',jp:'いたい',thai:'เจ็บ'},{emoji:'🥱',jp:'つかれた',thai:'เหนื่อย'},
+    {emoji:'😋',jp:'おいしい',thai:'อร่อย'},{emoji:'🤢',jp:'きもちわるい',thai:'คลื่นไส้'},
+    {emoji:'🥰',jp:'だいすき',thai:'รักมากๆ'},{emoji:'😮',jp:'びっくり',thai:'ตกใจ'},
+    {emoji:'😌',jp:'きもちいい',thai:'รู้สึกดี'},{emoji:'😑',jp:'つまらない',thai:'น่าเบื่อ'},
+    {emoji:'🎉',jp:'たのしみ',thai:'ตื่นเต้น'},{emoji:'😭',jp:'なきたい',thai:'อยากร้องไห้'},
+    // 追加
+    {emoji:'😤',jp:'いらいら',thai:'หงุดหงิด'},{emoji:'🥺',jp:'さみしい',thai:'เหงา'},
+    {emoji:'😳',jp:'はずかしい',thai:'อาย'},{emoji:'🤩',jp:'わくわく',thai:'ตื่นเต้นมาก'},
+    {emoji:'😶',jp:'しずか',thai:'เงียบ'},{emoji:'🥵',jp:'あつい',thai:'ร้อน'},
+    {emoji:'🥶',jp:'さむい',thai:'หนาว'},{emoji:'😇',jp:'やさしい',thai:'ใจดี'},
+    {emoji:'💪',jp:'つよい',thai:'แข็งแรง'},{emoji:'😖',jp:'くやしい',thai:'เสียใจ'},
+  ],
+
+  vehicles: [
+    {emoji:'🚗',jp:'くるま',thai:'รถยนต์',sound:'ブーン！'},
+    {emoji:'🚌',jp:'バス',thai:'รถบัส'},{emoji:'🚂',jp:'でんしゃ',thai:'รถไฟ',sound:'ガタンゴトン！'},
+    {emoji:'✈️',jp:'ひこうき',thai:'เครื่องบิน',sound:'ブーン！'},
+    {emoji:'🚲',jp:'じてんしゃ',thai:'จักรยาน',sound:'リンリン！'},
+    {emoji:'🚕',jp:'タクシー',thai:'แท็กซี่'},
+    {emoji:'🚒',jp:'しょうぼうしゃ',thai:'รถดับเพลิง',sound:'ウーウー！'},
+    {emoji:'🚑',jp:'きゅうきゅうしゃ',thai:'รถพยาบาล',sound:'ピーポーピーポー！'},
+    {emoji:'🚓',jp:'パトカー',thai:'รถตำรวจ',sound:'ウーウー！'},
+    {emoji:'🚁',jp:'ヘリコプター',thai:'เฮลิคอปเตอร์',sound:'バラバラバラ！'},
+    {emoji:'🚢',jp:'ふね',thai:'เรือ',sound:'ボー！'},
+    {emoji:'🏍️',jp:'バイク',thai:'มอเตอร์ไซค์'},
+    {emoji:'🚜',jp:'トラクター',thai:'รถแทรกเตอร์'},
+    {emoji:'🚛',jp:'トラック',thai:'รถบรรทุก'},
+    {emoji:'🛵',jp:'スクーター',thai:'สกู๊ตเตอร์'},
+    {emoji:'🚀',jp:'ロケット',thai:'จรวด',sound:'ゴゴゴゴー！'},
+    // 追加
+    {emoji:'🛺',jp:'トゥクトゥク',thai:'ตุ๊กตุ๊ก'},
+    {emoji:'🚇',jp:'ちかてつ',thai:'รถไฟใต้ดิน'},
+    {emoji:'⛵',jp:'ヨット',thai:'เรือใบ'},
+    {emoji:'🛶',jp:'カヌー',thai:'เรือแคนู'},
+    {emoji:'🚎',jp:'ロープウェイ',thai:'กระเช้าลอยฟ้า'},
+    {emoji:'🏎️',jp:'レーシングカー',thai:'รถแข่ง',sound:'キキーッ！'},
+    {emoji:'🛸',jp:'UFO',thai:'ยูเอฟโอ'},
+    {emoji:'🚐',jp:'バン',thai:'รถตู้'},
+    {emoji:'🛻',jp:'ピックアップトラック',thai:'รถกระบะ'},
+  ],
+
+  family: [
+    {emoji:'👨',jp:'パパ',thai:'พ่อ'},{emoji:'👩',jp:'ママ',thai:'แม่'},
+    {emoji:'👴',jp:'じいじ',thai:'ปู่ / ตา'},{emoji:'👵',jp:'ばあば',thai:'ย่า / ยาย'},
+    {emoji:'👦',jp:'おにいちゃん',thai:'พี่ชาย'},{emoji:'👧',jp:'おねえちゃん',thai:'พี่สาว'},
+    {emoji:'👶',jp:'あかちゃん',thai:'ทารก'},{emoji:'🧒',jp:'こども',thai:'เด็ก'},
+    {emoji:'👨‍👩‍👦',jp:'かぞく',thai:'ครอบครัว'},{emoji:'👨‍🍳',jp:'おじさん',thai:'ลุง'},
+    {emoji:'👩‍🦳',jp:'おばさん',thai:'ป้า'},{emoji:'🐕',jp:'ワンワン',thai:'หมา'},
+    // 追加
+    {emoji:'👫',jp:'ともだち',thai:'เพื่อน'},{emoji:'👩‍🏫',jp:'せんせい',thai:'ครู'},
+    {emoji:'👮',jp:'おまわりさん',thai:'ตำรวจ'},{emoji:'👨‍⚕️',jp:'おいしゃさん',thai:'หมอ'},
+    {emoji:'🧑‍🍳',jp:'コックさん',thai:'พ่อครัว'},{emoji:'🤴',jp:'おうじさま',thai:'เจ้าชาย'},
+    {emoji:'👸',jp:'おひめさま',thai:'เจ้าหญิง'},{emoji:'🦸',jp:'ヒーロー',thai:'ฮีโร่'},
+    {emoji:'🧑‍🚒',jp:'しょうぼうし',thai:'นักดับเพลิง'},{emoji:'👷',jp:'こうじのひと',thai:'คนงาน'},
+  ],
+
+  house: [
+    {emoji:'🚪',jp:'ドア',thai:'ประตู'},{emoji:'🖼️',jp:'まど',thai:'หน้าต่าง'},
+    {emoji:'🪑',jp:'いす',thai:'เก้าอี้'},{emoji:'🛋️',jp:'ソファ',thai:'โซฟา'},
+    {emoji:'🍽️',jp:'テーブル',thai:'โต๊ะ'},{emoji:'📺',jp:'テレビ',thai:'ทีวี'},
+    {emoji:'🛏️',jp:'ベッド',thai:'เตียง'},{emoji:'🚽',jp:'トイレ',thai:'ห้องน้ำ'},
+    {emoji:'🛁',jp:'おふろ',thai:'อ่างอาบน้ำ'},{emoji:'🦷',jp:'はぶらし',thai:'แปรงสีฟัน'},
+    {emoji:'🧼',jp:'せっけん',thai:'สบู่'},{emoji:'🏠',jp:'おうち',thai:'บ้าน'},
+    {emoji:'🔑',jp:'かぎ',thai:'กุญแจ'},{emoji:'💡',jp:'でんき',thai:'ไฟ'},
+    {emoji:'❄️',jp:'エアコン',thai:'แอร์'},{emoji:'📱',jp:'スマホ',thai:'โทรศัพท์'},
+    {emoji:'🖥️',jp:'パソコン',thai:'คอมพิวเตอร์'},{emoji:'⏰',jp:'とけい',thai:'นาฬิกา'},
+    {emoji:'👀',jp:'かがみ',thai:'กระจก'},{emoji:'🧹',jp:'ほうき',thai:'ไม้กวาด'},
+    {emoji:'🗑️',jp:'ゴミばこ',thai:'ถังขยะ'},{emoji:'🧸',jp:'まくら',thai:'หมอน'},
+    {emoji:'⬆️',jp:'エレベーター',thai:'ลิฟท์'},{emoji:'🔼',jp:'はしご',thai:'บันได'},
+    {emoji:'🍳',jp:'フライパン',thai:'กระทะ'},{emoji:'🥣',jp:'おわん',thai:'ชาม'},
+    {emoji:'🥄',jp:'スプーン',thai:'ช้อน'},{emoji:'🍴',jp:'フォーク',thai:'ส้อม'},
+    {emoji:'🥢',jp:'おはし',thai:'ตะเกียบ'},{emoji:'🧊',jp:'れいぞうこ',thai:'ตู้เย็น'},
+  ],
+
+  toys: [
+    {emoji:'⚽',jp:'サッカーボール',thai:'ลูกฟุตบอล'},
+    {emoji:'🏀',jp:'バスケットボール',thai:'ลูกบาสเกตบอล'},
+    {emoji:'🧸',jp:'ぬいぐるみ',thai:'ตุ๊กตา'},
+    {emoji:'🎨',jp:'おえかき',thai:'วาดรูป'},
+    {emoji:'🖍️',jp:'クレヨン',thai:'สีเทียน'},
+    {emoji:'✂️',jp:'はさみ',thai:'กรรไกร'},
+    {emoji:'📐',jp:'つみき',thai:'บล็อกตัวต่อ'},
+    {emoji:'🎈',jp:'ふうせん',thai:'ลูกโป่ง'},
+    {emoji:'🎏',jp:'たこ',thai:'ว่าว'},
+    {emoji:'🎪',jp:'サーカス',thai:'ละครสัตว์'},
+    {emoji:'🎠',jp:'メリーゴーランド',thai:'ม้าหมุน'},
+    {emoji:'🎢',jp:'すべりだい',thai:'สไลเดอร์'},
+    {emoji:'🎡',jp:'かんらんしゃ',thai:'ชิงช้าสวรรค์'},
+    {emoji:'🧩',jp:'パズル',thai:'จิ๊กซอว์'},
+    {emoji:'🎲',jp:'サイコロ',thai:'ลูกเต๋า'},
+    {emoji:'🎯',jp:'ヨーヨー',thai:'โยโย่'},
+    {emoji:'🏖️',jp:'すなあそび',thai:'เล่นทราย'},
+    {emoji:'🎹',jp:'ピアノ',thai:'เปียโน'},
+    {emoji:'🥁',jp:'たいこ',thai:'กลอง'},
+    {emoji:'🎸',jp:'ギター',thai:'กีตาร์'},
+    {emoji:'📷',jp:'カメラ',thai:'กล้องถ่ายรูป'},
+    {emoji:'🔭',jp:'ぼうえんきょう',thai:'กล้องส่องทางไกล'},
+    {emoji:'🔮',jp:'まほうのつえ',thai:'ไม้กายสิทธิ์'},
+    {emoji:'🤖',jp:'ロボット',thai:'หุ่นยนต์'},
+  ],
+
+  clothes: [
+    {emoji:'👕',jp:'Tシャツ',thai:'เสื้อยืด'},
+    {emoji:'👖',jp:'ズボン',thai:'กางเกง'},
+    {emoji:'👗',jp:'ワンピース',thai:'เดรส'},
+    {emoji:'🧦',jp:'くつした',thai:'ถุงเท้า'},
+    {emoji:'👟',jp:'くつ',thai:'รองเท้า'},
+    {emoji:'👡',jp:'サンダル',thai:'รองเท้าแตะ'},
+    {emoji:'🧢',jp:'ぼうし',thai:'หมวก'},
+    {emoji:'🎒',jp:'リュック',thai:'เป้'},
+    {emoji:'👜',jp:'かばん',thai:'กระเป๋า'},
+    {emoji:'🧥',jp:'ジャケット',thai:'เสื้อแจ็คเก็ต'},
+    {emoji:'🩲',jp:'パンツ',thai:'กางเกงใน'},
+    {emoji:'🩱',jp:'みずぎ',thai:'ชุดว่ายน้ำ'},
+    {emoji:'👓',jp:'めがね',thai:'แว่นตา'},
+    {emoji:'🧤',jp:'てぶくろ',thai:'ถุงมือ'},
+    {emoji:'🧣',jp:'マフラー',thai:'ผ้าพันคอ'},
+    {emoji:'☂️',jp:'かさ',thai:'ร่ม'},
+    {emoji:'⌚',jp:'とけい',thai:'นาฬิกา'},
+    {emoji:'💍',jp:'ゆびわ',thai:'แหวน'},
+    {emoji:'👑',jp:'おうかん',thai:'มงกุฎ'},
+    {emoji:'🎀',jp:'リボン',thai:'โบว์'},
+    {emoji:'👶',jp:'おむつ',thai:'ผ้าอ้อม'},
+    {emoji:'💆',jp:'ブラシ',thai:'แปรง'},
+    {emoji:'🧴',jp:'ハンドクリーム',thai:'โลชั่น'},
+    {emoji:'🏊',jp:'うきわ',thai:'ห่วงยาง'},
+  ],
+
+  weather: [
+    {emoji:'☀️',jp:'はれ',thai:'อากาศแจ่มใส'},{emoji:'🌧️',jp:'あめ',thai:'ฝน'},
+    {emoji:'⛅',jp:'くもり',thai:'มีเมฆ'},{emoji:'⛈️',jp:'かみなり',thai:'ฟ้าผ่า'},
+    {emoji:'🌈',jp:'にじ',thai:'รุ้ง'},{emoji:'💨',jp:'かぜ',thai:'ลม'},
+    {emoji:'🌊',jp:'なみ',thai:'คลื่น'},{emoji:'🌙',jp:'つき',thai:'ดวงจันทร์'},
+    {emoji:'⭐',jp:'ほし',thai:'ดาว'},{emoji:'🌅',jp:'そら',thai:'ท้องฟ้า'},
+    {emoji:'🌡️',jp:'あつい',thai:'ร้อน'},{emoji:'❄️',jp:'さむい',thai:'หนาว'},
+    {emoji:'🌳',jp:'き',thai:'ต้นไม้'},{emoji:'🌺',jp:'はな',thai:'ดอกไม้'},
+    {emoji:'🌿',jp:'くさ',thai:'หญ้า'},{emoji:'🌏',jp:'そと',thai:'ข้างนอก'},
+    // 追加
+    {emoji:'☁️',jp:'くも',thai:'เมฆ'},{emoji:'🌤️',jp:'はれくもり',thai:'แดดมีเมฆ'},
+    {emoji:'🌪️',jp:'たつまき',thai:'พายุทอร์นาโด'},{emoji:'🌫️',jp:'きり',thai:'หมอก'},
+    {emoji:'🌄',jp:'あさひ',thai:'พระอาทิตย์ขึ้น'},{emoji:'🌇',jp:'ゆうやけ',thai:'พระอาทิตย์ตก'},
+    {emoji:'🌾',jp:'たんぼ',thai:'นาข้าว'},{emoji:'🏔️',jp:'やま',thai:'ภูเขา'},
+    {emoji:'🏝️',jp:'しま',thai:'เกาะ'},{emoji:'🌋',jp:'かざん',thai:'ภูเขาไฟ'},
+    {emoji:'🏜️',jp:'さばく',thai:'ทะเลทราย'},{emoji:'🌲',jp:'もり',thai:'ป่า'},
+  ],
+
+  actions: [
+    {emoji:'🍽️',jp:'たべる',thai:'กิน'},{emoji:'🥤',jp:'のむ',thai:'ดื่ม'},
+    {emoji:'😴',jp:'ねる',thai:'นอน'},{emoji:'🏃',jp:'はしる',thai:'วิ่ง'},
+    {emoji:'🚶',jp:'あるく',thai:'เดิน'},{emoji:'🎮',jp:'あそぶ',thai:'เล่น'},
+    {emoji:'📖',jp:'よむ',thai:'อ่าน'},{emoji:'✏️',jp:'かく',thai:'เขียน'},
+    {emoji:'👀',jp:'みる',thai:'ดู'},{emoji:'👂',jp:'きく',thai:'ฟัง'},
+    {emoji:'🗣️',jp:'はなす',thai:'พูด'},{emoji:'🛁',jp:'あらう',thai:'ล้าง'},
+    {emoji:'👕',jp:'きる',thai:'ใส่เสื้อ'},{emoji:'🍳',jp:'つくる',thai:'ทำ / ทำอาหาร'},
+    {emoji:'🤗',jp:'だっこ',thai:'อุ้ม'},{emoji:'✋',jp:'とまれ',thai:'หยุด'},
+    // 追加
+    {emoji:'🎤',jp:'うたう',thai:'ร้องเพลง'},{emoji:'💃',jp:'おどる',thai:'เต้น'},
+    {emoji:'🏊',jp:'およぐ',thai:'ว่ายน้ำ'},{emoji:'🧗',jp:'のぼる',thai:'ปีน'},
+    {emoji:'⬇️',jp:'おりる',thai:'ลง'},{emoji:'🤸',jp:'ジャンプ',thai:'กระโดด'},
+    {emoji:'👏',jp:'たたく',thai:'ตบมือ'},{emoji:'🫧',jp:'ふく',thai:'เป่า'},
+    {emoji:'🎁',jp:'あげる',thai:'ให้'},{emoji:'🤲',jp:'もらう',thai:'รับ'},
+    {emoji:'🧹',jp:'そうじ',thai:'ทำความสะอาด'},{emoji:'💤',jp:'おきる',thai:'ตื่น'},
+    {emoji:'🚿',jp:'シャワー',thai:'อาบน้ำ'},{emoji:'😊',jp:'わらう',thai:'หัวเราะ'},
+    {emoji:'😭',jp:'なく',thai:'ร้องไห้'},{emoji:'🤫',jp:'しーっ',thai:'เงียบ'},
+    {emoji:'🫡',jp:'ならぶ',thai:'เข้าแถว'},{emoji:'🙌',jp:'もつ',thai:'ถือ'},
+  ],
+
+  hiragana: [
+    {emoji:'🌧️',jp:'あ',thai:'อา • あめ(ฝน)'},{emoji:'🐶',jp:'い',thai:'อิ • いぬ(หมา)'},
+    {emoji:'🐄',jp:'う',thai:'อุ • うし(วัว)'},{emoji:'✏️',jp:'え',thai:'เอ • えんぴつ(ดินสอ)'},
+    {emoji:'🔵',jp:'お',thai:'โอ • おお(ใหญ่)'},
+    {emoji:'🐸',jp:'か',thai:'คา • かえる(กบ)'},{emoji:'🌳',jp:'き',thai:'คิ • き(ต้นไม้)'},
+    {emoji:'🚗',jp:'く',thai:'คุ • くるま(รถ)'},{emoji:'🩹',jp:'け',thai:'เค • けが(บาดเจ็บ)'},
+    {emoji:'🐻',jp:'こ',thai:'โค • こぐま(ลูกหมี)'},
+    {emoji:'🐟',jp:'さ',thai:'ซา • さかな(ปลา)'},{emoji:'🦁',jp:'し',thai:'ชิ • しし(สิงห์)'},
+    {emoji:'🍉',jp:'す',thai:'ซุ • すいか(แตงโม)'},{emoji:'👤',jp:'せ',thai:'เซ • せなか(หลัง)'},
+    {emoji:'🌌',jp:'そ',thai:'โซ • そら(ท้องฟ้า)'},
+    {emoji:'🥚',jp:'た',thai:'ทา • たまご(ไข่)'},{emoji:'🌍',jp:'ち',thai:'ชิ • ちきゅう(โลก)'},
+    {emoji:'🌙',jp:'つ',thai:'ซึ • つき(ดวงจันทร์)'},{emoji:'✋',jp:'て',thai:'เท • て(มือ)'},
+    {emoji:'🐯',jp:'と',thai:'โท • とら(เสือ)'},
+    {emoji:'🍆',jp:'な',thai:'นา • なす(มะเขือ)'},{emoji:'🌈',jp:'に',thai:'นิ • にじ(รุ้ง)'},
+    {emoji:'🧸',jp:'ぬ',thai:'นุ • ぬいぐるみ(ตุ๊กตา)'},{emoji:'🐱',jp:'ね',thai:'เน • ねこ(แมว)'},
+    {emoji:'🥤',jp:'の',thai:'โน • のみもの(เครื่องดื่ม)'},
+    {emoji:'🌸',jp:'は',thai:'ฮา • はな(ดอกไม้)'},{emoji:'✈️',jp:'ひ',thai:'ฮิ • ひこうき(เครื่องบิน)'},
+    {emoji:'🚢',jp:'ふ',thai:'ฟุ • ふね(เรือ)'},{emoji:'🐍',jp:'へ',thai:'เฮ • へび(งู)'},
+    {emoji:'⭐',jp:'ほ',thai:'โฮ • ほし(ดาว)'},
+    {emoji:'⭕',jp:'ま',thai:'มา • まる(วงกลม)'},{emoji:'👂',jp:'み',thai:'มิ • みみ(หู)'},
+    {emoji:'🐛',jp:'む',thai:'มุ • むし(แมลง)'},{emoji:'👁️',jp:'め',thai:'เม • め(ตา)'},
+    {emoji:'🍑',jp:'も',thai:'โม • もも(ลูกท้อ)'},
+    {emoji:'🏹',jp:'や',thai:'ยา • やじるし(ลูกศร)'},
+    {emoji:'❄️',jp:'ゆ',thai:'ยุ • ゆき(หิมะ)'},
+    {emoji:'🌃',jp:'よ',thai:'โย • よる(กลางคืน)'},
+    {emoji:'🍜',jp:'ら',thai:'รา • ラーメン(ราเม็ง)'},{emoji:'🍎',jp:'り',thai:'ริ • りんご(แอปเปิ้ล)'},
+    {emoji:'🐉',jp:'る',thai:'รุ • りゅう(มังกร)'},{emoji:'🔴',jp:'れ',thai:'เร • れんが(อิฐ)'},
+    {emoji:'🤖',jp:'ろ',thai:'โร • ロボット(หุ่นยนต์)'},
+    {emoji:'🐊',jp:'わ',thai:'วา • わに(จระเข้)'},
+    {emoji:'🍬',jp:'を',thai:'โว • (grammar particle)'},
+    {emoji:'🔔',jp:'ん',thai:'น • おんがく(ดนตรี)'},
+  ],
+};
+
+// =========================================================
+//  HIRAGANA ROW GROUPS
+// =========================================================
+const hiraRows=[
+  {name:'あ行',thai:'อ',chars:['あ','い','う','え','お']},
+  {name:'か行',thai:'ค',chars:['か','き','く','け','こ']},
+  {name:'さ行',thai:'ซ',chars:['さ','し','す','せ','そ']},
+  {name:'た行',thai:'ท',chars:['た','ち','つ','て','と']},
+  {name:'な行',thai:'น',chars:['な','に','ぬ','ね','の']},
+  {name:'は行',thai:'ฮ',chars:['は','ひ','ふ','へ','ほ']},
+  {name:'ま行',thai:'ม',chars:['ま','み','む','め','も']},
+  {name:'や行',thai:'ย',chars:['や','ゆ','よ']},
+  {name:'ら行',thai:'ร',chars:['ら','り','る','れ','ろ']},
+  {name:'わ行',thai:'ว',chars:['わ','を','ん']},
+];
+let currentHiraRow='all';
+
+function renderHiraTabs(){
+  const container=document.getElementById('hiraTabs');
+  container.innerHTML='';
+  // ぜんぶ tab
+  const allTab=document.createElement('button');
+  allTab.className='hira-tab'+(currentHiraRow==='all'?' active':'');
+  allTab.innerHTML='ぜんぶ<span class="hira-tab-thai">ทั้งหมด</span>';
+  allTab.addEventListener('click',()=>{currentHiraRow='all';renderHiraTabs();renderCards();});
+  container.appendChild(allTab);
+  // Row tabs
+  hiraRows.forEach(row=>{
+    const tab=document.createElement('button');
+    tab.className='hira-tab'+(currentHiraRow===row.name?' active':'');
+    tab.innerHTML=`${row.name}<span class="hira-tab-thai">${row.thai}</span>`;
+    tab.addEventListener('click',()=>{currentHiraRow=row.name;renderHiraTabs();renderCards();});
+    container.appendChild(tab);
+  });
+}
+
+function getHiraItems(){
+  if(currentHiraRow==='all')return data.hiragana;
+  const row=hiraRows.find(r=>r.name===currentHiraRow);
+  if(!row)return data.hiragana;
+  return data.hiragana.filter(item=>row.chars.includes(item.jp));
+}
+
+// =========================================================
+//  FLOATING BUBBLES
+// =========================================================
+function createBubbles(){
+  const c=document.getElementById('bubblesBg');
+  const colors=['#ff6b6b','#ffa94d','#51cf66','#339af0','#cc5de8','#ffd43b','#20c997','#f06595'];
+  for(let i=0;i<12;i++){
+    const b=document.createElement('div');b.className='bubble';
+    const size=30+Math.random()*60;
+    b.style.width=size+'px';b.style.height=size+'px';
+    b.style.left=Math.random()*100+'%';
+    b.style.background=colors[Math.floor(Math.random()*colors.length)];
+    b.style.animationDuration=(12+Math.random()*18)+'s';
+    b.style.animationDelay=(Math.random()*15)+'s';
+    c.appendChild(b);
+  }
+}
+createBubbles();
+
+// =========================================================
+//  MASCOT
+// =========================================================
+const mascotMsgs=['がんばれ〜！','いいね！','すごいよ！','たのしい？','もういっかい！','やってみよう！','にほんご だいすき！','เก่งมาก！','สู้ๆ นะ！'];
+let mascotTimeout;
+function mascotTap(){
+  const sp=document.getElementById('mascotSpeech');
+  const msg=mascotMsgs[Math.floor(Math.random()*mascotMsgs.length)];
+  sp.textContent=msg;sp.classList.add('show');speak(msg);
+  clearTimeout(mascotTimeout);
+  mascotTimeout=setTimeout(()=>sp.classList.remove('show'),2500);
+}
+
+// =========================================================
+//  TTS
+// =========================================================
+const synth=window.speechSynthesis;
+let selectedVoice=null;
+function loadVoices(){
+  const v=synth.getVoices();if(!v.length)return;
+  const pri=[v=>v.lang.startsWith('ja')&&/Google/.test(v.name),v=>v.lang.startsWith('ja')&&/Microsoft/.test(v.name),v=>v.lang==='ja-JP',v=>v.lang.startsWith('ja')];
+  for(const t of pri){const f=v.find(t);if(f){selectedVoice=f;break;}}
+}
+synth.addEventListener('voiceschanged',loadVoices);loadVoices();
+
+function speak(text,rate=0.72,pitch=1.25){
+  synth.cancel();
+  setTimeout(()=>{
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='ja-JP';u.rate=rate;u.pitch=pitch;u.volume=1.0;
+    if(selectedVoice)u.voice=selectedVoice;
+    const sw=document.getElementById('soundWave');
+    sw.classList.add('active');
+    u.onend=()=>sw.classList.remove('active');
+    u.onerror=()=>sw.classList.remove('active');
+    synth.speak(u);
+  },50);
+}
+
+// Speak with callback when done
+function speakWithCallback(text,rate,pitch,cb){
+  synth.cancel();
+  setTimeout(()=>{
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='ja-JP';u.rate=rate||0.72;u.pitch=pitch||1.25;u.volume=1.0;
+    if(selectedVoice)u.voice=selectedVoice;
+    const sw=document.getElementById('soundWave');
+    sw.classList.add('active');
+    u.onend=()=>{sw.classList.remove('active');if(cb)cb();};
+    u.onerror=()=>{sw.classList.remove('active');if(cb)cb();};
+    synth.speak(u);
+  },50);
+}
+
+// =========================================================
+//  ANIMAL / VEHICLE SOUND EFFECTS
+// =========================================================
+function speakAnimalSound(item){
+  if(!item.sound)return;
+  setTimeout(()=>{
+    speak(item.sound,0.9,1.4);
+  },1200);
+}
+
+// =========================================================
+//  SPARKLE PARTICLES
+// =========================================================
+function spawnSparkles(card){
+  const c=card.querySelector('.sparkle-container');if(!c)return;c.innerHTML='';
+  const sp=['✨','⭐','💫','🌟','💛','🧡','💚','💜'];
+  for(let i=0;i<8;i++){
+    const s=document.createElement('div');s.className='sparkle';
+    s.textContent=sp[Math.floor(Math.random()*sp.length)];
+    const angle=(Math.PI*2/8)*i+(Math.random()*0.5);
+    const dist=50+Math.random()*40;
+    s.style.left='50%';s.style.top='50%';
+    s.style.setProperty('--sx',Math.cos(angle)*dist+'px');
+    s.style.setProperty('--sy',Math.sin(angle)*dist+'px');
+    s.style.setProperty('--sr',(Math.random()*360)+'deg');
+    s.style.animationDelay=(Math.random()*0.15)+'s';
+    c.appendChild(s);setTimeout(()=>s.remove(),1000);
+  }
+}
+
+// =========================================================
+//  STATE
+// =========================================================
+let currentCat='animals',currentMode='cards';
+let quizItems=[],quizIndex=0,quizAnswered=false;
+let quizCorrect=0,quizTotal=0;
+let quizChoiceCount=2;
+let autoplayTimer=null,autoplayIndex=0,autoplayItems=[];
+let autoplayRepeat=false,autoplayIsSecondPass=false;
+let tapCount=0;
+let recMode=false;
+
+function setCategory(cat,btn){
+  currentCat=cat;
+  document.querySelectorAll('.cat-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  // Show/hide hiragana row tabs
+  const hiraTabs=document.getElementById('hiraTabs');
+  if(cat==='hiragana'){
+    hiraTabs.style.display='flex';
+    renderHiraTabs();
+  }else{
+    hiraTabs.style.display='none';
+  }
+  if(currentMode==='cards')renderCards();
+  else if(currentMode==='quiz')startQuiz();
+  else if(currentMode==='memory')startMemory();
+}
+
+function setMode(mode,btn){
+  currentMode=mode;
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  document.getElementById('cardsSection').style.display='none';
+  document.getElementById('quizSection').classList.remove('active');
+  document.getElementById('memorySection').classList.remove('active');
+  if(mode==='cards'){
+    document.getElementById('cardsSection').style.display='block';
+    renderCards();
+  }else if(mode==='quiz'){
+    document.getElementById('quizSection').classList.add('active');
+    startQuiz();
+  }else if(mode==='memory'){
+    document.getElementById('memorySection').classList.add('active');
+    startMemory();
+  }else if(mode==='counting'){
+    startCounting();
+  }
+}
+
+function setQuizDiff(n){
+  quizChoiceCount=n;
+  document.getElementById('quizDiff2').classList.toggle('active',n===2);
+  document.getElementById('quizDiff4').classList.toggle('active',n===4);
+  startQuiz();
+}
+
+// =========================================================
+//  CARDS
+// =========================================================
+function renderCards(){
+  const grid=document.getElementById('cardsGrid');grid.innerHTML='';
+  grid.className=currentCat==='hiragana'?'cards-grid hiragana-grid':'cards-grid';
+  data[currentCat].forEach((item,idx)=>{
+    const card=document.createElement('div');card.className='word-card';
+    card.dataset.cat=currentCat;
+    card.innerHTML=`
+      <span class="card-emoji">${item.emoji}</span>
+      <div class="card-japanese">${item.jp}</div>
+      <div class="card-thai">${item.thai}</div>
+      ${item.sound?'<div class="card-sound-badge">🔊</div>':''}
+      <div class="sparkle-container"></div>
+      <div class="sound-ripple"></div>
+    `;
+    card.addEventListener('click',()=>tapCard(card,item));
+    grid.appendChild(card);
+  });
+}
+
+function tapCard(card,item){
+  // Recording mode
+  if(recMode){
+    recordVoice(card,item);
+    return;
+  }
+  // Play recorded voice or TTS
+  playVoiceOrTTS(item);
+  if(item.sound)speakAnimalSound(item);
+
+  card.classList.remove('playing');void card.offsetWidth;card.classList.add('playing');
+  const ripple=card.querySelector('.sound-ripple');
+  ripple.classList.remove('animate');void ripple.offsetWidth;ripple.classList.add('animate');
+  spawnSparkles(card);
+  setTimeout(()=>card.classList.remove('playing'),700);
+
+  // Sticker every 5 taps
+  tapCount++;
+  if(tapCount%5===0)earnSticker();
+}
+
+// =========================================================
+//  QUIZ
+// =========================================================
+function shuffle(arr){return[...arr].sort(()=>Math.random()-0.5)}
+
+function getActiveItems(){
+  if(currentCat==='hiragana')return getHiraItems();
+  return data[currentCat];
+}
+function startQuiz(){
+  quizItems=shuffle(getActiveItems());
+  quizIndex=0;quizAnswered=false;quizCorrect=0;quizTotal=0;
+  document.getElementById('quizNext').classList.remove('show');
+  updateQuizScore();showQuizCard();
+}
+
+function updateQuizScore(){
+  const el=document.getElementById('quizScore');
+  if(quizTotal===0){el.innerHTML='';return;}
+  el.innerHTML=`<div class="stars">${'⭐'.repeat(quizCorrect)}${'☆'.repeat(quizTotal-quizCorrect)}</div>`;
+}
+
+function showQuizCard(){
+  if(quizIndex>=quizItems.length){quizItems=shuffle(quizItems);quizIndex=0;}
+  const correct=quizItems[quizIndex];
+  let pool=getActiveItems().filter(i=>i.jp!==correct.jp);
+  // If not enough items in current set, supplement from full category
+  if(pool.length<quizChoiceCount-1){
+    const extra=data[currentCat].filter(i=>i.jp!==correct.jp&&!pool.find(p=>p.jp===i.jp));
+    pool=[...pool,...shuffle(extra)];
+  }
+  const wrongCount=quizChoiceCount-1;
+  const choices=shuffle([correct,...shuffle(pool).slice(0,wrongCount)]);
+
+  document.getElementById('quizEmoji').textContent=correct.emoji;
+  const isPhrase=currentCat==='phrases';
+  const ft=document.getElementById('quizFullText');
+  ft.style.display=isPhrase?'block':'none';
+  if(isPhrase)ft.textContent=correct.jp;
+
+  document.getElementById('quizPrompt').textContent=isPhrase?'なんていうの？':`「${correct.jp}」はどれ？`;
+  document.getElementById('quizPromptThai').textContent=isPhrase?'พูดว่าอะไรนะ?':`"${correct.jp}" คือตัวไหน?`;
+
+  const ch=document.getElementById('quizChoices');ch.innerHTML='';quizAnswered=false;
+  ch.className=quizChoiceCount===2?'quiz-choices two-choices':'quiz-choices';
+  document.getElementById('quizNext').classList.remove('show');
+  setTimeout(()=>speak(correct.jp),500);
+
+  choices.forEach(item=>{
+    const btn=document.createElement('div');btn.className='quiz-choice';
+    btn.innerHTML=`<span class="choice-emoji">${item.emoji}</span><span class="choice-text">${item.jp}</span>`;
+    btn.addEventListener('click',()=>{
+      if(quizAnswered)return;quizAnswered=true;quizTotal++;
+      speak(item.jp);
+      if(item.jp===correct.jp){
+        quizCorrect++;btn.classList.add('correct');celebrate();earnSticker();
+        if(item.sound)speakAnimalSound(item);
+        setTimeout(()=>document.getElementById('quizNext').classList.add('show'),800);
+      }else{
+        btn.classList.add('wrong');
+        ch.querySelectorAll('.quiz-choice').forEach(b=>{
+          if(b.querySelector('.choice-text').textContent===correct.jp)b.classList.add('correct');
+        });
+        setTimeout(()=>document.getElementById('quizNext').classList.add('show'),1000);
+      }
+      updateQuizScore();
+    });
+    ch.appendChild(btn);
+  });
+}
+
+function nextQuiz(){quizIndex++;showQuizCard();}
+
+// =========================================================
+//  CELEBRATION
+// =========================================================
+function celebrate(){
+  const container=document.getElementById('confettiContainer');container.innerHTML='';
+  const colors=['#ff6b6b','#ffa94d','#ffd43b','#51cf66','#339af0','#cc5de8','#f06595','#20c997'];
+  for(let i=0;i<55;i++){
+    const p=document.createElement('div');p.className='confetti-piece';
+    p.style.left=Math.random()*100+'vw';
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDuration=(1.2+Math.random()*2)+'s';
+    p.style.animationDelay=Math.random()*0.5+'s';
+    p.style.borderRadius=Math.random()>0.5?'50%':'3px';
+    p.style.width=(8+Math.random()*10)+'px';p.style.height=(8+Math.random()*10)+'px';
+    container.appendChild(p);setTimeout(()=>p.remove(),4000);
+  }
+  const msgs=['すごい！','やったね！','えらい！','かんぺき！','さいこう！','ばっちり！','てんさい！'];
+  const stars=['⭐','🌟','💫','✨','🎉','🥳','🏆','💖'];
+  const cel=document.getElementById('celebration');
+  cel.querySelector('.celebration-text').textContent=msgs[Math.floor(Math.random()*msgs.length)];
+  cel.querySelector('.celebration-emoji').textContent=stars[Math.floor(Math.random()*stars.length)];
+
+  const sc=document.getElementById('celStars');sc.innerHTML='';
+  const se=['⭐','🌟','💫','✨','🎊','🎉'];
+  for(let i=0;i<12;i++){
+    const s=document.createElement('div');s.className='cel-star';
+    s.textContent=se[Math.floor(Math.random()*se.length)];
+    s.style.left='50%';s.style.top='50%';
+    const angle=(Math.PI*2/12)*i;const dist=80+Math.random()*120;
+    s.style.setProperty('--cx',Math.cos(angle)*dist+'px');
+    s.style.setProperty('--cy',Math.sin(angle)*dist+'px');
+    s.style.animationDelay=(Math.random()*0.3)+'s';sc.appendChild(s);
+  }
+  cel.classList.add('show');cel.style.display='flex';
+  const pv=msgs[Math.floor(Math.random()*msgs.length)];
+  setTimeout(()=>speak(pv),300);
+  setTimeout(()=>{cel.classList.remove('show');cel.style.display='none';},1600);
+}
+
+// =========================================================
+//  AUTOPLAY (with repeat mode)
+// =========================================================
+function startAutoplay(repeat){
+  autoplayRepeat=repeat;
+  autoplayIsSecondPass=false;
+  autoplayItems=shuffle(getActiveItems());
+  autoplayIndex=0;
+  document.getElementById('autoplayOverlay').classList.add('active');
+  document.getElementById('autoplayRepeatLabel').classList.remove('show');
+
+  const sp=document.getElementById('autoplaySparkles');sp.innerHTML='';
+  const se=['✨','⭐','💫','🌟','🎵','🎶'];
+  for(let i=0;i<8;i++){
+    const s=document.createElement('div');s.className='autoplay-sparkle';
+    s.textContent=se[Math.floor(Math.random()*se.length)];
+    s.style.left=(10+Math.random()*80)+'%';s.style.top=(10+Math.random()*80)+'%';
+    s.style.animationDelay=(Math.random()*3)+'s';s.style.animationDuration=(2+Math.random()*2)+'s';
+    sp.appendChild(s);
+  }
+  showAutoplayCard();
+}
+
+function showAutoplayCard(){
+  if(autoplayIndex>=autoplayItems.length){
+    stopAutoplay();celebrate();return;
+  }
+  const item=autoplayItems[autoplayIndex];
+  const baseDuration=autoplayRepeat?4500:3500;
+  const repeatDelay=2000; // extra time for second read
+
+  document.getElementById('autoplayCounter').textContent=`${autoplayIndex+1} / ${autoplayItems.length}`;
+
+  const emojiEl=document.getElementById('autoplayEmoji');
+  const textEl=document.getElementById('autoplayText');
+  const thaiEl=document.getElementById('autoplayThai');
+  const progressEl=document.getElementById('autoplayProgress');
+  const repeatLabel=document.getElementById('autoplayRepeatLabel');
+
+  emojiEl.textContent=item.emoji;
+  emojiEl.style.animation='none';void emojiEl.offsetWidth;
+  emojiEl.style.animation='autoplay-bounce 0.8s cubic-bezier(0.34,1.56,0.64,1)';
+
+  textEl.textContent=item.jp;
+  textEl.style.animation='none';void textEl.offsetWidth;
+  textEl.style.animation='autoplay-text-in 0.5s 0.3s ease both';
+
+  thaiEl.textContent=item.thai;
+  thaiEl.style.animation='none';void thaiEl.offsetWidth;
+  thaiEl.style.animation='autoplay-text-in 0.5s 0.5s ease both';
+
+  repeatLabel.classList.remove('show');
+
+  const totalDuration=autoplayRepeat?baseDuration+repeatDelay:baseDuration;
+  progressEl.style.setProperty('--autoplay-duration',totalDuration+'ms');
+  progressEl.style.animation='none';void progressEl.offsetWidth;
+  progressEl.style.animation=`progress-bar ${totalDuration}ms linear`;
+
+  // First read: slow
+  setTimeout(()=>speak(item.jp,0.65,1.25),600);
+
+  if(autoplayRepeat){
+    // Second read: normal speed after a pause
+    setTimeout(()=>{
+      repeatLabel.classList.add('show');
+      speak(item.jp,0.85,1.2);
+    },baseDuration);
+  }
+
+  clearTimeout(autoplayTimer);
+  autoplayTimer=setTimeout(()=>{
+    autoplayIndex++;
+    showAutoplayCard();
+  },totalDuration);
+}
+
+function stopAutoplay(){
+  clearTimeout(autoplayTimer);
+  document.getElementById('autoplayOverlay').classList.remove('active');
+  synth.cancel();
+}
+
+document.getElementById('autoplayOverlay').addEventListener('click',(e)=>{
+  if(e.target.closest('.autoplay-close'))return;
+  if(autoplayItems[autoplayIndex]){
+    speak(autoplayItems[autoplayIndex].jp);
+    const el=document.getElementById('autoplayEmoji');
+    el.style.animation='none';void el.offsetWidth;
+    el.style.animation='autoplay-bounce 0.8s cubic-bezier(0.34,1.56,0.64,1)';
+  }
+});
+
+// =========================================================
+//  ROUTINE MODE
+// =========================================================
+const routines={
+  morning:[
+    {emoji:'🌅',jp:'おはよう',thai:'อรุณสวัสดิ์'},
+    {emoji:'🙂',jp:'かお あらう',thai:'ล้างหน้า'},
+    {emoji:'🦷',jp:'はみがき',thai:'แปรงฟัน'},
+    {emoji:'🍚',jp:'ごはん',thai:'ข้าว'},
+    {emoji:'🥛',jp:'ぎゅうにゅう',thai:'นม'},
+    {emoji:'👕',jp:'きがえ',thai:'เปลี่ยนเสื้อผ้า'},
+    {emoji:'👟',jp:'くつ',thai:'รองเท้า'},
+    {emoji:'🎒',jp:'リュック',thai:'เป้'},
+    {emoji:'🚪',jp:'いってきます',thai:'ไปแล้วนะ'},
+    {emoji:'💕',jp:'いってらっしゃい',thai:'ไปดีๆ นะ'}
+  ],
+  evening:[
+    {emoji:'🏠',jp:'ただいま',thai:'กลับถึงบ้านแล้ว'},
+    {emoji:'🤗',jp:'おかえり',thai:'กลับมาแล้ว'},
+    {emoji:'👕',jp:'きがえ',thai:'เปลี่ยนเสื้อผ้า'},
+    {emoji:'🛁',jp:'おふろ',thai:'อาบน้ำ'},
+    {emoji:'🍚',jp:'ごはん',thai:'ข้าว'},
+    {emoji:'🦷',jp:'はみがき',thai:'แปรงฟัน'},
+    {emoji:'📚',jp:'えほん',thai:'หนังสือนิทาน'},
+    {emoji:'🛏️',jp:'ベッド',thai:'เตียง'},
+    {emoji:'🌙',jp:'おやすみ',thai:'ราตรีสวัสดิ์'},
+    {emoji:'💕',jp:'だいすき',thai:'รักมากๆ'}
+  ]
+};
+let isRoutineMode=false;
+function startRoutine(time){
+  isRoutineMode=true;
+  autoplayRepeat=true;
+  autoplayIsSecondPass=false;
+  autoplayItems=routines[time];
+  autoplayIndex=0;
+  document.getElementById('autoplayOverlay').classList.add('active');
+  document.getElementById('autoplayRepeatLabel').classList.remove('show');
+  const sp=document.getElementById('autoplaySparkles');sp.innerHTML='';
+  const se=['✨','⭐','💫','🌟','🎵','🎶'];
+  for(let i=0;i<8;i++){
+    const s=document.createElement('div');s.className='autoplay-sparkle';
+    s.textContent=se[Math.floor(Math.random()*se.length)];
+    s.style.left=(10+Math.random()*80)+'%';s.style.top=(10+Math.random()*80)+'%';
+    s.style.animationDelay=(Math.random()*3)+'s';s.style.animationDuration=(2+Math.random()*2)+'s';
+    sp.appendChild(s);
+  }
+  showAutoplayCard();
+}
+// Patch stopAutoplay to award stickers for routine
+const _origStopAutoplay=stopAutoplay;
+stopAutoplay=function(){
+  if(isRoutineMode&&autoplayIndex>=autoplayItems.length){
+    earnSticker();earnSticker();
+  }
+  isRoutineMode=false;
+  _origStopAutoplay();
+};
+
+// =========================================================
+//  MEMORY GAME
+// =========================================================
+let memCards=[],memRevealed=[],memMatched=0,memLocked=false;
+function startMemory(){
+  const pool=shuffle(getActiveItems()).slice(0,3);
+  const pairs=shuffle([...pool,...pool.map(p=>({...p}))]);
+  memCards=pairs;memRevealed=[];memMatched=0;memLocked=false;
+  const grid=document.getElementById('memoryGrid');grid.innerHTML='';
+  document.getElementById('memoryStatus').textContent=`のこり ${3-memMatched} ペア`;
+  pairs.forEach((item,i)=>{
+    const card=document.createElement('div');
+    card.className='memory-card face-down';
+    card.dataset.idx=i;
+    card.innerHTML=`<span class="mem-emoji">❓</span><span class="mem-text"></span>`;
+    card.addEventListener('click',()=>flipMemCard(card,i));
+    grid.appendChild(card);
+  });
+}
+function flipMemCard(card,idx){
+  if(memLocked)return;
+  if(card.classList.contains('matched'))return;
+  if(memRevealed.find(r=>r.idx===idx))return;
+  const item=memCards[idx];
+  card.classList.remove('face-down');
+  card.classList.add('revealed');
+  card.querySelector('.mem-emoji').textContent=item.emoji;
+  card.querySelector('.mem-text').textContent=item.jp;
+  playVoiceOrTTS(item);
+  memRevealed.push({idx,item,card});
+  if(memRevealed.length===2){
+    memLocked=true;
+    const[a,b]=memRevealed;
+    if(a.item.jp===b.item.jp){
+      setTimeout(()=>{
+        a.card.classList.add('matched');
+        b.card.classList.add('matched');
+        memMatched++;
+        document.getElementById('memoryStatus').textContent=`のこり ${3-memMatched} ペア`;
+        memRevealed=[];memLocked=false;
+        if(memMatched===3){
+          celebrate();earnSticker();earnSticker();
+          document.getElementById('memoryStatus').textContent='🎉 かんせい！';
+        }
+      },500);
+    }else{
+      setTimeout(()=>{
+        a.card.classList.add('face-down');
+        a.card.classList.remove('revealed');
+        a.card.querySelector('.mem-emoji').textContent='❓';
+        a.card.querySelector('.mem-text').textContent='';
+        b.card.classList.add('face-down');
+        b.card.classList.remove('revealed');
+        b.card.querySelector('.mem-emoji').textContent='❓';
+        b.card.querySelector('.mem-text').textContent='';
+        memRevealed=[];memLocked=false;
+      },1200);
+    }
+  }
+}
+
+// =========================================================
+//  COUNTING GAME
+// =========================================================
+let countTapped=0,countTotal=0,countRound=0,countMaxRounds=5;
+function startCounting(){
+  countRound=0;
+  document.getElementById('countingOverlay').classList.add('active');
+  nextCountRound();
+}
+function nextCountRound(){
+  countRound++;
+  if(countRound>countMaxRounds){
+    stopCounting();celebrate();earnSticker();
+    return;
+  }
+  countTotal=1+Math.floor(Math.random()*5);
+  countTapped=0;
+  const pool=shuffle(getActiveItems());
+  const chosen=pool[0];
+  document.getElementById('countingCounter').textContent=`${countRound} / ${countMaxRounds}`;
+  document.getElementById('countingPrompt').textContent='タップして かぞえよう！';
+  const result=document.getElementById('countingResult');
+  result.classList.remove('show');result.textContent='';
+  const area=document.getElementById('countingArea');area.innerHTML='';
+  for(let i=0;i<countTotal;i++){
+    const el=document.createElement('div');
+    el.className='counting-item';
+    el.textContent=chosen.emoji;
+    el.addEventListener('click',()=>tapCountItem(el));
+    area.appendChild(el);
+  }
+}
+const countWords=['','いち','に','さん','よん','ご'];
+function tapCountItem(el){
+  if(el.classList.contains('counted'))return;
+  countTapped++;
+  el.classList.add('counted');
+  speak(countWords[countTapped],0.75,1.3);
+  if(countTapped===countTotal){
+    setTimeout(()=>{
+      const result=document.getElementById('countingResult');
+      const msg=`ぜんぶで ${countWords[countTotal]}！`;
+      result.textContent=msg;result.classList.add('show');
+      speak(msg,0.7,1.25);
+      earnSticker();
+      setTimeout(()=>nextCountRound(),2500);
+    },800);
+  }
+}
+function stopCounting(){
+  document.getElementById('countingOverlay').classList.remove('active');
+}
+
+// =========================================================
+//  STICKER SYSTEM
+// =========================================================
+const stickerPool=['🌟','⭐','💫','✨','🌸','🌺','🌻','🦋','🌈','🍀','🎀','🎵','💖','🧸','🎠','🍭','🍬','🧁','👑','💎','🦄','🐣','🌞','🪁','🫧','🎨','🎶','💝','🔮','🪄'];
+let stickerData={count:0,stickers:[]};
+function loadStickers(){
+  try{
+    const s=localStorage.getItem('nihongo_stickers');
+    if(s)stickerData=JSON.parse(s);
+  }catch(e){}
+  updateStickerUI();
+}
+function saveStickers(){
+  try{localStorage.setItem('nihongo_stickers',JSON.stringify(stickerData));}catch(e){}
+}
+function updateStickerUI(){
+  document.getElementById('stickerCountLabel').textContent=stickerData.count;
+  document.getElementById('stickerSubtitle').textContent=`${stickerData.count}こ あつめたよ！`;
+}
+function earnSticker(){
+  const s=stickerPool[Math.floor(Math.random()*stickerPool.length)];
+  stickerData.stickers.push(s);
+  stickerData.count++;
+  saveStickers();updateStickerUI();
+  // Show earned animation
+  const el=document.createElement('div');
+  el.className='sticker-earned';
+  el.innerHTML=`<span class="sticker-earned-emoji">${s}</span><span class="sticker-earned-text">シール ゲット！</span>`;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),2000);
+}
+function toggleStickerBook(){
+  const ov=document.getElementById('stickerOverlay');
+  ov.classList.toggle('active');
+  if(ov.classList.contains('active')){
+    renderStickerGrid();
+  }
+}
+function renderStickerGrid(){
+  const grid=document.getElementById('stickerGrid');grid.innerHTML='';
+  const total=Math.max(stickerData.stickers.length,30);
+  for(let i=0;i<total;i++){
+    const cell=document.createElement('div');
+    if(i<stickerData.stickers.length){
+      cell.className='sticker-cell';
+      cell.textContent=stickerData.stickers[i];
+    }else{
+      cell.className='sticker-cell empty';
+      cell.textContent='?';
+    }
+    grid.appendChild(cell);
+  }
+}
+
+// =========================================================
+//  VOICE RECORDING (IndexedDB + MediaRecorder)
+// =========================================================
+const VoiceDB={
+  db:null,
+  open(){
+    return new Promise((resolve,reject)=>{
+      const req=indexedDB.open('nihongo-voices',1);
+      req.onupgradeneeded=(e)=>{e.target.result.createObjectStore('voices');};
+      req.onsuccess=(e)=>{VoiceDB.db=e.target.result;resolve();};
+      req.onerror=()=>resolve();
+    });
+  },
+  save(key,blob){
+    return new Promise((resolve)=>{
+      if(!VoiceDB.db)return resolve();
+      const tx=VoiceDB.db.transaction('voices','readwrite');
+      tx.objectStore('voices').put(blob,key);
+      tx.oncomplete=resolve;tx.onerror=resolve;
+    });
+  },
+  get(key){
+    return new Promise((resolve)=>{
+      if(!VoiceDB.db)return resolve(null);
+      const tx=VoiceDB.db.transaction('voices','readonly');
+      const req=tx.objectStore('voices').get(key);
+      req.onsuccess=()=>resolve(req.result||null);
+      req.onerror=()=>resolve(null);
+    });
+  },
+  getAllKeys(){
+    return new Promise((resolve)=>{
+      if(!VoiceDB.db)return resolve([]);
+      const tx=VoiceDB.db.transaction('voices','readonly');
+      const req=tx.objectStore('voices').getAllKeys();
+      req.onsuccess=()=>resolve(req.result||[]);
+      req.onerror=()=>resolve([]);
+    });
+  }
+};
+let voiceKeys=new Set();
+
+async function playVoiceOrTTS(item){
+  const key=currentCat+'_'+item.jp;
+  if(voiceKeys.has(key)){
+    const blob=await VoiceDB.get(key);
+    if(blob){
+      const url=URL.createObjectURL(blob);
+      const audio=new Audio(url);
+      const sw=document.getElementById('soundWave');
+      sw.classList.add('active');
+      audio.onended=()=>{sw.classList.remove('active');URL.revokeObjectURL(url);};
+      audio.onerror=()=>{sw.classList.remove('active');URL.revokeObjectURL(url);speak(item.jp);};
+      audio.play().catch(()=>{
+        // iOS may block autoplay, fallback to TTS
+        sw.classList.remove('active');
+        URL.revokeObjectURL(url);
+        speak(item.jp);
+      });
+      return;
+    }
+  }
+  speak(item.jp);
+}
+
+function toggleRecMode(){
+  recMode=!recMode;
+  document.getElementById('recToggle').classList.toggle('rec-active',recMode);
+  document.getElementById('recIndicator').classList.toggle('show',recMode);
+}
+
+async function recordVoice(card,item){
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    // Choose supported MIME type (iOS Safari doesn't support webm)
+    let mimeType='audio/webm';
+    if(typeof MediaRecorder.isTypeSupported==='function'){
+      if(MediaRecorder.isTypeSupported('audio/webm')){mimeType='audio/webm';}
+      else if(MediaRecorder.isTypeSupported('audio/mp4')){mimeType='audio/mp4';}
+      else if(MediaRecorder.isTypeSupported('audio/aac')){mimeType='audio/aac';}
+      else if(MediaRecorder.isTypeSupported('audio/ogg')){mimeType='audio/ogg';}
+      else{mimeType='';}// let browser decide
+    }
+    const recOptions=mimeType?{mimeType}:{};
+    const recorder=new MediaRecorder(stream,recOptions);
+    const chunks=[];
+    recorder.ondataavailable=(e)=>{if(e.data&&e.data.size>0)chunks.push(e.data);};
+    // Show countdown
+    const overlay=document.createElement('div');
+    overlay.className='card-recording-overlay';
+    overlay.textContent='3';
+    card.appendChild(overlay);
+    // Use timeslice to ensure ondataavailable fires on iOS
+    recorder.start(100);
+    let countdown=3;
+    const timer=setInterval(()=>{
+      countdown--;
+      if(countdown>0)overlay.textContent=countdown;
+      else overlay.textContent='🎙️';
+    },1000);
+    setTimeout(()=>{
+      clearInterval(timer);
+      recorder.stop();
+      stream.getTracks().forEach(t=>t.stop());
+    },3000);
+    recorder.onstop=async()=>{
+      overlay.remove();
+      if(chunks.length===0){alert('ろくおんできませんでした');return;}
+      const actualType=chunks[0].type||mimeType||'audio/mp4';
+      const blob=new Blob(chunks,{type:actualType});
+      const key=currentCat+'_'+item.jp;
+      await VoiceDB.save(key,blob);
+      voiceKeys.add(key);
+      renderCards();// re-render to show badge
+      // Play back immediately so user confirms it worked
+      const url=URL.createObjectURL(blob);
+      const audio=new Audio(url);
+      audio.onended=()=>URL.revokeObjectURL(url);
+      audio.play().catch(()=>{});
+    };
+  }catch(e){
+    alert('マイクが使えません。\nブラウザの設定でマイクを許可してください。');
+  }
+}
+
+async function initVoiceDB(){
+  await VoiceDB.open();
+  const keys=await VoiceDB.getAllKeys();
+  voiceKeys=new Set(keys);
+  // Show rec button if supported
+  if(typeof MediaRecorder!=='undefined'&&navigator.mediaDevices){
+    document.getElementById('recToggle').classList.add('supported');
+  }
+}
+
+// =========================================================
+//  PATCH RENDER CARDS FOR REC BADGES
+// =========================================================
+renderCards=function(){
+  const grid=document.getElementById('cardsGrid');grid.innerHTML='';
+  grid.className=currentCat==='hiragana'?'cards-grid hiragana-grid':'cards-grid';
+
+  if(currentCat==='hiragana'){
+    const items=getHiraItems();
+    if(currentHiraRow==='all'){
+      // Show all with row headers
+      hiraRows.forEach(row=>{
+        const rowItems=data.hiragana.filter(item=>row.chars.includes(item.jp));
+        if(rowItems.length===0)return;
+        const header=document.createElement('div');
+        header.className='hira-row-header';
+        header.innerHTML=`${row.name} <span class="hira-header-thai">(${row.thai})</span>`;
+        grid.appendChild(header);
+        rowItems.forEach(item=>grid.appendChild(createWordCard(item)));
+      });
+    }else{
+      items.forEach(item=>grid.appendChild(createWordCard(item)));
+    }
+  }else{
+    data[currentCat].forEach(item=>grid.appendChild(createWordCard(item)));
+  }
+};
+
+function createWordCard(item){
+  const card=document.createElement('div');card.className='word-card';
+  card.dataset.cat=currentCat;
+  const hasRec=voiceKeys.has(currentCat+'_'+item.jp);
+  card.innerHTML=`
+    <span class="card-emoji">${item.emoji}</span>
+    <div class="card-japanese">${item.jp}</div>
+    <div class="card-thai">${item.thai}</div>
+    ${item.sound?'<div class="card-sound-badge">🔊</div>':''}
+    ${hasRec?'<div class="card-rec-badge">🎙️</div>':''}
+    <div class="sparkle-container"></div>
+    <div class="sound-ripple"></div>
+  `;
+  card.addEventListener('click',()=>tapCard(card,item));
+  return card;
+}
+
+// =========================================================
+//  INIT
+// =========================================================
+loadStickers();
+initVoiceDB();
+renderCards();
+</script>
+</body>
+</html>
