@@ -395,6 +395,38 @@
   .song-speed-toggle:active {
     transform: translateX(-50%) scale(0.92);
   }
+
+  /* ============ SONG VISUALS ============ */
+  .song-visuals {
+    display: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    min-height: clamp(5rem, 20vw, 7.5rem);
+    max-width: 90vw;
+    margin: 0 auto;
+  }
+  .song-visuals.active {
+    display: flex;
+  }
+  .song-visual-item {
+    font-size: clamp(2.5rem, 10vw, 4.5rem);
+    animation: visualPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+  }
+  .song-visual-item.hiragana {
+    font-size: clamp(3.5rem, 14vw, 6rem);
+    font-weight: 900;
+    color: #ff6b6b;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+    font-family: sans-serif;
+  }
+  @keyframes visualPop {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); }
+  }
 </style>
 </head>
 <body>
@@ -459,6 +491,7 @@
   <div class="song-counter" id="songCounter">1 / 6</div>
   <button class="song-close" onclick="stopSong()">✕</button>
   <span class="song-main-emoji" id="songMainEmoji">⭐</span>
+  <div class="song-visuals" id="songVisuals"></div>
   <div class="song-title-label" id="songTitleLabel">きらきらぼし</div>
   <div class="song-lyric-jp" id="songLyricJp"></div>
   <div class="song-lyric-thai" id="songLyricThai"></div>
@@ -1711,17 +1744,23 @@ const songs = [
     category: null,
     lyrics: [
       {jp:'きらきら ひかる',     thai:'แวววาว ส่องแสง',       duration:3200,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'⭐',delay:0},{text:'✨',delay:700},{text:'⭐',delay:1400},{text:'✨',delay:2100}]},
       {jp:'おそらの ほしよ',     thai:'ดาวบนท้องฟ้า',         duration:3200,
-        notes:[{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}],
+        visuals:[{text:'🌌',delay:0},{text:'⭐',delay:1500}]},
       {jp:'まばたき しては',     thai:'กะพริบ กะพริบ',        duration:3200,
-        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}],
+        visuals:[{text:'⭐',delay:0},{text:'💫',delay:1200}]},
       {jp:'みんなを みてる',     thai:'มองดู ทุกคน',          duration:3200,
-        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}],
+        visuals:[{text:'👦',delay:0},{text:'👧',delay:800},{text:'⭐',delay:1600}]},
       {jp:'きらきら ひかる',     thai:'แวววาว ส่องแสง',       duration:3200,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'⭐',delay:0},{text:'✨',delay:700},{text:'⭐',delay:1400},{text:'✨',delay:2100}]},
       {jp:'おそらの ほしよ',     thai:'ดาวบนท้องฟ้า',         duration:3200,
-        notes:[{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}],
+        visuals:[{text:'🌙',delay:0},{text:'⭐',delay:800},{text:'⭐',delay:1600}]},
     ],
   },
   {
@@ -1732,19 +1771,26 @@ const songs = [
     category: 'actions',
     lyrics: [
       {jp:'むすんで ひらいて',   thai:'กำ แล้วแบ',            duration:3000,
-        notes:[{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350}]},
+        notes:[{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350}],
+        visuals:[{text:'✊',delay:0},{text:'✋',delay:1400}]},
       {jp:'てを うって むすんで',thai:'ตบมือ แล้วกำ',         duration:3200,
-        notes:[{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ['F#4'],duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ['F#4'],duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ['F#4'],duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ['F#4'],duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}],
+        visuals:[{text:'👏',delay:0},{text:'✊',delay:1500}]},
       {jp:'また ひらいて',      thai:'แบ อีกครั้ง',          duration:2800,
-        notes:[{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:700}],
+        visuals:[{text:'✋',delay:0}]},
       {jp:'てを うって',        thai:'ตบมือ',                duration:2200,
-        notes:[{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ['F#4'],duration:400},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ['F#4'],duration:400},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'👏',delay:0}]},
       {jp:'その てを うえに',   thai:'ยกมือ ขึ้นสูง',        duration:3000,
-        notes:[{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ['F#4'],duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ['F#4'],duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}],
+        visuals:[{text:'🙌',delay:0}]},
       {jp:'むすんで ひらいて',   thai:'กำ แล้วแบ',            duration:3000,
-        notes:[{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350}]},
+        notes:[{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350}],
+        visuals:[{text:'✊',delay:0},{text:'✋',delay:1400}]},
       {jp:'てを うって むすんで',thai:'ตบมือ แล้วกำ',         duration:3200,
-        notes:[{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ['F#4'],duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ['F#4'],duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ['F#4'],duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ['F#4'],duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}],
+        visuals:[{text:'👏',delay:0},{text:'✊',delay:1500}]},
     ],
   },
   {
@@ -1755,19 +1801,26 @@ const songs = [
     category: 'body',
     lyrics: [
       {jp:'あたま かた ひざ ポン',thai:'หัว ไหล่ เข่า ป๊อก', duration:3200,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'🧒',delay:0},{text:'💪',delay:800},{text:'🦵',delay:1600},{text:'👋',delay:2400}]},
       {jp:'ひざ ポン',            thai:'เข่า ป๊อก',           duration:2000,
-        notes:[{freq:NOTE_FREQ.F4,duration:600},{freq:NOTE_FREQ.E4,duration:900}]},
+        notes:[{freq:NOTE_FREQ.F4,duration:600},{freq:NOTE_FREQ.E4,duration:900}],
+        visuals:[{text:'🦵',delay:0},{text:'👋',delay:700}]},
       {jp:'あたま かた ひざ ポン',thai:'หัว ไหล่ เข่า ป๊อก', duration:3200,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'🧒',delay:0},{text:'💪',delay:800},{text:'🦵',delay:1600},{text:'👋',delay:2400}]},
       {jp:'ひざ ポン',            thai:'เข่า ป๊อก',           duration:2000,
-        notes:[{freq:NOTE_FREQ.F4,duration:600},{freq:NOTE_FREQ.E4,duration:900}]},
+        notes:[{freq:NOTE_FREQ.F4,duration:600},{freq:NOTE_FREQ.E4,duration:900}],
+        visuals:[{text:'🦵',delay:0},{text:'👋',delay:700}]},
       {jp:'め、みみ、はな、くち', thai:'ตา หู จมูก ปาก',      duration:3000,
-        notes:[{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.A4,duration:400},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.A4,duration:400},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'👁️',delay:0},{text:'👂',delay:600},{text:'👃',delay:1200},{text:'👄',delay:1800}]},
       {jp:'あたま かた ひざ ポン',thai:'หัว ไหล่ เข่า ป๊อก', duration:3200,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'🧒',delay:0},{text:'💪',delay:800},{text:'🦵',delay:1600},{text:'👋',delay:2400}]},
       {jp:'ひざ ポン',            thai:'เข่า ป๊อก',           duration:2000,
-        notes:[{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}],
+        visuals:[{text:'🦵',delay:0},{text:'👋',delay:700}]},
     ],
   },
   {
@@ -1778,17 +1831,23 @@ const songs = [
     category: 'animals',
     lyrics: [
       {jp:'かえるの うたが',      thai:'เพลงของ กบ',           duration:2800,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}],
+        visuals:[{text:'🐸',delay:0}]},
       {jp:'きこえて くるよ',      thai:'ได้ยิน มาแล้ว',        duration:2800,
-        notes:[{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:700}],
+        visuals:[{text:'👂',delay:0},{text:'🎵',delay:1000}]},
       {jp:'ゲロ ゲロ ゲロ ゲロ',  thai:'เกโระ เกโระ เกโระ เกโระ',duration:3000,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350}],
+        visuals:[{text:'🐸',delay:0},{text:'🐸',delay:700},{text:'🐸',delay:1400},{text:'🐸',delay:2100}]},
       {jp:'ゲロ ゲロ ゲロ',       thai:'เกโระ เกโระ เกโระ',    duration:2500,
-        notes:[{freq:NOTE_FREQ.E4,duration:500},{freq:NOTE_FREQ.D4,duration:500},{freq:NOTE_FREQ.C4,duration:900}]},
+        notes:[{freq:NOTE_FREQ.E4,duration:500},{freq:NOTE_FREQ.D4,duration:500},{freq:NOTE_FREQ.C4,duration:900}],
+        visuals:[{text:'🐸',delay:0},{text:'🐸',delay:700},{text:'🐸',delay:1400}]},
       {jp:'かえるの うたが',      thai:'เพลงของ กบ',           duration:2800,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}],
+        visuals:[{text:'🐸',delay:0},{text:'🎶',delay:1200}]},
       {jp:'きこえて くるよ',      thai:'ได้ยิน มาแล้ว',        duration:2800,
-        notes:[{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:700}],
+        visuals:[{text:'👂',delay:0},{text:'🎵',delay:1000}]},
     ],
   },
   {
@@ -1799,19 +1858,26 @@ const songs = [
     category: null,
     lyrics: [
       {jp:'ちょうちょう ちょうちょう',thai:'ผีเสื้อ ผีเสื้อ',  duration:3200,
-        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:700},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.D4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:700},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.D4,duration:700}],
+        visuals:[{text:'🦋',delay:0},{text:'🦋',delay:1200}]},
       {jp:'なのはに とまれ',       thai:'เกาะที่ดอกไม้',        duration:3000,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'🌼',delay:0},{text:'🦋',delay:1200}]},
       {jp:'なのはに あいたら',     thai:'ถ้าเจอดอกไม้',         duration:3200,
-        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:700},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.D4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:700},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.D4,duration:700}],
+        visuals:[{text:'🌸',delay:0}]},
       {jp:'さくらに とまれ',       thai:'เกาะดอกซากุระ',        duration:3000,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:1200}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:1200}],
+        visuals:[{text:'🌸',delay:0},{text:'🦋',delay:1200}]},
       {jp:'さくらの はなの',       thai:'ดอกซากุระ',            duration:2800,
-        notes:[{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:700}],
+        visuals:[{text:'🌸',delay:0},{text:'🌸',delay:700},{text:'🌸',delay:1400}]},
       {jp:'はなから はなへ',       thai:'จากดอก สู่ดอก',        duration:2800,
-        notes:[{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'🌸',delay:0},{text:'➡️',delay:700},{text:'🌺',delay:1400}]},
       {jp:'とまれよ あそべ',       thai:'เกาะสิ เล่นสิ',        duration:2800,
-        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:700},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:700},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}],
+        visuals:[{text:'🦋',delay:0},{text:'🌸',delay:1000}]},
     ],
   },
   {
@@ -1822,19 +1888,26 @@ const songs = [
     category: 'food',
     lyrics: [
       {jp:'これくらいの おべんとうばこに',thai:'ในกล่องข้าว ขนาดนี้',  duration:3800,
-        notes:[{freq:NOTE_FREQ.C4,duration:250},{freq:NOTE_FREQ.C4,duration:250},{freq:NOTE_FREQ.C4,duration:250},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:250},{freq:NOTE_FREQ.C4,duration:250},{freq:NOTE_FREQ.C4,duration:250},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'🍱',delay:0}]},
       {jp:'おにぎり おにぎり ちょいと つめて',thai:'ข้าวปั้น ข้าวปั้น ใส่เข้าไป',duration:3800,
-        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'🍙',delay:0},{text:'🍙',delay:1200}]},
       {jp:'きざみしょうがに ごましおふって',thai:'ขิงหั่น โรยงาเกลือ',  duration:3800,
-        notes:[{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:350}]},
+        notes:[{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:350}],
+        visuals:[{text:'🫚',delay:0},{text:'🧂',delay:1500}]},
       {jp:'にんじんさん さくらんぼさん',thai:'แครอท เชอร์รี่',          duration:3200,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'🥕',delay:0},{text:'🍒',delay:1500}]},
       {jp:'しいたけさん ごぼうさん',   thai:'เห็ดชิตาเกะ โกะโบ',       duration:3000,
-        notes:[{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.A4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.D4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.A4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.D4,duration:700}],
+        visuals:[{text:'🍄',delay:0},{text:'🥬',delay:1200}]},
       {jp:'あなのあいた れんこんさん', thai:'รากบัว ที่มีรู',            duration:3200,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'🕳️',delay:0},{text:'🪷',delay:1500}]},
       {jp:'すじのとおった ふーき！',   thai:'ฟุกิ ที่เป็นเส้น!',        duration:3200,
-        notes:[{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:900}]},
+        notes:[{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:900}],
+        visuals:[{text:'🥬',delay:0},{text:'🎉',delay:2000}]},
     ],
   },
   // --- 新規追加3曲 ---
@@ -1846,17 +1919,26 @@ const songs = [
     category: 'numbers',
     lyrics: [
       {jp:'いち に さん し',         thai:'หนึ่ง สอง สาม สี่',     duration:3000,
-        notes:[{freq:NOTE_FREQ.C4,duration:700},{freq:NOTE_FREQ.D4,duration:700},{freq:NOTE_FREQ.E4,duration:700},{freq:NOTE_FREQ.F4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:700},{freq:NOTE_FREQ.D4,duration:700},{freq:NOTE_FREQ.E4,duration:700},{freq:NOTE_FREQ.F4,duration:700}],
+        visuals:[{text:'1️⃣',delay:0,accumulate:true},{text:'2️⃣',delay:700,accumulate:true},{text:'3️⃣',delay:1400,accumulate:true},{text:'4️⃣',delay:2100,accumulate:true}]},
       {jp:'ご ろく しち はち',       thai:'ห้า หก เจ็ด แปด',       duration:3000,
-        notes:[{freq:NOTE_FREQ.G4,duration:700},{freq:NOTE_FREQ.A4,duration:700},{freq:NOTE_FREQ.B4,duration:700},{freq:NOTE_FREQ.C5,duration:700}]},
+        notes:[{freq:NOTE_FREQ.G4,duration:700},{freq:NOTE_FREQ.A4,duration:700},{freq:NOTE_FREQ.B4,duration:700},{freq:NOTE_FREQ.C5,duration:700}],
+        continuePrevious:true,
+        visuals:[{text:'5️⃣',delay:0,accumulate:true},{text:'6️⃣',delay:700,accumulate:true},{text:'7️⃣',delay:1400,accumulate:true},{text:'8️⃣',delay:2100,accumulate:true}]},
       {jp:'く じゅう',               thai:'เก้า สิบ',               duration:2500,
-        notes:[{freq:NOTE_FREQ.D5,duration:700},{freq:NOTE_FREQ.E5,duration:1500}]},
+        notes:[{freq:NOTE_FREQ.D5,duration:700},{freq:NOTE_FREQ.E5,duration:1500}],
+        continuePrevious:true,
+        visuals:[{text:'9️⃣',delay:0,accumulate:true},{text:'🔟',delay:700,accumulate:true}]},
       {jp:'いーち にー さーん',      thai:'หนึ่ง สอง สาม',          duration:3500,
-        notes:[{freq:NOTE_FREQ.C4,duration:1000},{freq:NOTE_FREQ.D4,duration:1000},{freq:NOTE_FREQ.E4,duration:1200}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:1000},{freq:NOTE_FREQ.D4,duration:1000},{freq:NOTE_FREQ.E4,duration:1200}],
+        visuals:[{text:'1️⃣',delay:0},{text:'2️⃣',delay:1000},{text:'3️⃣',delay:2000}]},
       {jp:'し ご ろく',              thai:'สี่ ห้า หก',              duration:2800,
-        notes:[{freq:NOTE_FREQ.F4,duration:600},{freq:NOTE_FREQ.G4,duration:600},{freq:NOTE_FREQ.A4,duration:1200}]},
+        notes:[{freq:NOTE_FREQ.F4,duration:600},{freq:NOTE_FREQ.G4,duration:600},{freq:NOTE_FREQ.A4,duration:1200}],
+        visuals:[{text:'4️⃣',delay:0,accumulate:true},{text:'5️⃣',delay:600,accumulate:true},{text:'6️⃣',delay:1200,accumulate:true}]},
       {jp:'しち はち く じゅう！',   thai:'เจ็ด แปด เก้า สิบ!',     duration:3200,
-        notes:[{freq:NOTE_FREQ.B4,duration:600},{freq:NOTE_FREQ.C5,duration:600},{freq:NOTE_FREQ.D5,duration:600},{freq:NOTE_FREQ.E5,duration:1200}]},
+        notes:[{freq:NOTE_FREQ.B4,duration:600},{freq:NOTE_FREQ.C5,duration:600},{freq:NOTE_FREQ.D5,duration:600},{freq:NOTE_FREQ.E5,duration:1200}],
+        continuePrevious:true,
+        visuals:[{text:'7️⃣',delay:0,accumulate:true},{text:'8️⃣',delay:600,accumulate:true},{text:'9️⃣',delay:1200,accumulate:true},{text:'🔟',delay:1800,accumulate:true}]},
     ],
   },
   {
@@ -1867,19 +1949,26 @@ const songs = [
     category: 'greetings',
     lyrics: [
       {jp:'おはよう おはよう',        thai:'สวัสดี สวัสดี',           duration:3200,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'☀️',delay:0},{text:'🌅',delay:1200}]},
       {jp:'あさの ごあいさつ',        thai:'ทักทาย ตอนเช้า',          duration:3200,
-        notes:[{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}],
+        visuals:[{text:'🙇',delay:0}]},
       {jp:'こんにちは こんにちは',    thai:'สวัสดี สวัสดี',           duration:3200,
-        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}],
+        visuals:[{text:'🌞',delay:0}]},
       {jp:'ひるの ごあいさつ',        thai:'ทักทาย ตอนกลางวัน',       duration:3200,
-        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:700}],
+        visuals:[{text:'👋',delay:0}]},
       {jp:'こんばんは こんばんは',    thai:'สวัสดี สวัสดี',           duration:3200,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:700}],
+        visuals:[{text:'🌙',delay:0},{text:'⭐',delay:1200}]},
       {jp:'よるの ごあいさつ',        thai:'ทักทาย ตอนเย็น',          duration:3200,
-        notes:[{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}]},
+        notes:[{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.C4,duration:700}],
+        visuals:[{text:'🙇',delay:0}]},
       {jp:'おやすみなさーい',         thai:'ราตรีสวัสดิ์',            duration:3500,
-        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:1000}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:350},{freq:NOTE_FREQ.D4,duration:350},{freq:NOTE_FREQ.E4,duration:350},{freq:NOTE_FREQ.F4,duration:350},{freq:NOTE_FREQ.G4,duration:350},{freq:NOTE_FREQ.A4,duration:350},{freq:NOTE_FREQ.G4,duration:1000}],
+        visuals:[{text:'😴',delay:0},{text:'💤',delay:800},{text:'⭐',delay:1600}]},
     ],
   },
   {
@@ -1890,25 +1979,35 @@ const songs = [
     category: 'hiragana',
     lyrics: [
       {jp:'あ い う え お',          thai:'อะ อิ อุ เอะ โอะ',        duration:3000,
-        notes:[{freq:NOTE_FREQ.C4,duration:400},{freq:NOTE_FREQ.D4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.C4,duration:400},{freq:NOTE_FREQ.E4,duration:900}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:400},{freq:NOTE_FREQ.D4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.C4,duration:400},{freq:NOTE_FREQ.E4,duration:900}],
+        visuals:[{text:'あ',delay:0,type:'hiragana',accumulate:true},{text:'い',delay:400,type:'hiragana',accumulate:true},{text:'う',delay:800,type:'hiragana',accumulate:true},{text:'え',delay:1200,type:'hiragana',accumulate:true},{text:'お',delay:1600,type:'hiragana',accumulate:true}]},
       {jp:'か き く け こ',          thai:'คะ คิ คุ เคะ โคะ',         duration:3000,
-        notes:[{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.G4,duration:900}]},
+        notes:[{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.G4,duration:900}],
+        visuals:[{text:'か',delay:0,type:'hiragana',accumulate:true},{text:'き',delay:400,type:'hiragana',accumulate:true},{text:'く',delay:800,type:'hiragana',accumulate:true},{text:'け',delay:1200,type:'hiragana',accumulate:true},{text:'こ',delay:1600,type:'hiragana',accumulate:true}]},
       {jp:'さ し す せ そ',          thai:'ซะ ชิ ซุ เซะ โซะ',         duration:3000,
-        notes:[{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.A4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.E4,duration:900}]},
+        notes:[{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.A4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.E4,duration:900}],
+        visuals:[{text:'さ',delay:0,type:'hiragana',accumulate:true},{text:'し',delay:400,type:'hiragana',accumulate:true},{text:'す',delay:800,type:'hiragana',accumulate:true},{text:'せ',delay:1200,type:'hiragana',accumulate:true},{text:'そ',delay:1600,type:'hiragana',accumulate:true}]},
       {jp:'た ち つ て と',          thai:'ทะ ชิ ทสึ เทะ โทะ',        duration:3000,
-        notes:[{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.D4,duration:400},{freq:NOTE_FREQ.C4,duration:900}]},
+        notes:[{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.D4,duration:400},{freq:NOTE_FREQ.C4,duration:900}],
+        visuals:[{text:'た',delay:0,type:'hiragana',accumulate:true},{text:'ち',delay:400,type:'hiragana',accumulate:true},{text:'つ',delay:800,type:'hiragana',accumulate:true},{text:'て',delay:1200,type:'hiragana',accumulate:true},{text:'と',delay:1600,type:'hiragana',accumulate:true}]},
       {jp:'な に ぬ ね の',          thai:'นะ นิ นุ เนะ โนะ',         duration:3000,
-        notes:[{freq:NOTE_FREQ.C4,duration:400},{freq:NOTE_FREQ.D4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.G4,duration:900}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:400},{freq:NOTE_FREQ.D4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.G4,duration:900}],
+        visuals:[{text:'な',delay:0,type:'hiragana',accumulate:true},{text:'に',delay:400,type:'hiragana',accumulate:true},{text:'ぬ',delay:800,type:'hiragana',accumulate:true},{text:'ね',delay:1200,type:'hiragana',accumulate:true},{text:'の',delay:1600,type:'hiragana',accumulate:true}]},
       {jp:'は ひ ふ へ ほ',          thai:'ฮะ ฮิ ฟุ เฮะ โฮะ',        duration:3000,
-        notes:[{freq:NOTE_FREQ.A4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.D4,duration:900}]},
+        notes:[{freq:NOTE_FREQ.A4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.D4,duration:900}],
+        visuals:[{text:'は',delay:0,type:'hiragana',accumulate:true},{text:'ひ',delay:400,type:'hiragana',accumulate:true},{text:'ふ',delay:800,type:'hiragana',accumulate:true},{text:'へ',delay:1200,type:'hiragana',accumulate:true},{text:'ほ',delay:1600,type:'hiragana',accumulate:true}]},
       {jp:'ま み む め も',          thai:'มะ มิ มุ เมะ โมะ',         duration:3000,
-        notes:[{freq:NOTE_FREQ.C4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.C4,duration:900}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.E4,duration:400},{freq:NOTE_FREQ.C4,duration:900}],
+        visuals:[{text:'ま',delay:0,type:'hiragana',accumulate:true},{text:'み',delay:400,type:'hiragana',accumulate:true},{text:'む',delay:800,type:'hiragana',accumulate:true},{text:'め',delay:1200,type:'hiragana',accumulate:true},{text:'も',delay:1600,type:'hiragana',accumulate:true}]},
       {jp:'や ゆ よ',                thai:'ยะ ยุ โยะ',                duration:2500,
-        notes:[{freq:NOTE_FREQ.C4,duration:500},{freq:NOTE_FREQ.E4,duration:500},{freq:NOTE_FREQ.G4,duration:1200}]},
+        notes:[{freq:NOTE_FREQ.C4,duration:500},{freq:NOTE_FREQ.E4,duration:500},{freq:NOTE_FREQ.G4,duration:1200}],
+        visuals:[{text:'や',delay:0,type:'hiragana',accumulate:true},{text:'ゆ',delay:500,type:'hiragana',accumulate:true},{text:'よ',delay:1000,type:'hiragana',accumulate:true}]},
       {jp:'ら り る れ ろ',          thai:'ระ ริ รุ เระ โระ',          duration:3000,
-        notes:[{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.A4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.E4,duration:900}]},
+        notes:[{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.A4,duration:400},{freq:NOTE_FREQ.G4,duration:400},{freq:NOTE_FREQ.F4,duration:400},{freq:NOTE_FREQ.E4,duration:900}],
+        visuals:[{text:'ら',delay:0,type:'hiragana',accumulate:true},{text:'り',delay:400,type:'hiragana',accumulate:true},{text:'る',delay:800,type:'hiragana',accumulate:true},{text:'れ',delay:1200,type:'hiragana',accumulate:true},{text:'ろ',delay:1600,type:'hiragana',accumulate:true}]},
       {jp:'わ を ん！',              thai:'วะ โวะ อึน!',               duration:3000,
-        notes:[{freq:NOTE_FREQ.E4,duration:500},{freq:NOTE_FREQ.D4,duration:500},{freq:NOTE_FREQ.C4,duration:1500}]},
+        notes:[{freq:NOTE_FREQ.E4,duration:500},{freq:NOTE_FREQ.D4,duration:500},{freq:NOTE_FREQ.C4,duration:1500}],
+        visuals:[{text:'わ',delay:0,type:'hiragana',accumulate:true},{text:'を',delay:500,type:'hiragana',accumulate:true},{text:'ん',delay:1000,type:'hiragana',accumulate:true}]},
     ],
   },
 ];
@@ -1949,11 +2048,44 @@ function playSong(song) {
   songTotalLines = song.lyrics.length;
   document.getElementById('songOverlay').classList.add('active');
   document.getElementById('songMainEmoji').textContent = song.emoji;
+  document.getElementById('songMainEmoji').style.display = '';
+  document.getElementById('songVisuals').classList.remove('active');
+  document.getElementById('songVisuals').innerHTML = '';
   document.getElementById('songTitleLabel').textContent = song.title;
   document.getElementById('songProgressBar').style.width = '0%';
   document.getElementById('songRepeatBtn').style.display = 'none';
   document.getElementById('songTapHint').style.display = 'block';
   showSongLine();
+}
+
+function showSongVisuals(visuals, continuePrevious) {
+  const container = document.getElementById('songVisuals');
+  const mainEmoji = document.getElementById('songMainEmoji');
+
+  if (!visuals || visuals.length === 0) {
+    container.classList.remove('active');
+    container.innerHTML = '';
+    mainEmoji.style.display = '';
+    return;
+  }
+
+  mainEmoji.style.display = 'none';
+  container.classList.add('active');
+
+  if (!continuePrevious) {
+    container.innerHTML = '';
+  }
+
+  const speedMult = songSpeedSlow ? 1.6 : 1.0;
+
+  visuals.forEach(v => {
+    setTimeout(() => {
+      const el = document.createElement('span');
+      el.className = 'song-visual-item' + (v.type === 'hiragana' ? ' hiragana' : '');
+      el.textContent = v.text;
+      container.appendChild(el);
+    }, v.delay * speedMult);
+  });
 }
 
 function showSongLine() {
@@ -1987,12 +2119,15 @@ function showSongLine() {
     jpEl.classList.remove('fade');
   }, 200);
 
-  // メロディー再生（notes があればWeb Audio API、なければTTSフォールバック）
+  // メロディー再生
   if (line.notes && line.notes.length > 0) {
     playMelodyLine(line.notes);
-  } else {
-    speak(line.jp, 0.78, 1.3);
   }
+  // TTS も同時に読み上げ（メロディーの有無に関わらず）
+  speak(line.jp, 0.78, 1.3);
+
+  // ビジュアル表示
+  showSongVisuals(line.visuals, line.continuePrevious);
 
   // プログレスバー
   progressEl.style.width = ((songLineIndex + 1) / songTotalLines * 100) + '%';
@@ -2011,6 +2146,9 @@ function stopSong() {
   document.getElementById('songOverlay').classList.remove('active');
   document.getElementById('songRepeatBtn').style.display = 'none';
   document.getElementById('songTapHint').style.display = 'block';
+  document.getElementById('songVisuals').classList.remove('active');
+  document.getElementById('songVisuals').innerHTML = '';
+  document.getElementById('songMainEmoji').style.display = '';
   synth.cancel();
   stopAllOscillators();
   currentSong = null;
@@ -2043,9 +2181,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (line) {
         if (line.notes && line.notes.length > 0) {
           playMelodyLine(line.notes);
-        } else {
-          speak(line.jp, 0.78, 1.3);
         }
+        speak(line.jp, 0.78, 1.3);
       }
     });
   }

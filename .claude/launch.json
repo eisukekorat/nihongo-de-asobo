@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "nihongo-de-asobo",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "3456", "-d", "/Users/eisukeoseto/Projects/nihongo-de-asobo"],
+      "port": 3456
+    }
+  ]
+}
