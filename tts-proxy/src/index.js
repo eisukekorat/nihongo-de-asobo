@@ -58,7 +58,7 @@ export default {
       });
     }
 
-    const { text, speed = 0.85 } = body;
+    const { text, speed = 0.85, lang = 'ja' } = body;
 
     // バリデーション
     if (!text || typeof text !== 'string' || text.trim().length === 0) {
@@ -76,6 +76,13 @@ export default {
 
     const speakingRate = Math.max(0.5, Math.min(Number(speed) || 0.85, 1.5));
 
+    // 言語設定（ja: 日本語, th: タイ語）
+    const isThai = lang === 'th';
+    const voiceConfig = isThai
+      ? { languageCode: 'th-TH', name: 'th-TH-Neural2-C' }
+      : { languageCode: 'ja-JP', name: 'ja-JP-Neural2-B' };
+    const pitchConfig = isThai ? 0.0 : 2.0;
+
     // Google Cloud TTS API 呼び出し
     let ttsResponse;
     try {
@@ -86,20 +93,12 @@ export default {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             input: { text: text.trim() },
-            voice: {
-              languageCode: 'ja-JP',
-              // Neural2-B: 女性の自然な声（子供向けに明るくて聞き取りやすい）
-              // 代替候補:
-              //   'ja-JP-Neural2-C' (男性)
-              //   'ja-JP-Wavenet-A' (女性・Wavenet)
-              //   'ja-JP-Wavenet-B' (男性・Wavenet)
-              name: 'ja-JP-Neural2-B',
-            },
+            voice: voiceConfig,
             audioConfig: {
               audioEncoding: 'MP3',
               speakingRate,
-              pitch: 2.0,       // 少し高め（子供向け）
-              volumeGainDb: 1.0, // 少し音量を上げる
+              pitch: pitchConfig,
+              volumeGainDb: 1.0,
               sampleRateHertz: 24000,
             },
           }),

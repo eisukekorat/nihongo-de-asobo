@@ -1,7 +1,9 @@
-// にほんごであそぼ Service Worker v9
-const CACHE_NAME = 'nihongo-v10';
+// にほんごであそぼ Service Worker v10
+const CACHE_NAME = 'nihongo-v11';
 const ASSETS = [
   'index.html',
+  'camera.html',
+  'camera-dictionary.js',
   'manifest.json',
   'icons/icon-192.png',
   'icons/icon-512.png',

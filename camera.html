@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ことばカメラ</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ことばカメラ">
+<meta name="theme-color" content="#a8e6cf">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&display=swap" rel="stylesheet">
+<script src="camera-dictionary.js"></script>
+<style>
+:root {
+  --sky: #fff7ed;
+  --card-radius: 32px;
+  --shadow: 0 10px 0px rgba(0,0,0,.04), 0 2px 6px rgba(0,0,0,.06);
+  --dark: #2d3436;
+  --yellow: #ffd43b;
+  --camera-green: #a8e6cf;
+  --camera-blue: #87ceeb;
+  --camera-pink: #ffb7b2;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+body {
+  background: var(--sky);
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  height: 100vh; height: 100dvh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ============ VIEWS ============ */
+.view { position:absolute; top:0; left:0; width:100%; height:100%; display:none; flex-direction:column; overflow:hidden; }
+.view.active { display:flex; }
+
+/* ============ HEADER BAR ============ */
+.header-bar {
+  display: flex; align-items: center; padding: 16px 16px 8px;
+  background: white; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  flex-shrink: 0; gap: 12px; z-index: 10;
+}
+.back-btn {
+  width: 44px; height: 44px; border-radius: 50%; background: #f0f0f0;
+  border: none; font-size: 1.3rem; cursor: pointer; display:flex;
+  align-items:center; justify-content:center; flex-shrink:0;
+  transition: transform 0.15s;
+}
+.back-btn:active { transform: scale(0.88); }
+.header-title { font-size: 1.2rem; font-weight: 900; color: var(--dark); flex:1; }
+
+/* ============ MENU VIEW ============ */
+#view-menu {
+  background: linear-gradient(160deg, #e8f8f0 0%, #fff7ed 100%);
+  align-items: center; justify-content: flex-start; padding-top: 0;
+}
+.menu-header {
+  width: 100%; padding: 20px 20px 8px;
+  display: flex; align-items: center; gap: 12px;
+}
+.menu-back-btn {
+  width: 44px; height: 44px; border-radius: 50%; background: white;
+  border: none; font-size: 1.3rem; cursor: pointer; display:flex;
+  align-items:center; justify-content:center; flex-shrink:0;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+.menu-back-btn:active { transform: scale(0.88); }
+.menu-title { font-size: 1.3rem; font-weight: 900; color: var(--dark); }
+
+.menu-mascot-area {
+  display: flex; flex-direction: column; align-items: center;
+  margin: 8px 0 16px; gap: 4px;
+}
+.menu-mascot { font-size: 3.5rem; animation: mascot-idle 3s ease-in-out infinite; filter: drop-shadow(0 4px 10px rgba(0,0,0,.12)); }
+@keyframes mascot-idle {
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  25%{transform:translateY(-6px) rotate(-5deg)}
+  75%{transform:translateY(-3px) rotate(5deg)}
+}
+.menu-collection-info {
+  font-size: 0.95rem; font-weight: 800; color: #666;
+  background: white; padding: 6px 18px; border-radius: 50px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+.menu-buttons {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; padding: 0 20px; width: 100%; max-width: 420px;
+}
+.menu-btn {
+  background: white; border: none; border-radius: var(--card-radius);
+  padding: 24px 12px; text-align: center; cursor: pointer;
+  box-shadow: 0 8px 0 rgba(0,0,0,.1);
+  transition: transform 0.12s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.12s;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  min-height: 120px; justify-content: center;
+}
+.menu-btn:active { transform: scale(0.92) translateY(4px); box-shadow: 0 4px 0 rgba(0,0,0,.1); }
+.menu-btn .btn-icon { font-size: 2.8rem; line-height: 1; }
+.menu-btn .btn-label { font-size: 1.1rem; font-weight: 900; color: var(--dark); }
+#btn-pasha { background: linear-gradient(135deg, #a8e6cf, #7ed6b0); }
+#btn-touch { background: linear-gradient(135deg, #87ceeb, #68b8d8); }
+#btn-quiz  { background: linear-gradient(135deg, #ffb7b2, #ff9a94); }
+#btn-zukan { background: linear-gradient(135deg, #ffd93d, #ffca28); }
+
+/* ============ CAMERA INPUT ============ */
+#camera-input { display:none; }
+
+/* ============ PASHA VIEW ============ */
+#view-pasha { background: var(--sky); }
+.pasha-content {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 20px;
+  gap: 20px;
+}
+.pasha-start-area { text-align: center; }
+.pasha-btn {
+  width: 160px; height: 160px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--camera-green), #7ed6b0);
+  border: none; cursor: pointer; font-size: 4rem;
+  box-shadow: 0 12px 0 rgba(0,0,0,.15);
+  transition: transform 0.12s, box-shadow 0.12s;
+  display: flex; align-items: center; justify-content: center;
+}
+.pasha-btn:active { transform: scale(0.9) translateY(6px); box-shadow: 0 6px 0 rgba(0,0,0,.15); }
+.pasha-hint { font-size: 1.05rem; font-weight: 800; color: #888; margin-top: 16px; }
+
+/* 撮影中 */
+.pasha-loading { display:none; flex-direction:column; align-items:center; gap:16px; text-align:center; }
+.pasha-loading.show { display:flex; }
+.loading-mascot { font-size: 4rem; animation: searching 0.6s ease-in-out infinite; }
+@keyframes searching {
+  0%,100%{transform:rotate(-12deg)}
+  50%{transform:rotate(12deg)}
+}
+.loading-text { font-size: 1.1rem; font-weight: 800; color: var(--dark); }
+
+/* 結果 */
+.pasha-result { display:none; flex-direction:column; align-items:center; width:100%; gap:12px; }
+.pasha-result.show { display:flex; animation: result-pop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes result-pop {
+  0%{transform:scale(0.7);opacity:0} 60%{transform:scale(1.05)} 100%{transform:scale(1);opacity:1}
+}
+.result-photo {
+  width: 100%; max-width: 300px; max-height: 220px;
+  object-fit: cover; border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+}
+.result-emoji { font-size: 3.5rem; }
+.result-ja { font-size: 2.4rem; font-weight: 900; color: var(--dark); }
+.result-th { font-size: 1.1rem; font-weight: 800; color: #888; }
+.result-tts-btns { display: flex; gap: 12px; }
+.tts-btn {
+  padding: 12px 20px; border-radius: 50px; border: none; cursor: pointer;
+  font-size: 1rem; font-weight: 800; color: white;
+  box-shadow: 0 4px 0 rgba(0,0,0,.12);
+  transition: transform 0.12s, box-shadow 0.12s;
+  display: flex; align-items: center; gap: 6px;
+}
+.tts-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.12); }
+.tts-btn-ja { background: #51cf66; }
+.tts-btn-th { background: #339af0; }
+.result-saved-msg { font-size: 0.95rem; font-weight: 800; color: #51cf66; }
+.result-actions { display: flex; gap: 12px; }
+.result-action-btn {
+  padding: 14px 24px; border-radius: 50px; border: none; cursor: pointer;
+  font-size: 1rem; font-weight: 800; background: white;
+  box-shadow: 0 4px 0 rgba(0,0,0,.1);
+  transition: transform 0.12s; color: var(--dark);
+}
+.result-action-btn:active { transform: scale(0.92); }
+
+/* 失敗 */
+.pasha-fail { display:none; flex-direction:column; align-items:center; gap:16px; text-align:center; }
+.pasha-fail.show { display:flex; }
+.fail-emoji { font-size: 3.5rem; }
+.fail-text { font-size: 1.1rem; font-weight: 800; color: var(--dark); }
+.fail-retry-btn {
+  padding: 16px 36px; background: var(--camera-green);
+  border: none; border-radius: 50px; font-size: 1.1rem; font-weight: 900;
+  cursor: pointer; box-shadow: 0 6px 0 rgba(0,0,0,.12);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.fail-retry-btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,.12); }
+
+/* ============ TOUCH VIEW ============ */
+#view-touch { background: var(--sky); }
+.touch-grid-wrapper { flex: 1; overflow: hidden; position: relative; }
+.touch-page {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  padding: 12px; box-sizing: border-box;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.touch-page.hidden-left  { transform: translateX(-110%); opacity:0; pointer-events:none; }
+.touch-page.hidden-right { transform: translateX(110%);  opacity:0; pointer-events:none; }
+.touch-card {
+  background: white; border-radius: var(--card-radius);
+  box-shadow: var(--shadow); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; overflow: hidden; border: 3px solid transparent;
+  transition: border-color 0.15s;
+}
+.touch-card:active { animation: card-tap 0.25s ease; }
+.touch-card.playing { animation: card-tap 0.25s ease; border-color: var(--camera-green); }
+@keyframes card-tap {
+  0%{transform:scale(1)} 40%{transform:scale(0.92)} 100%{transform:scale(1)}
+}
+.touch-card-photo {
+  width: 100%; flex: 1; object-fit: cover; min-height: 0;
+  border-radius: calc(var(--card-radius) - 3px) calc(var(--card-radius) - 3px) 0 0;
+}
+.touch-card-emoji-big { font-size: clamp(3rem, 12vw, 5rem); }
+.touch-card-label {
+  font-size: clamp(1rem, 4vw, 1.3rem); font-weight: 900; color: var(--dark);
+  padding: 4px 8px 10px; text-align: center;
+}
+.touch-nav-dots {
+  display: flex; justify-content: center; gap: 8px;
+  padding: 8px 0; flex-shrink: 0;
+}
+.nav-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #ddd; transition: background 0.2s;
+}
+.nav-dot.active { background: var(--camera-green); width: 20px; border-radius: 4px; }
+
+/* ============ ZUKAN VIEW ============ */
+#view-zukan { background: var(--sky); }
+.zukan-cat-tabs {
+  display: flex; gap: 8px; padding: 8px 12px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  flex-shrink: 0;
+}
+.zukan-cat-tabs::-webkit-scrollbar { display:none; }
+.zukan-cat-tab {
+  padding: 8px 14px; border-radius: 50px; border: 2px solid #e0e0e0;
+  background: white; font-size: 0.85rem; font-weight: 800; cursor: pointer;
+  color: #bbb; white-space: nowrap; flex-shrink: 0;
+  transition: all 0.15s; box-shadow: 0 3px 0 rgba(0,0,0,.06);
+}
+.zukan-cat-tab:active { transform: translateY(2px); }
+.zukan-cat-tab.active { background: var(--camera-green); color: var(--dark); border-color: var(--camera-green); }
+.zukan-grid {
+  flex: 1; display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8px; padding: 8px 12px; overflow-y: auto;
+  -webkit-overflow-scrolling: touch; align-content: start;
+}
+.zukan-card {
+  background: white; border-radius: 20px; box-shadow: var(--shadow);
+  aspect-ratio: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2px;
+  cursor: pointer; overflow: hidden; border: 2px solid transparent;
+  transition: transform 0.12s, border-color 0.12s;
+}
+.zukan-card:active { transform: scale(0.88); }
+.zukan-card.found { border-color: var(--camera-green); }
+.zukan-card.unknown { background: #f0f0f0; }
+.zukan-card-photo { width:100%; height:70%; object-fit:cover; }
+.zukan-card-emoji { font-size: 1.8rem; }
+.zukan-card-unknown-emoji { font-size: 2rem; opacity: 0.3; }
+.zukan-card-label { font-size: 0.65rem; font-weight: 800; color: var(--dark); padding: 0 4px; text-align:center; }
+.zukan-empty-msg { text-align:center; padding:40px 20px; font-size:1rem; font-weight:800; color:#bbb; }
+
+/* ============ DETAIL MODAL ============ */
+.detail-modal {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,.5); z-index: 200;
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.detail-modal.show { display:flex; }
+.detail-card {
+  background: white; border-radius: var(--card-radius);
+  padding: 24px; width: 100%; max-width: 360px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  animation: result-pop 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  max-height: 90vh; overflow-y: auto;
+}
+.detail-close {
+  align-self: flex-end; width: 40px; height: 40px; border-radius: 50%;
+  background: #f0f0f0; border: none; font-size: 1.2rem; cursor: pointer;
+}
+.detail-close:active { transform: scale(0.88); }
+.detail-photo { width:100%; border-radius: 20px; max-height: 220px; object-fit:cover; }
+.detail-emoji { font-size: 3rem; }
+.detail-ja { font-size: 2rem; font-weight: 900; color: var(--dark); }
+.detail-th { font-size: 1rem; font-weight: 800; color: #888; }
+.detail-tts-btns { display:flex; gap:10px; }
+
+/* ============ STICKER FLOAT ============ */
+.sticker-float-el {
+  position: fixed; bottom: 50%; left: 50%; transform: translateX(-50%);
+  z-index: 400; pointer-events: none;
+  animation: sticker-float 1.8s ease-out forwards;
+  font-size: 3.5rem; text-align: center; display: flex; flex-direction: column; align-items: center;
+}
+.sticker-float-label {
+  font-size: 1rem; font-weight: 900; color: #ff922b;
+  background: white; padding: 4px 14px; border-radius: 50px;
+  margin-top: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+@keyframes sticker-float {
+  0%   { opacity:0; transform:translateX(-50%) translateY(20px) scale(0.5); }
+  20%  { opacity:1; transform:translateX(-50%) translateY(0) scale(1.2); }
+  50%  { transform:translateX(-50%) translateY(-20px) scale(1); }
+  100% { opacity:0; transform:translateX(-50%) translateY(-120px) scale(0.8); }
+}
+
+/* ============ QUIZ VIEW ============ */
+#view-quiz { background: var(--sky); }
+.quiz-content {
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; padding: 16px; gap:16px;
+}
+.quiz-prompt-text {
+  font-size: 1.4rem; font-weight: 900; color: var(--dark); text-align:center;
+}
+.quiz-choices-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%;
+}
+.quiz-choice-card {
+  background: white; border-radius: var(--card-radius);
+  box-shadow: var(--shadow); padding: 16px 8px;
+  display: flex; flex-direction:column; align-items:center; gap:8px;
+  cursor: pointer; border: 3px solid transparent; min-height: 130px;
+  justify-content: center;
+  transition: transform 0.12s;
+}
+.quiz-choice-card:active { transform: scale(0.92); }
+.quiz-choice-card.correct { background:#e8fdf0; border-color:#51cf66; animation: correct-pop 0.5s; }
+.quiz-choice-card.wrong   { background:#ffeef0; border-color:#ff6b6b; animation: shake 0.4s; }
+@keyframes correct-pop {
+  0%{transform:scale(1)} 30%{transform:scale(1.1) rotate(-3deg)} 100%{transform:scale(1)}
+}
+@keyframes shake {
+  0%,100%{transform:translateX(0)} 25%{transform:translateX(-10px)} 75%{transform:translateX(10px)}
+}
+.quiz-choice-photo { width:100%; height:70px; object-fit:cover; border-radius:16px; }
+.quiz-choice-emoji { font-size:2.5rem; }
+.quiz-choice-label { font-size:0.95rem; font-weight:900; color:var(--dark); }
+.quiz-result-text { font-size:1.2rem; font-weight:900; color:var(--dark); text-align:center; min-height:1.5em; }
+.quiz-next-btn {
+  padding: 14px 40px; background: #339af0; color:white; border:none;
+  border-radius: 50px; font-size:1.1rem; font-weight:900; cursor:pointer;
+  box-shadow: 0 5px 0 #1a7bc4; opacity:0; transition:opacity 0.2s;
+  pointer-events:none;
+}
+.quiz-next-btn.show { opacity:1; pointer-events:auto; }
+.quiz-next-btn:active { transform:translateY(4px); box-shadow:0 1px 0 #1a7bc4; }
+.quiz-not-enough {
+  text-align:center; padding:40px 20px; font-size:1rem; font-weight:800; color:#888;
+}
+.quiz-not-enough .quiz-ne-icon { font-size:3rem; }
+.quiz-ne-goto {
+  margin-top:16px; padding:14px 28px; background:var(--camera-green);
+  border:none; border-radius:50px; font-size:1rem; font-weight:900;
+  cursor:pointer; box-shadow:0 4px 0 rgba(0,0,0,.1);
+}
+</style>
+</head>
+<body>
+
+<!-- カメラinput（非表示）-->
+<input type="file" id="camera-input" accept="image/*" capture="environment">
+
+<!-- ===================== VIEW 1: メニュー ===================== -->
+<div id="view-menu" class="view active">
+  <div class="menu-header">
+    <button class="menu-back-btn" onclick="location.href='index.html'">←</button>
+    <span class="menu-title">ことばカメラ</span>
+  </div>
+  <div class="menu-mascot-area">
+    <div class="menu-mascot">🐻</div>
+    <div class="menu-collection-info" id="menu-collection-info">ことばを あつめよう！</div>
+  </div>
+  <div class="menu-buttons">
+    <button class="menu-btn" id="btn-pasha" onclick="openPasha()">
+      <span class="btn-icon">📷</span>
+      <span class="btn-label">パシャ！</span>
+    </button>
+    <button class="menu-btn" id="btn-touch" onclick="openTouch()">
+      <span class="btn-icon">👆</span>
+      <span class="btn-label">タッチ！</span>
+    </button>
+    <button class="menu-btn" id="btn-quiz" onclick="openQuiz()">
+      <span class="btn-icon">🎵</span>
+      <span class="btn-label">どっち？</span>
+    </button>
+    <button class="menu-btn" id="btn-zukan" onclick="openZukan()">
+      <span class="btn-icon">📖</span>
+      <span class="btn-label">ずかん</span>
+    </button>
+  </div>
+</div>
+
+<!-- ===================== VIEW 2: パシャ！ ===================== -->
+<div id="view-pasha" class="view">
+  <div class="header-bar">
+    <button class="back-btn" onclick="showMenu()">←</button>
+    <span class="header-title">📷 パシャ！</span>
+  </div>
+  <div class="pasha-content" id="pasha-content">
+    <!-- 初期：撮影ボタン -->
+    <div class="pasha-start-area" id="pasha-start">
+      <button class="pasha-btn" onclick="triggerCamera()">📷</button>
+      <div class="pasha-hint">ここを おして<br>しゃしんを とろう！</div>
+    </div>
+    <!-- 認識中 -->
+    <div class="pasha-loading" id="pasha-loading">
+      <div class="loading-mascot">🔍</div>
+      <div class="loading-text">うーん、なんだろう…</div>
+    </div>
+    <!-- 結果 -->
+    <div class="pasha-result" id="pasha-result">
+      <img id="result-photo" class="result-photo" src="" alt="とった しゃしん">
+      <div id="result-emoji" class="result-emoji"></div>
+      <div id="result-ja" class="result-ja"></div>
+      <div id="result-th" class="result-th"></div>
+      <div class="result-tts-btns">
+        <button class="tts-btn tts-btn-ja" id="tts-ja-btn" onclick="speakResult('ja')">🔊 にほんご</button>
+        <button class="tts-btn tts-btn-th" id="tts-th-btn" onclick="speakResult('th')">🔊 タイご</button>
+      </div>
+      <div class="result-saved-msg" id="result-saved-msg"></div>
+      <div class="result-actions">
+        <button class="result-action-btn" onclick="resetPasha()">📷 もういっかい</button>
+        <button class="result-action-btn" onclick="openZukan()">📖 ずかん</button>
+      </div>
+    </div>
+    <!-- 失敗 -->
+    <div class="pasha-fail" id="pasha-fail">
+      <div class="fail-emoji">🔍</div>
+      <div class="fail-text">もういちど<br>とってみよう！📷</div>
+      <button class="fail-retry-btn" onclick="resetPasha()">もういっかい</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== VIEW 3: タッチ！ ===================== -->
+<div id="view-touch" class="view">
+  <div class="header-bar">
+    <button class="back-btn" onclick="showMenu()">←</button>
+    <span class="header-title">👆 タッチ！</span>
+  </div>
+  <div class="touch-grid-wrapper" id="touch-grid-wrapper">
+    <!-- ページはJSで生成 -->
+  </div>
+  <div class="touch-nav-dots" id="touch-nav-dots"></div>
+</div>
+
+<!-- ===================== VIEW 4: ずかん ===================== -->
+<div id="view-zukan" class="view">
+  <div class="header-bar">
+    <button class="back-btn" onclick="showMenu()">←</button>
+    <span class="header-title">📖 ことばずかん</span>
+  </div>
+  <div class="zukan-cat-tabs" id="zukan-cat-tabs">
+    <button class="zukan-cat-tab active" data-cat="all" onclick="filterZukan('all',this)">🌟 ぜんぶ</button>
+    <!-- カテゴリはJSで生成 -->
+  </div>
+  <div class="zukan-grid" id="zukan-grid"></div>
+</div>
+
+<!-- ===================== VIEW 5: どっち？ ===================== -->
+<div id="view-quiz" class="view">
+  <div class="header-bar">
+    <button class="back-btn" onclick="showMenu()">←</button>
+    <span class="header-title">🎵 どっち？</span>
+  </div>
+  <div class="quiz-content" id="quiz-content">
+    <!-- JSで生成 -->
+  </div>
+</div>
+
+<!-- 詳細モーダル -->
+<div class="detail-modal" id="detail-modal" onclick="closeDetailModal(event)">
+  <div class="detail-card" id="detail-card">
+    <button class="detail-close" onclick="closeDetailModalBtn()">✕</button>
+    <img id="detail-photo" class="detail-photo" src="" alt="" style="display:none">
+    <div id="detail-emoji" class="detail-emoji"></div>
+    <div id="detail-ja" class="detail-ja"></div>
+    <div id="detail-th" class="detail-th"></div>
+    <div class="detail-tts-btns">
+      <button class="tts-btn tts-btn-ja" onclick="speakDetailWord('ja')">🔊 にほんご</button>
+      <button class="tts-btn tts-btn-th" onclick="speakDetailWord('th')">🔊 タイご</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========================
+// 定数
+// ========================
+const TTS_WORKER_URL     = 'https://nihongo-tts-proxy.eisukeoseto.workers.dev';
+const VISION_WORKER_URL  = 'https://nihongo-vision-proxy.eisukeoseto.workers.dev';
+const DB_NAME            = 'nihongo-camera';
+const DB_VERSION         = 1;
+
+const STICKER_POOL = ['🌟','⭐','💫','✨','🌸','🌺','🌻','🦋','🌈','🍀','🎀','🎵','💖','🧸','🎠','🍭','🍬','🧁','👑','💎','🦄','🐣','🌞','🪁','🫧','🎨','🎶','💝','🔮','🪄'];
+
+// ========================
+// DB
+// ========================
+let db = null;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = (e) => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('photos')) {
+        d.createObjectStore('photos', { keyPath: 'id' });
+      }
+      if (!d.objectStoreNames.contains('zukan')) {
+        d.createObjectStore('zukan', { keyPath: 'dictKey' });
+      }
+    };
+    req.onsuccess = (e) => { db = e.target.result; resolve(db); };
+    req.onerror   = (e) => reject(e.target.error);
+  });
+}
+
+async function dbPut(storeName, data) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(storeName, 'readwrite');
+    tx.objectStore(storeName).put(data).onsuccess = () => resolve();
+    tx.onerror = (e) => reject(e.target.error);
+  });
+}
+
+async function dbGetAll(storeName) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(storeName, 'readonly');
+    const req = tx.objectStore(storeName).getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = (e) => reject(e.target.error);
+  });
+}
+
+async function dbGet(storeName, key) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(storeName, 'readonly');
+    const req = tx.objectStore(storeName).get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror   = (e) => reject(e.target.error);
+  });
+}
+
+// ========================
+// ビュー管理
+// ========================
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+}
+
+function showMenu()  { showView('menu'); updateMenuInfo(); }
+function openPasha() { showView('pasha'); resetPasha(); }
+function openTouch() { showView('touch'); buildTouchGrid(); }
+function openZukan() { showView('zukan'); buildZukan('all'); }
+function openQuiz()  { showView('quiz');  buildQuiz(); }
+
+// ========================
+// TTS
+// ========================
+async function speakWord(text, lang) {
+  try {
+    const res = await fetch(TTS_WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, speed: 0.85, lang })
+    });
+    if (!res.ok) throw new Error('TTS error');
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    await audio.play();
+    audio.onended = () => URL.revokeObjectURL(url);
+  } catch {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang === 'th' ? 'th-TH' : 'ja-JP';
+    u.rate = 0.8;
+    speechSynthesis.speak(u);
+  }
+}
+
+// ========================
+// シール付与
+// ========================
+function earnSticker(isNew) {
+  if (!isNew) return;
+  const data = JSON.parse(localStorage.getItem('nihongo_stickers') || '{"count":0,"stickers":[]}');
+  const s = STICKER_POOL[Math.floor(Math.random() * STICKER_POOL.length)];
+  data.stickers.push(s);
+  data.count++;
+  localStorage.setItem('nihongo_stickers', JSON.stringify(data));
+  showFloatingSticker(s);
+}
+
+function showFloatingSticker(s) {
+  const el = document.createElement('div');
+  el.className = 'sticker-float-el';
+  el.innerHTML = s + '<div class="sticker-float-label">シール ゲット！</div>';
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
+
+// ========================
+// メニュー情報更新
+// ========================
+async function updateMenuInfo() {
+  if (!db) return;
+  try {
+    const zukanAll = await dbGetAll('zukan');
+    const count = zukanAll.length;
+    const el = document.getElementById('menu-collection-info');
+    if (count === 0) {
+      el.textContent = 'ことばを あつめよう！';
+    } else {
+      el.textContent = `いま ${count} このことば！`;
+    }
+  } catch {}
+}
+
+// ========================
+// パシャ！ モード
+// ========================
+let currentResultEntry = null;
+let currentResultJa    = '';
+let currentResultTh    = '';
+
+function triggerCamera() {
+  document.getElementById('camera-input').click();
+}
+
+document.getElementById('camera-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  e.target.value = '';
+
+  // ローディング表示
+  document.getElementById('pasha-start').style.display   = 'none';
+  document.getElementById('pasha-loading').classList.add('show');
+  document.getElementById('pasha-result').classList.remove('show');
+  document.getElementById('pasha-fail').classList.remove('show');
+
+  try {
+    // 画像リサイズ → base64
+    const base64 = await resizeAndEncode(file, 640);
+
+    // Vision API呼び出し
+    const res  = await fetch(VISION_WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: base64 })
+    });
+    if (!res.ok) throw new Error('vision error');
+    const { labels, objects } = await res.json();
+
+    // 辞書マッチング
+    const matched = matchDictionary(labels, objects);
+
+    document.getElementById('pasha-loading').classList.remove('show');
+
+    if (matched) {
+      await showPashaResult(matched, base64);
+    } else {
+      document.getElementById('pasha-fail').classList.add('show');
+    }
+  } catch {
+    document.getElementById('pasha-loading').classList.remove('show');
+    document.getElementById('pasha-fail').classList.add('show');
+  }
+});
+
+function matchDictionary(labels, objects) {
+  const combined = [
+    ...objects.map(o => o.name),
+    ...labels.map(l => l.description)
+  ];
+  for (const label of combined) {
+    const key = VISION_LABEL_MAP[label.toLowerCase()];
+    if (key && CAMERA_DICTIONARY[key]) return { key, entry: CAMERA_DICTIONARY[key] };
+    // 部分一致
+    for (const [alias, dictKey] of Object.entries(VISION_LABEL_MAP)) {
+      if (label.toLowerCase().includes(alias) || alias.includes(label.toLowerCase())) {
+        if (CAMERA_DICTIONARY[dictKey]) return { key: dictKey, entry: CAMERA_DICTIONARY[dictKey] };
+      }
+    }
+  }
+  return null;
+}
+
+async function showPashaResult(matched, base64) {
+  const { key, entry } = matched;
+  currentResultEntry = entry;
+  currentResultJa = entry.ja;
+  currentResultTh = entry.th;
+
+  document.getElementById('result-photo').src = 'data:image/jpeg;base64,' + base64;
+  document.getElementById('result-emoji').textContent = entry.emoji;
+  document.getElementById('result-ja').textContent    = entry.ja;
+  document.getElementById('result-th').textContent    = entry.th + '（' + entry.thRead + '）';
+  document.getElementById('pasha-result').classList.add('show');
+
+  // ずかん保存
+  const isNew = await saveToZukan(key, entry, base64);
+  const msg = document.getElementById('result-saved-msg');
+  if (isNew) {
+    msg.textContent = '★ ことばずかんに ついかしたよ！';
+    earnSticker(true);
+  } else {
+    msg.textContent = '📷 もう いちど とったよ！';
+  }
+
+  // 自動TTS
+  speakWord(entry.ja, 'ja');
+  if (entry.funVoice) {
+    setTimeout(() => speakWord(entry.funVoice, 'ja'), 1200);
+  }
+  setTimeout(() => speakWord(entry.th, 'th'), entry.funVoice ? 2400 : 1500);
+}
+
+async function saveToZukan(key, entry, base64) {
+  const timestamp = Date.now();
+  const photoId = key + '_' + timestamp;
+
+  // 画像をBlobとして保存
+  const binary = atob(base64);
+  const bytes  = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  const blob = new Blob([bytes], { type: 'image/jpeg' });
+
+  await dbPut('photos', { id: photoId, dictKey: key, imageBlob: blob, timestamp });
+
+  // ずかん更新
+  const existing = await dbGet('zukan', key);
+  const isNew    = !existing;
+  await dbPut('zukan', {
+    dictKey: key,
+    firstSeen: existing ? existing.firstSeen : timestamp,
+    count: (existing ? existing.count : 0) + 1,
+    latestPhotoId: photoId,
+    entry
+  });
+  return isNew;
+}
+
+function speakResult(lang) {
+  if (!currentResultEntry) return;
+  const text = lang === 'ja' ? currentResultJa : currentResultTh;
+  speakWord(text, lang);
+}
+
+function resetPasha() {
+  currentResultEntry = null;
+  document.getElementById('pasha-start').style.display = '';
+  document.getElementById('pasha-loading').classList.remove('show');
+  document.getElementById('pasha-result').classList.remove('show');
+  document.getElementById('pasha-fail').classList.remove('show');
+}
+
+async function resizeAndEncode(file, maxSize) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      let w = img.naturalWidth, h = img.naturalHeight;
+      if (w > h) { if (w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; } }
+      else        { if (h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; } }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      const data = canvas.toDataURL('image/jpeg', 0.85);
+      resolve(data.split(',')[1]);
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+}
+
+// ========================
+// タッチ！ モード
+// ========================
+let touchPages   = [];
+let touchCurrent = 0;
+let touchStartX  = 0;
+let touchTapCount = 0;
+
+async function buildTouchGrid() {
+  const wrapper = document.getElementById('touch-grid-wrapper');
+  const dotsEl  = document.getElementById('touch-nav-dots');
+  wrapper.innerHTML = '';
+  dotsEl.innerHTML  = '';
+  touchCurrent = 0;
+
+  // ずかん保存済み + 辞書からランダム選抜
+  let words = [];
+  try {
+    const zukanAll = await dbGetAll('zukan');
+    for (const z of zukanAll) {
+      const photoUrl = await getPhotoUrl(z.latestPhotoId);
+      words.push({ entry: z.entry, photoUrl, dictKey: z.dictKey });
+    }
+  } catch {}
+
+  // 足りなければ辞書からランダム補充（最大24語）
+  const allKeys    = Object.keys(CAMERA_DICTIONARY);
+  const usedKeys   = new Set(words.map(w => w.dictKey));
+  const remaining  = allKeys.filter(k => !usedKeys.has(k));
+  shuffle(remaining);
+  for (const k of remaining) {
+    if (words.length >= 24) break;
+    words.push({ entry: CAMERA_DICTIONARY[k], photoUrl: null, dictKey: k });
+  }
+  if (words.length > 24) words = words.slice(0, 24);
+  shuffle(words);
+
+  // 4枚ずつページに分ける
+  touchPages = [];
+  for (let i = 0; i < words.length; i += 4) {
+    touchPages.push(words.slice(i, i + 4));
+  }
+
+  // ページDOM生成
+  touchPages.forEach((pageWords, pageIdx) => {
+    const page = document.createElement('div');
+    page.className = 'touch-page' + (pageIdx !== 0 ? ' hidden-right' : '');
+    page.dataset.page = pageIdx;
+
+    pageWords.forEach((w) => {
+      const card = document.createElement('div');
+      card.className = 'touch-card';
+      if (w.photoUrl) {
+        const img = document.createElement('img');
+        img.className = 'touch-card-photo';
+        img.src = w.photoUrl;
+        img.alt = w.entry.ja;
+        card.appendChild(img);
+      } else {
+        const em = document.createElement('div');
+        em.className = 'touch-card-emoji-big';
+        em.textContent = w.entry.emoji;
+        card.appendChild(em);
+      }
+      const label = document.createElement('div');
+      label.className = 'touch-card-label';
+      label.textContent = w.entry.emoji + ' ' + w.entry.ja;
+      card.appendChild(label);
+
+      card.addEventListener('click', () => onTouchCardTap(card, w.entry));
+      wrapper.appendChild(card);
+    });
+    wrapper.appendChild(page);
+  });
+
+  // ナビドット
+  touchPages.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dotsEl.appendChild(dot);
+  });
+
+  // スワイプ対応
+  wrapper.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  wrapper.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) {
+      if (dx < 0) touchSwipe(1);
+      else        touchSwipe(-1);
+    }
+  }, { passive: true });
+}
+
+async function getPhotoUrl(photoId) {
+  if (!photoId) return null;
+  try {
+    const photo = await dbGet('photos', photoId);
+    if (photo && photo.imageBlob) return URL.createObjectURL(photo.imageBlob);
+  } catch {}
+  return null;
+}
+
+function onTouchCardTap(card, entry) {
+  card.classList.remove('playing');
+  void card.offsetWidth;
+  card.classList.add('playing');
+  card.addEventListener('animationend', () => card.classList.remove('playing'), { once: true });
+
+  speakWord(entry.ja, 'ja');
+  setTimeout(() => speakWord(entry.th, 'th'), 1000);
+
+  touchTapCount++;
+  if (touchTapCount > 0 && touchTapCount % 5 === 0) {
+    showFloatingSticker(STICKER_POOL[Math.floor(Math.random() * STICKER_POOL.length)]);
+  }
+}
+
+function touchSwipe(dir) {
+  const next = touchCurrent + dir;
+  if (next < 0 || next >= touchPages.length) return;
+
+  const pages = document.querySelectorAll('.touch-page');
+  pages[touchCurrent].classList.add(dir > 0 ? 'hidden-left' : 'hidden-right');
+  pages[next].classList.remove('hidden-left', 'hidden-right');
+  touchCurrent = next;
+
+  // ドット更新
+  document.querySelectorAll('.nav-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === touchCurrent);
+  });
+}
+
+// ========================
+// ずかん
+// ========================
+let zukanAll = [];
+let currentCat = 'all';
+
+async function buildZukan(cat) {
+  currentCat = cat;
+  if (!db) return;
+
+  try {
+    zukanAll = await dbGetAll('zukan');
+  } catch { zukanAll = []; }
+
+  // カテゴリタブ生成（初回のみ）
+  const tabsEl = document.getElementById('zukan-cat-tabs');
+  if (tabsEl.querySelectorAll('.zukan-cat-tab').length === 1) {
+    CAMERA_CATEGORIES.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = 'zukan-cat-tab';
+      btn.dataset.cat = c.id;
+      btn.textContent = c.icon + ' ' + c.label;
+      btn.onclick = function() { filterZukan(c.id, this); };
+      tabsEl.appendChild(btn);
+    });
+  }
+
+  renderZukan(cat);
+}
+
+function filterZukan(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.zukan-cat-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderZukan(cat);
+}
+
+function renderZukan(cat) {
+  const grid = document.getElementById('zukan-grid');
+  grid.innerHTML = '';
+
+  const foundMap = {};
+  zukanAll.forEach(z => { foundMap[z.dictKey] = z; });
+
+  // 対象単語一覧
+  const allWords = Object.entries(CAMERA_DICTIONARY).filter(([, e]) => {
+    return cat === 'all' || e.category === cat;
+  });
+
+  if (allWords.length === 0) {
+    grid.innerHTML = '<div class="zukan-empty-msg">このカテゴリは<br>まだありません</div>';
+    return;
+  }
+
+  allWords.forEach(([key, entry]) => {
+    const z = foundMap[key];
+    const card = document.createElement('div');
+    card.className = 'zukan-card ' + (z ? 'found' : 'unknown');
+
+    if (z) {
+      // 撮影済み
+      card.onclick = () => openDetailModal(key, entry, z.latestPhotoId);
+      const emoji = document.createElement('div');
+      emoji.className = 'zukan-card-emoji';
+      emoji.textContent = entry.emoji;
+      card.appendChild(emoji);
+    } else {
+      // 未撮影
+      card.onclick = () => {
+        openPasha();
+        setTimeout(() => {
+          const hint = document.createElement('div');
+          hint.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:16px 24px;border-radius:20px;font-weight:900;font-size:1.1rem;z-index:300;box-shadow:0 8px 24px rgba(0,0,0,.15);text-align:center;pointer-events:none;';
+          hint.textContent = entry.emoji + ' ' + entry.ja + '\nをさがしにいこう！📷';
+          hint.style.whiteSpace = 'pre-line';
+          document.body.appendChild(hint);
+          setTimeout(() => hint.remove(), 2000);
+        }, 300);
+      };
+      const unkEmoji = document.createElement('div');
+      unkEmoji.className = 'zukan-card-unknown-emoji';
+      unkEmoji.textContent = '？？';
+      card.appendChild(unkEmoji);
+    }
+
+    const label = document.createElement('div');
+    label.className = 'zukan-card-label';
+    label.textContent = z ? entry.ja : '';
+    card.appendChild(label);
+
+    grid.appendChild(card);
+  });
+}
+
+// ========================
+// 詳細モーダル
+// ========================
+let detailCurrentEntry = null;
+let detailCurrentJa    = '';
+let detailCurrentTh    = '';
+
+async function openDetailModal(key, entry, photoId) {
+  detailCurrentEntry = entry;
+  detailCurrentJa    = entry.ja;
+  detailCurrentTh    = entry.th;
+
+  document.getElementById('detail-emoji').textContent = entry.emoji;
+  document.getElementById('detail-ja').textContent    = entry.ja;
+  document.getElementById('detail-th').textContent    = entry.th + '（' + entry.thRead + '）';
+
+  const photoEl = document.getElementById('detail-photo');
+  const url = await getPhotoUrl(photoId);
+  if (url) {
+    photoEl.src = url;
+    photoEl.style.display = '';
+    document.getElementById('detail-emoji').style.display = 'none';
+  } else {
+    photoEl.style.display = 'none';
+    document.getElementById('detail-emoji').style.display = '';
+  }
+
+  document.getElementById('detail-modal').classList.add('show');
+  speakWord(entry.ja, 'ja');
+  setTimeout(() => speakWord(entry.th, 'th'), 1200);
+}
+
+function closeDetailModal(e) {
+  if (e.target === document.getElementById('detail-modal')) {
+    document.getElementById('detail-modal').classList.remove('show');
+  }
+}
+
+function closeDetailModalBtn() {
+  document.getElementById('detail-modal').classList.remove('show');
+}
+
+function speakDetailWord(lang) {
+  if (!detailCurrentEntry) return;
+  speakWord(lang === 'ja' ? detailCurrentJa : detailCurrentTh, lang);
+}
+
+// ========================
+// どっち？（クイズ）
+// ========================
+let quizEntry1 = null, quizEntry2 = null, quizAnswer = null;
+let quizLang   = 'ja';
+
+async function buildQuiz() {
+  const content = document.getElementById('quiz-content');
+  content.innerHTML = '';
+
+  let pool = [];
+  try {
+    const zukanAll = await dbGetAll('zukan');
+    pool = zukanAll.map(z => z.entry).filter(Boolean);
+  } catch {}
+
+  if (pool.length < 2) {
+    content.innerHTML = `
+      <div class="quiz-not-enough">
+        <div class="quiz-ne-icon">📷</div>
+        <div style="font-size:1rem;font-weight:800;color:#888;margin-top:8px;">
+          まず 2つ いじょうの<br>ことばを さつえいしてね！
+        </div>
+        <button class="quiz-ne-goto" onclick="openPasha()">📷 パシャ！へいく</button>
+      </div>`;
+    return;
+  }
+
+  shuffle(pool);
+  quizEntry1  = pool[0];
+  quizEntry2  = pool[1];
+  quizAnswer  = Math.random() < 0.5 ? 1 : 2;
+  quizLang    = Math.random() < 0.5 ? 'ja' : 'th';
+
+  const questionEntry = quizAnswer === 1 ? quizEntry1 : quizEntry2;
+  const questionText  = quizLang === 'ja' ? questionEntry.ja : questionEntry.th;
+
+  content.innerHTML = `
+    <div class="quiz-prompt-text">🔊「${questionText}」は どっち？</div>
+    <div class="quiz-choices-grid" id="quiz-choices"></div>
+    <div class="quiz-result-text" id="quiz-result-text"></div>
+    <button class="quiz-next-btn" id="quiz-next-btn" onclick="buildQuiz()">つぎへ →</button>`;
+
+  // 問題音声
+  speakWord(questionText, quizLang);
+
+  // 2択カード
+  const choicesEl = document.getElementById('quiz-choices');
+  [[quizEntry1, 1], [quizEntry2, 2]].forEach(([entry, idx]) => {
+    const card = document.createElement('div');
+    card.className = 'quiz-choice-card';
+
+    const em = document.createElement('div');
+    em.className = 'quiz-choice-emoji';
+    em.textContent = entry.emoji;
+    card.appendChild(em);
+
+    const lbl = document.createElement('div');
+    lbl.className = 'quiz-choice-label';
+    lbl.textContent = entry.ja;
+    card.appendChild(lbl);
+
+    card.onclick = () => onQuizChoice(card, idx, entry, questionEntry);
+    choicesEl.appendChild(card);
+  });
+}
+
+function onQuizChoice(card, idx, entry, questionEntry) {
+  // 既に回答済みなら無視
+  if (document.getElementById('quiz-next-btn').classList.contains('show')) return;
+
+  const resultEl = document.getElementById('quiz-result-text');
+  const isCorrect = idx === quizAnswer;
+
+  const allCards = document.querySelectorAll('.quiz-choice-card');
+  allCards.forEach(c => { c.onclick = null; });
+
+  if (isCorrect) {
+    card.classList.add('correct');
+    resultEl.textContent = 'すごい！ ' + questionEntry.emoji + ' ' + questionEntry.ja + '！';
+    speakWord('すごい！', 'ja');
+    earnSticker(true);
+  } else {
+    card.classList.add('wrong');
+    resultEl.textContent = 'これは ' + entry.ja + ' だよ！' + questionEntry.ja + ' は こっち！';
+    // 正解をハイライト
+    allCards.forEach((c, i) => {
+      if (i + 1 === quizAnswer || (i === 0 && quizAnswer === 1) || (i === 1 && quizAnswer === 2)) {
+        // correct side
+      }
+    });
+    // 正解カードをマーク
+    document.querySelectorAll('.quiz-choice-card')[quizAnswer - 1].classList.add('correct');
+  }
+
+  setTimeout(() => {
+    document.getElementById('quiz-next-btn').classList.add('show');
+  }, 600);
+}
+
+// ========================
+// ユーティリティ
+// ========================
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// ========================
+// 初期化
+// ========================
+openDB().then(() => {
+  updateMenuInfo();
+}).catch(() => {});
+</script>
+</body>
+</html>
