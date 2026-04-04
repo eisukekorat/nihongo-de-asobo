@@ -1,5 +1,5 @@
-// にほんごであそぼ Service Worker v10
-const CACHE_NAME = 'nihongo-v11';
+// にほんごであそぼ Service Worker v11
+const CACHE_NAME = 'nihongo-v12';
 const ASSETS = [
   'index.html',
   'camera.html',
@@ -35,7 +35,7 @@ self.addEventListener('activate', (e) => {
   self.clients.claim();
 });
 
-// フェッチ：キャッシュファースト（オフライン対応）
+// フェッチ：HTML・JSはネットワーク優先、その他はキャッシュ優先
 self.addEventListener('fetch', (e) => {
   const url = e.request.url;
 
@@ -49,6 +49,36 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
+  // 同一オリジンのHTML・JSはネットワーク優先（コード更新をすぐ反映）
+  const isSameOrigin = url.startsWith(self.location.origin);
+  const isHtmlOrJs = url.endsWith('.html') || url.endsWith('.js');
+
+  if (isSameOrigin && isHtmlOrJs) {
+    e.respondWith(
+      fetch(e.request)
+        .then((response) => {
+          // 成功したらキャッシュを更新して返す
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+          }
+          return response;
+        })
+        .catch(() => {
+          // オフライン時はキャッシュから返す
+          return caches.match(e.request).then((cached) => {
+            if (cached) return cached;
+            // HTMLリクエストでキャッシュもない場合はindex.htmlを返す
+            if (e.request.headers.get('accept')?.includes('text/html')) {
+              return caches.match('/nihongo-de-asobo/index.html');
+            }
+          });
+        })
+    );
+    return;
+  }
+
+  // フォント・画像・アイコン等はキャッシュ優先
   e.respondWith(
     caches.match(e.request).then((cached) => {
       if (cached) return cached;
@@ -58,7 +88,7 @@ self.addEventListener('fetch', (e) => {
           // 正常なレスポンスのみキャッシュ（Google Fontsや同一オリジン）
           if (
             response.ok &&
-            (url.startsWith(self.location.origin) ||
+            (isSameOrigin ||
               url.includes('fonts.googleapis.com') ||
               url.includes('fonts.gstatic.com'))
           ) {
