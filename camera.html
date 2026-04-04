@@ -799,6 +799,7 @@ let touchPages   = [];
 let touchCurrent = 0;
 let touchStartX  = 0;
 let touchTapCount = 0;
+let touchSwipeListenerAdded = false;
 
 async function buildTouchGrid() {
   const wrapper = document.getElementById('touch-grid-wrapper');
@@ -862,7 +863,7 @@ async function buildTouchGrid() {
       card.appendChild(label);
 
       card.addEventListener('click', () => onTouchCardTap(card, w.entry));
-      wrapper.appendChild(card);
+      page.appendChild(card);
     });
     wrapper.appendChild(page);
   });
@@ -874,15 +875,18 @@ async function buildTouchGrid() {
     dotsEl.appendChild(dot);
   });
 
-  // スワイプ対応
-  wrapper.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
-  wrapper.addEventListener('touchend', (e) => {
-    const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 50) {
-      if (dx < 0) touchSwipe(1);
-      else        touchSwipe(-1);
-    }
-  }, { passive: true });
+  // スワイプ対応（リスナー重複防止）
+  if (!touchSwipeListenerAdded) {
+    wrapper.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    wrapper.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 50) {
+        if (dx < 0) touchSwipe(1);
+        else        touchSwipe(-1);
+      }
+    }, { passive: true });
+    touchSwipeListenerAdded = true;
+  }
 }
 
 async function getPhotoUrl(photoId) {
