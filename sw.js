@@ -1,5 +1,5 @@
 // にほんごであそぼ Service Worker v9
-const CACHE_NAME = 'nihongo-v9';
+const CACHE_NAME = 'nihongo-v10';
 const ASSETS = [
   'index.html',
   'manifest.json',
@@ -68,7 +68,7 @@ self.addEventListener('fetch', (e) => {
         .catch(() => {
           // オフライン時はindex.htmlを返す
           if (e.request.headers.get('accept')?.includes('text/html')) {
-            return caches.match('index.html');
+            return caches.match('/nihongo-de-asobo/index.html');
           }
         });
     })

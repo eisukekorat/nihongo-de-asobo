@@ -2,7 +2,7 @@
   "name": "にほんご あそぼう！",
   "short_name": "にほんご",
   "description": "日本語をたのしくまなぼう！เรียนภาษาญี่ปุ่นกัน",
-  "start_url": "/index.html",
+  "start_url": "/nihongo-de-asobo/",
   "display": "standalone",
   "background_color": "#fff7ed",
   "theme_color": "#ff6b6b",
