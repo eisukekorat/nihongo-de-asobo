@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>にほんご あそぼう！</title>
+<title>にほんご あそぼう！ เรียนภาษาญี่ปุ่น</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="にほんご">
@@ -94,6 +94,8 @@
   .cat-tab[data-cat="clothes"].active{background:#e3fafc;border-color:var(--c14);color:var(--c14)}
   .cat-tab[data-cat="shapes"].active{background:#fff9db;border-color:var(--c15);color:var(--c15)}
   .cat-tab[data-cat="hiragana"].active{background:#fffbe0;border-color:var(--yellow);color:#d4a000}
+  .cat-tab .cat-tab-thai{display:block;font-size:0.5rem;color:inherit;opacity:0.7;font-weight:700}
+  .thai-sub{font-size:0.6em;opacity:0.7;font-weight:700;display:block}
 
   /* ============ MODE TOGGLE ============ */
   .mode-toggle{display:flex;justify-content:center;gap:8px;margin-bottom:14px;position:relative;z-index:1;flex-wrap:wrap;padding:0 16px}
@@ -552,35 +554,35 @@
 </div>
 
 <div class="cat-tabs" id="catTabs">
-  <button class="cat-tab active" data-cat="animals"   onclick="setCategory('animals',this)">🐾 どうぶつ</button>
-  <button class="cat-tab" data-cat="food"      onclick="setCategory('food',this)">🍎 たべもの</button>
-  <button class="cat-tab" data-cat="numbers"   onclick="setCategory('numbers',this)">🔢 かず・いろ</button>
-  <button class="cat-tab" data-cat="shapes"    onclick="setCategory('shapes',this)">🔷 かたち</button>
-  <button class="cat-tab" data-cat="greetings" onclick="setCategory('greetings',this)">👋 あいさつ</button>
-  <button class="cat-tab" data-cat="phrases"   onclick="setCategory('phrases',this)">💬 かいわ</button>
-  <button class="cat-tab" data-cat="body"      onclick="setCategory('body',this)">👁️ からだ</button>
-  <button class="cat-tab" data-cat="feelings"  onclick="setCategory('feelings',this)">😊 きもち</button>
-  <button class="cat-tab" data-cat="vehicles"  onclick="setCategory('vehicles',this)">🚗 のりもの</button>
-  <button class="cat-tab" data-cat="family"    onclick="setCategory('family',this)">👨‍👩‍👦 かぞく</button>
-  <button class="cat-tab" data-cat="house"     onclick="setCategory('house',this)">🏠 おうち</button>
-  <button class="cat-tab" data-cat="toys"      onclick="setCategory('toys',this)">🧸 おもちゃ</button>
-  <button class="cat-tab" data-cat="clothes"   onclick="setCategory('clothes',this)">👗 ふく</button>
-  <button class="cat-tab" data-cat="weather"   onclick="setCategory('weather',this)">🌤️ てんき</button>
-  <button class="cat-tab" data-cat="actions"   onclick="setCategory('actions',this)">🏃 どうさ</button>
-  <button class="cat-tab" data-cat="hiragana"  onclick="setCategory('hiragana',this)">あ ひらがな</button>
+  <button class="cat-tab active" data-cat="animals"   onclick="setCategory('animals',this)">🐾 どうぶつ<span class="cat-tab-thai">สัตว์</span></button>
+  <button class="cat-tab" data-cat="food"      onclick="setCategory('food',this)">🍎 たべもの<span class="cat-tab-thai">อาหาร</span></button>
+  <button class="cat-tab" data-cat="numbers"   onclick="setCategory('numbers',this)">🔢 かず・いろ<span class="cat-tab-thai">ตัวเลข・สี</span></button>
+  <button class="cat-tab" data-cat="shapes"    onclick="setCategory('shapes',this)">🔷 かたち<span class="cat-tab-thai">รูปทรง</span></button>
+  <button class="cat-tab" data-cat="greetings" onclick="setCategory('greetings',this)">👋 あいさつ<span class="cat-tab-thai">ทักทาย</span></button>
+  <button class="cat-tab" data-cat="phrases"   onclick="setCategory('phrases',this)">💬 かいわ<span class="cat-tab-thai">บทสนทนา</span></button>
+  <button class="cat-tab" data-cat="body"      onclick="setCategory('body',this)">👁️ からだ<span class="cat-tab-thai">ร่างกาย</span></button>
+  <button class="cat-tab" data-cat="feelings"  onclick="setCategory('feelings',this)">😊 きもち<span class="cat-tab-thai">ความรู้สึก</span></button>
+  <button class="cat-tab" data-cat="vehicles"  onclick="setCategory('vehicles',this)">🚗 のりもの<span class="cat-tab-thai">ยานพาหนะ</span></button>
+  <button class="cat-tab" data-cat="family"    onclick="setCategory('family',this)">👨‍👩‍👦 かぞく<span class="cat-tab-thai">ครอบครัว</span></button>
+  <button class="cat-tab" data-cat="house"     onclick="setCategory('house',this)">🏠 おうち<span class="cat-tab-thai">บ้าน</span></button>
+  <button class="cat-tab" data-cat="toys"      onclick="setCategory('toys',this)">🧸 おもちゃ<span class="cat-tab-thai">ของเล่น</span></button>
+  <button class="cat-tab" data-cat="clothes"   onclick="setCategory('clothes',this)">👗 ふく<span class="cat-tab-thai">เสื้อผ้า</span></button>
+  <button class="cat-tab" data-cat="weather"   onclick="setCategory('weather',this)">🌤️ てんき<span class="cat-tab-thai">อากาศ</span></button>
+  <button class="cat-tab" data-cat="actions"   onclick="setCategory('actions',this)">🏃 どうさ<span class="cat-tab-thai">การกระทำ</span></button>
+  <button class="cat-tab" data-cat="hiragana"  onclick="setCategory('hiragana',this)">あ ひらがな<span class="cat-tab-thai">ฮิรางานะ</span></button>
 </div>
 
 <div class="mode-toggle">
-  <button class="mode-btn" onclick="location.href='camera.html'" style="background:linear-gradient(135deg,#a8e6cf,#88d8b0);color:#2d3436;border-color:transparent">📷<br><span style="font-size:.7em">カメラ</span></button>
-  <button class="mode-btn active" onclick="setMode('cards',this)">🃏 カード</button>
-  <button class="mode-btn" onclick="setMode('quiz',this)">🎯 クイズ</button>
-  <button class="mode-btn" onclick="setMode('memory',this)">🧩 ペア</button>
-  <button class="mode-btn" onclick="setMode('counting',this)">🔢 かぞえ</button>
-  <button class="mode-btn" onclick="startAutoplay(false)">▶️ じどう</button>
-  <button class="mode-btn" onclick="startAutoplay(true)">🔁 2かい</button>
-  <button class="mode-btn" onclick="startRoutine('morning')">🌅 あさ</button>
-  <button class="mode-btn" onclick="startRoutine('evening')">🌙 よる</button>
-  <button class="mode-btn" onclick="setMode('songs',this)">🎵 うた</button>
+  <button class="mode-btn" onclick="location.href='camera.html'" style="background:linear-gradient(135deg,#a8e6cf,#88d8b0);color:#2d3436;border-color:transparent">📷<br><span style="font-size:.7em">カメラ</span><br><span style="font-size:.55em;opacity:.7">กล้อง</span></button>
+  <button class="mode-btn active" onclick="setMode('cards',this)">🃏 カード<br><span style="font-size:.55em;opacity:.7">การ์ด</span></button>
+  <button class="mode-btn" onclick="setMode('quiz',this)">🎯 クイズ<br><span style="font-size:.55em;opacity:.7">ควิซ</span></button>
+  <button class="mode-btn" onclick="setMode('memory',this)">🧩 ペア<br><span style="font-size:.55em;opacity:.7">จับคู่</span></button>
+  <button class="mode-btn" onclick="setMode('counting',this)">🔢 かぞえ<br><span style="font-size:.55em;opacity:.7">นับเลข</span></button>
+  <button class="mode-btn" onclick="startAutoplay(false)">▶️ じどう<br><span style="font-size:.55em;opacity:.7">อัตโนมัติ</span></button>
+  <button class="mode-btn" onclick="startAutoplay(true)">🔁 2かい<br><span style="font-size:.55em;opacity:.7">2 ครั้ง</span></button>
+  <button class="mode-btn" onclick="startRoutine('morning')">🌅 あさ<br><span style="font-size:.55em;opacity:.7">เช้า</span></button>
+  <button class="mode-btn" onclick="startRoutine('evening')">🌙 よる<br><span style="font-size:.55em;opacity:.7">กลางคืน</span></button>
+  <button class="mode-btn" onclick="setMode('songs',this)">🎵 うた<br><span style="font-size:.55em;opacity:.7">เพลง</span></button>
 </div>
 
 <div class="hira-tabs" id="hiraTabs" style="display:none"></div>
@@ -602,7 +604,7 @@
 <div class="song-overlay" id="songOverlay">
   <div class="song-speed-toggle" id="songSpeedToggle" onclick="toggleSongSpeed()">
     <span id="songSpeedIcon">🐇</span>
-    <span id="songSpeedLabel">ふつう</span>
+    <span id="songSpeedLabel">ふつう<br><span class="thai-sub">ปกติ</span></span>
   </div>
   <div class="song-counter" id="songCounter">1 / 6</div>
   <button class="song-close" onclick="stopSong()">✕</button>
@@ -612,51 +614,51 @@
   <div class="song-lyric-jp" id="songLyricJp"></div>
   <div class="song-lyric-thai" id="songLyricThai"></div>
   <div class="song-progress-bar" id="songProgressBar"></div>
-  <button class="song-repeat-btn" id="songRepeatBtn" onclick="replaySong(event)">🔁 もういっかい！</button>
-  <div class="song-tap-hint" id="songTapHint">タップで もういちど 🔊</div>
+  <button class="song-repeat-btn" id="songRepeatBtn" onclick="replaySong(event)">🔁 もういっかい！<br><span class="thai-sub">อีกครั้ง!</span></button>
+  <div class="song-tap-hint" id="songTapHint">タップで もういちど 🔊<br><span class="thai-sub">แตะเพื่อฟังอีกครั้ง</span></div>
   <div class="song-rec-indicator" id="songRecIndicator" style="display:none">
     <span class="song-rec-dot"></span>
-    ろくおんちゅう…
+    ろくおんちゅう…<br><span class="thai-sub">กำลังอัดเสียง...</span>
   </div>
   <div class="song-rec-actions" id="songRecActions">
-    <button class="song-rec-action-btn" onclick="playbackRecording(event)">▶️ きいてみる</button>
-    <button class="song-rec-action-btn save" onclick="confirmSaveRecording(event)">💾 ほぞん</button>
-    <button class="song-rec-action-btn" onclick="retryRecording(event)">🔄 もういちど</button>
-    <button class="song-rec-action-btn delete" onclick="cancelRecording(event)" id="songRecDeleteBtn">🗑️ けす</button>
+    <button class="song-rec-action-btn" onclick="playbackRecording(event)">▶️ きいてみる<br><span class="thai-sub">ฟังดู</span></button>
+    <button class="song-rec-action-btn save" onclick="confirmSaveRecording(event)">💾 ほぞん<br><span class="thai-sub">บันทึก</span></button>
+    <button class="song-rec-action-btn" onclick="retryRecording(event)">🔄 もういちど<br><span class="thai-sub">อีกครั้ง</span></button>
+    <button class="song-rec-action-btn delete" onclick="cancelRecording(event)" id="songRecDeleteBtn">🗑️ けす<br><span class="thai-sub">ลบ</span></button>
   </div>
 </div>
 
 <div class="quiz-section" id="quizSection">
   <div class="quiz-diff">
-    <button class="quiz-diff-btn active" id="quizDiff2" onclick="setQuizDiff(2)">2️⃣ 2たく</button>
-    <button class="quiz-diff-btn" id="quizDiff4" onclick="setQuizDiff(4)">4️⃣ 4たく</button>
+    <button class="quiz-diff-btn active" id="quizDiff2" onclick="setQuizDiff(2)">2️⃣ 2たく<span class="thai-sub">2 ตัวเลือก</span></button>
+    <button class="quiz-diff-btn" id="quizDiff4" onclick="setQuizDiff(4)">4️⃣ 4たく<span class="thai-sub">4 ตัวเลือก</span></button>
   </div>
   <div class="quiz-direction">
-    <button class="quiz-dir-btn active" id="quizDirJp" onclick="setQuizDirection('jp')">🎌 えもじ→にほんご</button>
-    <button class="quiz-dir-btn" id="quizDirTh" onclick="setQuizDirection('thai')">🇹🇭 タイご→にほんご</button>
+    <button class="quiz-dir-btn active" id="quizDirJp" onclick="setQuizDirection('jp')">🎌 えもじ→にほんご<span class="thai-sub">อิโมจิ→ญี่ปุ่น</span></button>
+    <button class="quiz-dir-btn" id="quizDirTh" onclick="setQuizDirection('thai')">🇹🇭 タイご→にほんご<span class="thai-sub">ไทย→ญี่ปุ่น</span></button>
   </div>
   <div class="quiz-question">
     <span class="quiz-emoji-big" id="quizEmoji">🐶</span>
     <div class="quiz-thai-big" id="quizThaiBig"></div>
     <div class="quiz-full-text" id="quizFullText" style="display:none"></div>
     <div class="quiz-prompt" id="quizPrompt">どれかな？</div>
-    <div class="quiz-prompt-thai" id="quizPromptThai"></div>
+    <div class="quiz-prompt-thai" id="quizPromptThai">อันไหนนะ?</div>
   </div>
   <div class="quiz-choices" id="quizChoices"></div>
   <div class="quiz-score" id="quizScore"></div>
-  <div style="text-align:center"><button class="quiz-next" id="quizNext" onclick="nextQuiz()">つぎ ➜</button></div>
+  <div style="text-align:center"><button class="quiz-next" id="quizNext" onclick="nextQuiz()">つぎ ➜<br><span class="thai-sub">ถัดไป</span></button></div>
 </div>
 
 <div class="memory-section" id="memorySection">
   <div class="memory-status" id="memoryStatus"></div>
   <div class="memory-grid" id="memoryGrid"></div>
-  <button class="memory-restart" id="memoryRestart" onclick="startMemory()">もういっかい 🔄</button>
+  <button class="memory-restart" id="memoryRestart" onclick="startMemory()">もういっかい 🔄<br><span class="thai-sub">อีกครั้ง</span></button>
 </div>
 
 <div class="counting-overlay" id="countingOverlay">
   <div class="counting-counter" id="countingCounter">1 / 5</div>
   <button class="counting-close" onclick="stopCounting()">✕</button>
-  <div class="counting-prompt" id="countingPrompt">タップして かぞえよう！</div>
+  <div class="counting-prompt" id="countingPrompt">タップして かぞえよう！<br><span class="thai-sub">แตะแล้วนับกัน!</span></div>
   <div class="counting-area" id="countingArea"></div>
   <div class="counting-result" id="countingResult"></div>
 </div>
@@ -668,7 +670,7 @@
   <span class="autoplay-emoji" id="autoplayEmoji">🐶</span>
   <div class="autoplay-text" id="autoplayText">いぬ</div>
   <div class="autoplay-thai-text" id="autoplayThai">สุนัข</div>
-  <div class="autoplay-repeat-label" id="autoplayRepeatLabel">🔁 もういっかい！</div>
+  <div class="autoplay-repeat-label" id="autoplayRepeatLabel">🔁 もういっかい！<br><span class="thai-sub">อีกครั้ง!</span></div>
   <div class="autoplay-progress" id="autoplayProgress"></div>
 </div>
 
@@ -687,13 +689,13 @@
 
 <div class="sticker-overlay" id="stickerOverlay">
   <button class="sticker-close" onclick="toggleStickerBook()">✕</button>
-  <div class="sticker-title">🎖️ シールちょう</div>
+  <div class="sticker-title">🎖️ シールちょう<br><span class="thai-sub">สมุดสติ๊กเกอร์</span></div>
   <div class="sticker-subtitle" id="stickerSubtitle">0こ あつめたよ！</div>
   <div class="sticker-grid" id="stickerGrid"></div>
 </div>
 
 <div class="rec-toggle" id="recToggle" onclick="toggleRecMode()">🎙️</div>
-<div class="rec-indicator" id="recIndicator">🎙️ ろくおん</div>
+<div class="rec-indicator" id="recIndicator">🎙️ ろくおん<span class="thai-sub">อัดเสียง</span></div>
 
 <script>
 // =========================================================
@@ -1163,26 +1165,36 @@ createBubbles();
 // =========================================================
 //  MASCOT
 // =========================================================
-const mascotMsgs=['がんばれ〜！','いいね！','すごいよ！','たのしい？','もういっかい！','やってみよう！','にほんご だいすき！','เก่งมาก！','สู้ๆ นะ！'];
+const mascotMsgs=[
+  {jp:'がんばれ〜！', th:'สู้ๆ นะ!'},
+  {jp:'いいね！', th:'ดีมาก!'},
+  {jp:'すごいよ！', th:'เก่งมาก!'},
+  {jp:'たのしい？', th:'สนุกไหม?'},
+  {jp:'もういっかい！', th:'อีกครั้ง!'},
+  {jp:'やってみよう！', th:'ลองดู!'},
+  {jp:'にほんご だいすき！', th:'ชอบภาษาญี่ปุ่น!'},
+];
 let mascotTimeout;
 function mascotTap(){
   const sp=document.getElementById('mascotSpeech');
   const msg=mascotMsgs[Math.floor(Math.random()*mascotMsgs.length)];
-  sp.textContent=msg;sp.classList.add('show');speak(msg);
+  sp.innerHTML=msg.jp+'<br><span style="font-size:0.75em;opacity:0.7">'+msg.th+'</span>';
+  speak(msg.jp);
   clearTimeout(mascotTimeout);
   mascotTimeout=setTimeout(()=>sp.classList.remove('show'),2500);
+  sp.classList.add('show');
 }
 
 // =========================================================
 //  MASCOT EVOLUTION
 // =========================================================
 const mascotLevels=[
-  {min:0,   display:'🐻',       name:'くまちゃん',     nameThai:'หมีน้อย',    desc:null},
-  {min:10,  display:'🎀🐻',     name:'くまちゃん',     nameThai:'หมีน้อย',    desc:'リボンを つけたよ！'},
-  {min:30,  display:'🧢🐻',     name:'くまくん',       nameThai:'หมีจัง',     desc:'ぼうしを かぶったよ！'},
-  {min:60,  display:'👑🐻',     name:'くまさん',       nameThai:'คุณหมี',     desc:'おうかんを もらったよ！'},
-  {min:100, display:'✨👑🐻✨', name:'くまおう',       nameThai:'ราชาหมี',    desc:'くまの おうさまだ！'},
-  {min:200, display:'🌟🧸🌟',  name:'でんせつのくま', nameThai:'หมีตำนาน',  desc:'でんせつの くまに なった！'},
+  {min:0,   display:'🐻',       name:'くまちゃん',     nameThai:'หมีน้อย',    desc:null,                      descThai:null},
+  {min:10,  display:'🎀🐻',     name:'くまちゃん',     nameThai:'หมีน้อย',    desc:'リボンを つけたよ！',       descThai:'ติดโบว์แล้ว!'},
+  {min:30,  display:'🧢🐻',     name:'くまくん',       nameThai:'หมีจัง',     desc:'ぼうしを かぶったよ！',     descThai:'ใส่หมวกแล้ว!'},
+  {min:60,  display:'👑🐻',     name:'くまさん',       nameThai:'คุณหมี',     desc:'おうかんを もらったよ！',   descThai:'ได้มงกุฎแล้ว!'},
+  {min:100, display:'✨👑🐻✨', name:'くまおう',       nameThai:'ราชาหมี',    desc:'くまの おうさまだ！',       descThai:'เป็นราชาหมีแล้ว!'},
+  {min:200, display:'🌟🧸🌟',  name:'でんせつのくま', nameThai:'หมีตำนาน',  desc:'でんせつの くまに なった！', descThai:'กลายเป็นหมีตำนานแล้ว!'},
 ];
 
 function getMascotLevel(){
@@ -1206,7 +1218,7 @@ function updateMascot(){
   mascotEl.textContent=level.display;
   // レベル1以上ならバッジ表示
   if(getMascotLevelIndex()>0){
-    badgeEl.textContent=level.name;
+    badgeEl.textContent=level.name + ' ' + level.nameThai;
     badgeEl.classList.add('show');
   }else{
     badgeEl.classList.remove('show');
@@ -1220,7 +1232,7 @@ function checkMascotLevelUp(){
     const level=getMascotLevel();
     if(level.desc){
       const sp=document.getElementById('mascotSpeech');
-      sp.textContent=level.desc;
+      sp.innerHTML=level.desc+'<br><span style="font-size:0.75em;opacity:0.7">'+(level.descThai||'')+'</span>';
       sp.classList.add('show');
       speak(level.desc);
       clearTimeout(mascotTimeout);
@@ -1581,10 +1593,19 @@ function celebrate(){
     p.style.width=(8+Math.random()*10)+'px';p.style.height=(8+Math.random()*10)+'px';
     container.appendChild(p);setTimeout(()=>p.remove(),4000);
   }
-  const msgs=['すごい！','やったね！','えらい！','かんぺき！','さいこう！','ばっちり！','てんさい！'];
+  const msgs=[
+    {jp:'すごい！',th:'เก่งมาก!'},
+    {jp:'やったね！',th:'ทำได้แล้ว!'},
+    {jp:'えらい！',th:'เก่งจัง!'},
+    {jp:'かんぺき！',th:'สมบูรณ์แบบ!'},
+    {jp:'さいこう！',th:'ดีที่สุด!'},
+    {jp:'ばっちり！',th:'เยี่ยม!'},
+    {jp:'てんさい！',th:'อัจฉริยะ!'},
+  ];
   const stars=['⭐','🌟','💫','✨','🎉','🥳','🏆','💖'];
   const cel=document.getElementById('celebration');
-  cel.querySelector('.celebration-text').textContent=msgs[Math.floor(Math.random()*msgs.length)];
+  const m=msgs[Math.floor(Math.random()*msgs.length)];
+  cel.querySelector('.celebration-text').innerHTML=m.jp+'<br><span style="font-size:0.5em;opacity:0.7">'+m.th+'</span>';
   cel.querySelector('.celebration-emoji').textContent=stars[Math.floor(Math.random()*stars.length)];
 
   const sc=document.getElementById('celStars');sc.innerHTML='';
@@ -1600,7 +1621,7 @@ function celebrate(){
   }
   cel.classList.add('show');cel.style.display='flex';
   const pv=msgs[Math.floor(Math.random()*msgs.length)];
-  setTimeout(()=>speak(pv),300);
+  setTimeout(()=>speak(pv.jp),300);
   setTimeout(()=>{cel.classList.remove('show');cel.style.display='none';},1600);
 }
 
@@ -2230,7 +2251,7 @@ function renderSongsList() {
       <span class="song-card-emoji" style="animation-delay:${index * 0.4}s">${song.emoji}</span>
       <div class="song-card-title">${song.title}</div>
       <div class="song-card-thai">${song.titleThai}</div>
-      <button class="song-record-btn" data-song-id="${song.id}" title="ろくおん">🎙️</button>
+      <button class="song-record-btn" data-song-id="${song.id}" title="ろくおん / อัดเสียง">🎙️</button>
       <span class="song-recorded-badge" data-song-id="${song.id}" style="display:none">🎤</span>
     `;
     // カード全体のクリック → 再生
@@ -2420,7 +2441,7 @@ function replaySong(e) {
 function toggleSongSpeed() {
   songSpeedSlow = !songSpeedSlow;
   document.getElementById('songSpeedIcon').textContent = songSpeedSlow ? '🐢' : '🐇';
-  document.getElementById('songSpeedLabel').textContent = songSpeedSlow ? 'ゆっくり' : 'ふつう';
+  document.getElementById('songSpeedLabel').innerHTML = songSpeedSlow ? 'ゆっくり<br><span class="thai-sub">ช้าๆ</span>' : 'ふつう<br><span class="thai-sub">ปกติ</span>';
 }
 
 // --- 録音ロジック ---
@@ -2434,7 +2455,7 @@ async function startRecording(song) {
   try {
     stream = await navigator.mediaDevices.getUserMedia({ audio: true });
   } catch(e) {
-    alert('マイクが使えません。設定を確認してください。');
+    alert('マイクが使えません。設定を確認してください。\nใช้ไมค์ไม่ได้ กรุณาตรวจสอบการตั้งค่า');
     return;
   }
 
@@ -2629,7 +2650,7 @@ function startMemory(){
   const pairs=shuffle([...pool,...pool.map(p=>({...p}))]);
   memCards=pairs;memRevealed=[];memMatched=0;memLocked=false;
   const grid=document.getElementById('memoryGrid');grid.innerHTML='';
-  document.getElementById('memoryStatus').textContent=`のこり ${3-memMatched} ペア`;
+  document.getElementById('memoryStatus').textContent=`のこり ${3-memMatched} ペア / เหลือ ${3-memMatched} คู่`;
   pairs.forEach((item,i)=>{
     const card=document.createElement('div');
     card.className='memory-card face-down';
@@ -2658,11 +2679,11 @@ function flipMemCard(card,idx){
         a.card.classList.add('matched');
         b.card.classList.add('matched');
         memMatched++;
-        document.getElementById('memoryStatus').textContent=`のこり ${3-memMatched} ペア`;
+        document.getElementById('memoryStatus').textContent=`のこり ${3-memMatched} ペア / เหลือ ${3-memMatched} คู่`;
         memRevealed=[];memLocked=false;
         if(memMatched===3){
           celebrate();earnSticker();earnSticker();
-          document.getElementById('memoryStatus').textContent='🎉 かんせい！';
+          document.getElementById('memoryStatus').textContent='🎉 かんせい！ สำเร็จแล้ว!';
         }
       },500);
     }else{
@@ -2701,7 +2722,7 @@ function nextCountRound(){
   const pool=shuffle(getActiveItems());
   const chosen=pool[0];
   document.getElementById('countingCounter').textContent=`${countRound} / ${countMaxRounds}`;
-  document.getElementById('countingPrompt').textContent='タップして かぞえよう！';
+  document.getElementById('countingPrompt').textContent='タップして かぞえよう！\nแตะแล้วนับกัน!';
   const result=document.getElementById('countingResult');
   result.classList.remove('show');result.textContent='';
   const area=document.getElementById('countingArea');area.innerHTML='';
@@ -2754,7 +2775,7 @@ function saveStickers(){
 }
 function updateStickerUI(){
   document.getElementById('stickerCountLabel').textContent=stickerData.count;
-  document.getElementById('stickerSubtitle').textContent=`${stickerData.count}こ あつめたよ！`;
+  document.getElementById('stickerSubtitle').textContent=`${stickerData.count}こ あつめたよ！ สะสมได้ ${stickerData.count} อัน!`;
 }
 function earnSticker(){
   const s=stickerPool[Math.floor(Math.random()*stickerPool.length)];
@@ -2764,7 +2785,7 @@ function earnSticker(){
   // Show earned animation
   const el=document.createElement('div');
   el.className='sticker-earned';
-  el.innerHTML=`<span class="sticker-earned-emoji">${s}</span><span class="sticker-earned-text">シール ゲット！</span>`;
+  el.innerHTML=`<span class="sticker-earned-emoji">${s}</span><span class="sticker-earned-text">シール ゲット！<br><span style="font-size:0.7em;opacity:0.7">ได้สติ๊กเกอร์!</span></span>`;
   document.body.appendChild(el);
   setTimeout(()=>el.remove(),2000);
   // マスコットレベルアップチェック
@@ -2900,7 +2921,7 @@ async function recordVoice(card,item){
     },3000);
     recorder.onstop=async()=>{
       overlay.remove();
-      if(chunks.length===0){alert('ろくおんできませんでした');return;}
+      if(chunks.length===0){alert('ろくおんできませんでした\nอัดเสียงไม่ได้');return;}
       const actualType=chunks[0].type||mimeType||'audio/mp4';
       const blob=new Blob(chunks,{type:actualType});
       const key=currentCat+'_'+item.jp;
@@ -2914,7 +2935,7 @@ async function recordVoice(card,item){
       audio.play().catch(()=>{});
     };
   }catch(e){
-    alert('マイクが使えません。\nブラウザの設定でマイクを許可してください。');
+    alert('マイクが使えません。\nブラウザの設定でマイクを許可してください。\n\nใช้ไมค์ไม่ได้ กรุณาอนุญาตไมค์ในการตั้งค่าเบราว์เซอร์');
   }
 }
 

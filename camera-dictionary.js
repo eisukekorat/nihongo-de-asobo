@@ -626,11 +626,11 @@ for (const [key, entry] of Object.entries(CAMERA_DICTIONARY)) {
 
 // カテゴリ一覧
 const CAMERA_CATEGORIES = [
-  { id: "どうぶつ", label: "どうぶつ", icon: "🐾" },
-  { id: "たべもの", label: "たべもの", icon: "🍎" },
-  { id: "のりもの", label: "のりもの", icon: "🚗" },
-  { id: "おうち",   label: "おうち",   icon: "🏠" },
-  { id: "からだ",   label: "からだ",   icon: "🖐️" },
-  { id: "ふく",     label: "ふく",     icon: "👕" },
-  { id: "おもちゃ", label: "おもちゃ", icon: "🧸" },
+  { id: "どうぶつ", label: "どうぶつ", labelThai: "สัตว์",      icon: "🐾" },
+  { id: "たべもの", label: "たべもの", labelThai: "อาหาร",      icon: "🍎" },
+  { id: "のりもの", label: "のりもの", labelThai: "ยานพาหนะ",   icon: "🚗" },
+  { id: "おうち",   label: "おうち",   labelThai: "บ้าน",        icon: "🏠" },
+  { id: "からだ",   label: "からだ",   labelThai: "ร่างกาย",     icon: "🖐️" },
+  { id: "ふく",     label: "ふく",     labelThai: "เสื้อผ้า",    icon: "👕" },
+  { id: "おもちゃ", label: "おもちゃ", labelThai: "ของเล่น",     icon: "🧸" },
 ];

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>ことばカメラ</title>
+<title>ことばカメラ กล้องคำศัพท์</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="ことばカメラ">
@@ -361,6 +361,7 @@ body {
   border:none; border-radius:50px; font-size:1rem; font-weight:900;
   cursor:pointer; box-shadow:0 4px 0 rgba(0,0,0,.1);
 }
+.thai-sub{font-size:0.6em;opacity:0.7;font-weight:700;display:block}
 </style>
 </head>
 <body>
@@ -372,7 +373,7 @@ body {
 <div id="view-menu" class="view active">
   <div class="menu-header">
     <button class="menu-back-btn" onclick="location.href='index.html'">←</button>
-    <span class="menu-title">ことばカメラ</span>
+    <span class="menu-title">ことばカメラ <span style="font-size:0.7em;opacity:0.6">กล้องคำศัพท์</span></span>
   </div>
   <div class="menu-mascot-area">
     <div class="menu-mascot">🐻</div>
@@ -410,40 +411,40 @@ body {
 <div id="view-pasha" class="view">
   <div class="header-bar">
     <button class="back-btn" onclick="showMenu()">←</button>
-    <span class="header-title">📷 パシャ！</span>
+    <span class="header-title">📷 パシャ！ <span style="font-size:0.65em;opacity:0.6">ถ่ายรูป!</span></span>
   </div>
   <div class="pasha-content" id="pasha-content">
     <!-- 初期：撮影ボタン -->
     <div class="pasha-start-area" id="pasha-start">
       <button class="pasha-btn" onclick="triggerCamera()">📷</button>
-      <div class="pasha-hint">ここを おして<br>しゃしんを とろう！</div>
+      <div class="pasha-hint">ここを おして<br>しゃしんを とろう！<br><span class="thai-sub">กดที่นี่ แล้วถ่ายรูป!</span></div>
     </div>
     <!-- 認識中 -->
     <div class="pasha-loading" id="pasha-loading">
       <div class="loading-mascot">🔍</div>
-      <div class="loading-text">うーん、なんだろう…</div>
+      <div class="loading-text">うーん、なんだろう…<br><span class="thai-sub">อืม อะไรนะ...</span></div>
     </div>
     <!-- 結果 -->
     <div class="pasha-result" id="pasha-result">
-      <img id="result-photo" class="result-photo" src="" alt="とった しゃしん">
+      <img id="result-photo" class="result-photo" src="" alt="とった しゃしん / รูปที่ถ่าย">
       <div id="result-emoji" class="result-emoji"></div>
       <div id="result-ja" class="result-ja"></div>
       <div id="result-th" class="result-th"></div>
       <div class="result-tts-btns">
-        <button class="tts-btn tts-btn-ja" id="tts-ja-btn" onclick="speakResult('ja')">🔊 にほんご</button>
-        <button class="tts-btn tts-btn-th" id="tts-th-btn" onclick="speakResult('th')">🔊 タイご</button>
+        <button class="tts-btn tts-btn-ja" id="tts-ja-btn" onclick="speakResult('ja')">🔊 にほんご<br><span style="font-size:0.65em">ญี่ปุ่น</span></button>
+        <button class="tts-btn tts-btn-th" id="tts-th-btn" onclick="speakResult('th')">🔊 タイご<br><span style="font-size:0.65em">ไทย</span></button>
       </div>
       <div class="result-saved-msg" id="result-saved-msg"></div>
       <div class="result-actions">
-        <button class="result-action-btn" onclick="resetPasha()">📷 もういっかい</button>
-        <button class="result-action-btn" onclick="openZukan()">📖 ずかん</button>
+        <button class="result-action-btn" onclick="resetPasha()">📷 もういっかい<br><span class="thai-sub">อีกครั้ง</span></button>
+        <button class="result-action-btn" onclick="openZukan()">📖 ずかん<br><span class="thai-sub">สมุดคำศัพท์</span></button>
       </div>
     </div>
     <!-- 失敗 -->
     <div class="pasha-fail" id="pasha-fail">
       <div class="fail-emoji">🔍</div>
-      <div class="fail-text">もういちど<br>とってみよう！📷</div>
-      <button class="fail-retry-btn" onclick="resetPasha()">もういっかい</button>
+      <div class="fail-text">もういちど とってみよう！📷<br><span class="thai-sub">ลองถ่ายอีกครั้ง!</span></div>
+      <button class="fail-retry-btn" onclick="resetPasha()">もういっかい<br><span class="thai-sub">อีกครั้ง</span></button>
     </div>
   </div>
 </div>
@@ -452,7 +453,7 @@ body {
 <div id="view-touch" class="view">
   <div class="header-bar">
     <button class="back-btn" onclick="showMenu()">←</button>
-    <span class="header-title">👆 タッチ！</span>
+    <span class="header-title">👆 タッチ！ <span style="font-size:0.65em;opacity:0.6">แตะ!</span></span>
   </div>
   <div class="touch-grid-wrapper" id="touch-grid-wrapper">
     <!-- ページはJSで生成 -->
@@ -464,10 +465,10 @@ body {
 <div id="view-zukan" class="view">
   <div class="header-bar">
     <button class="back-btn" onclick="showMenu()">←</button>
-    <span class="header-title">📖 ことばずかん</span>
+    <span class="header-title">📖 ことばずかん <span style="font-size:0.65em;opacity:0.6">สมุดคำศัพท์</span></span>
   </div>
   <div class="zukan-cat-tabs" id="zukan-cat-tabs">
-    <button class="zukan-cat-tab active" data-cat="all" onclick="filterZukan('all',this)">🌟 ぜんぶ</button>
+    <button class="zukan-cat-tab active" data-cat="all" onclick="filterZukan('all',this)">🌟 ぜんぶ <span style="font-size:0.65em;opacity:0.6">ทั้งหมด</span></button>
     <!-- カテゴリはJSで生成 -->
   </div>
   <div class="zukan-grid" id="zukan-grid"></div>
@@ -477,7 +478,7 @@ body {
 <div id="view-quiz" class="view">
   <div class="header-bar">
     <button class="back-btn" onclick="showMenu()">←</button>
-    <span class="header-title">🎵 どっち？</span>
+    <span class="header-title">🎵 どっち？ <span style="font-size:0.65em;opacity:0.6">อันไหน?</span></span>
   </div>
   <div class="quiz-content" id="quiz-content">
     <!-- JSで生成 -->
@@ -493,8 +494,8 @@ body {
     <div id="detail-ja" class="detail-ja"></div>
     <div id="detail-th" class="detail-th"></div>
     <div class="detail-tts-btns">
-      <button class="tts-btn tts-btn-ja" onclick="speakDetailWord('ja')">🔊 にほんご</button>
-      <button class="tts-btn tts-btn-th" onclick="speakDetailWord('th')">🔊 タイご</button>
+      <button class="tts-btn tts-btn-ja" onclick="speakDetailWord('ja')">🔊 にほんご<br><span style="font-size:0.65em">ญี่ปุ่น</span></button>
+      <button class="tts-btn tts-btn-th" onclick="speakDetailWord('th')">🔊 タイご<br><span style="font-size:0.65em">ไทย</span></button>
     </div>
   </div>
 </div>
@@ -612,7 +613,7 @@ function earnSticker(isNew) {
 function showFloatingSticker(s) {
   const el = document.createElement('div');
   el.className = 'sticker-float-el';
-  el.innerHTML = s + '<div class="sticker-float-label">シール ゲット！</div>';
+  el.innerHTML = s + '<div class="sticker-float-label">シール ゲット！<br><span style="font-size:0.7em;opacity:0.7">ได้สติ๊กเกอร์!</span></div>';
   document.body.appendChild(el);
   el.addEventListener('animationend', () => el.remove());
 }
@@ -627,9 +628,9 @@ async function updateMenuInfo() {
     const count = zukanAll.length;
     const el = document.getElementById('menu-collection-info');
     if (count === 0) {
-      el.textContent = 'ことばを あつめよう！';
+      el.textContent = 'ことばを あつめよう！ มาสะสมคำศัพท์กัน!';
     } else {
-      el.textContent = `いま ${count} このことば！`;
+      el.textContent = `いま ${count} このことば！ สะสมได้ ${count} คำ!`;
     }
   } catch {}
 }
@@ -719,10 +720,10 @@ async function showPashaResult(matched, base64) {
   const isNew = await saveToZukan(key, entry, base64);
   const msg = document.getElementById('result-saved-msg');
   if (isNew) {
-    msg.textContent = '★ ことばずかんに ついかしたよ！';
+    msg.textContent = '★ ことばずかんに ついかしたよ！ เพิ่มในสมุดคำศัพท์แล้ว!';
     earnSticker(true);
   } else {
-    msg.textContent = '📷 もう いちど とったよ！';
+    msg.textContent = '📷 もう いちど とったよ！ ถ่ายอีกครั้ง!';
   }
 
   // 自動TTS
@@ -849,7 +850,7 @@ async function buildTouchGrid() {
         const img = document.createElement('img');
         img.className = 'touch-card-photo';
         img.src = w.photoUrl;
-        img.alt = w.entry.ja;
+        img.alt = w.entry.ja + ' / ' + w.entry.th;
         card.appendChild(img);
       } else {
         const em = document.createElement('div');
@@ -859,7 +860,7 @@ async function buildTouchGrid() {
       }
       const label = document.createElement('div');
       label.className = 'touch-card-label';
-      label.textContent = w.entry.emoji + ' ' + w.entry.ja;
+      label.innerHTML = w.entry.emoji + ' ' + w.entry.ja + '<br><span style="font-size:0.6em;opacity:0.5">' + w.entry.th + '</span>';
       card.appendChild(label);
 
       card.addEventListener('click', () => onTouchCardTap(card, w.entry));
@@ -949,7 +950,7 @@ async function buildZukan(cat) {
       const btn = document.createElement('button');
       btn.className = 'zukan-cat-tab';
       btn.dataset.cat = c.id;
-      btn.textContent = c.icon + ' ' + c.label;
+      btn.innerHTML = c.icon + ' ' + c.label + '<span style="font-size:0.6em;display:block;opacity:0.6">' + (c.labelThai||'') + '</span>';
       btn.onclick = function() { filterZukan(c.id, this); };
       tabsEl.appendChild(btn);
     });
@@ -983,7 +984,7 @@ function renderZukan(cat) {
   });
 
   if (allWords.length === 0) {
-    grid.innerHTML = '<div class="zukan-empty-msg">このカテゴリは<br>まだありません</div>';
+    grid.innerHTML = '<div class="zukan-empty-msg">このカテゴリは<br>まだありません<br><span class="thai-sub">ยังไม่มีหมวดหมู่นี้</span></div>';
     return;
   }
 
@@ -1006,7 +1007,7 @@ function renderZukan(cat) {
         setTimeout(() => {
           const hint = document.createElement('div');
           hint.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:16px 24px;border-radius:20px;font-weight:900;font-size:1.1rem;z-index:300;box-shadow:0 8px 24px rgba(0,0,0,.15);text-align:center;pointer-events:none;';
-          hint.textContent = entry.emoji + ' ' + entry.ja + '\nをさがしにいこう！📷';
+          hint.textContent = entry.emoji + ' ' + entry.ja + '\nをさがしにいこう！📷\n' + entry.th + ' ไปหากัน!';
           hint.style.whiteSpace = 'pre-line';
           document.body.appendChild(hint);
           setTimeout(() => hint.remove(), 2000);
@@ -1020,7 +1021,11 @@ function renderZukan(cat) {
 
     const label = document.createElement('div');
     label.className = 'zukan-card-label';
-    label.textContent = z ? entry.ja : '';
+    if (z) {
+      label.innerHTML = entry.ja + '<br><span style="font-size:0.7em;opacity:0.5">' + entry.th + '</span>';
+    } else {
+      label.textContent = '';
+    }
     card.appendChild(label);
 
     grid.appendChild(card);
@@ -1096,8 +1101,9 @@ async function buildQuiz() {
         <div class="quiz-ne-icon">📷</div>
         <div style="font-size:1rem;font-weight:800;color:#888;margin-top:8px;">
           まず 2つ いじょうの<br>ことばを さつえいしてね！
+          <br><span style="font-size:0.8em;opacity:0.7">ถ่ายรูปคำศัพท์อย่างน้อย 2 คำก่อนนะ!</span>
         </div>
-        <button class="quiz-ne-goto" onclick="openPasha()">📷 パシャ！へいく</button>
+        <button class="quiz-ne-goto" onclick="openPasha()">📷 パシャ！へいく<br><span style="font-size:0.7em;opacity:0.7">ไปถ่ายรูป!</span></button>
       </div>`;
     return;
   }
@@ -1112,10 +1118,10 @@ async function buildQuiz() {
   const questionText  = quizLang === 'ja' ? questionEntry.ja : questionEntry.th;
 
   content.innerHTML = `
-    <div class="quiz-prompt-text">🔊「${questionText}」は どっち？</div>
+    <div class="quiz-prompt-text">🔊「${questionText}」は どっち？<br><span style="font-size:0.7em;opacity:0.6">อันไหนคือ「${questionText}」?</span></div>
     <div class="quiz-choices-grid" id="quiz-choices"></div>
     <div class="quiz-result-text" id="quiz-result-text"></div>
-    <button class="quiz-next-btn" id="quiz-next-btn" onclick="buildQuiz()">つぎへ →</button>`;
+    <button class="quiz-next-btn" id="quiz-next-btn" onclick="buildQuiz()">つぎへ →<br><span style="font-size:0.7em;opacity:0.7">ถัดไป</span></button>`;
 
   // 問題音声
   speakWord(questionText, quizLang);
@@ -1133,7 +1139,7 @@ async function buildQuiz() {
 
     const lbl = document.createElement('div');
     lbl.className = 'quiz-choice-label';
-    lbl.textContent = entry.ja;
+    lbl.innerHTML = entry.ja + '<br><span style="font-size:0.65em;opacity:0.5">' + entry.th + '</span>';
     card.appendChild(lbl);
 
     card.onclick = () => onQuizChoice(card, idx, entry, questionEntry);
@@ -1153,12 +1159,12 @@ function onQuizChoice(card, idx, entry, questionEntry) {
 
   if (isCorrect) {
     card.classList.add('correct');
-    resultEl.textContent = 'すごい！ ' + questionEntry.emoji + ' ' + questionEntry.ja + '！';
+    resultEl.textContent = 'すごい！ ' + questionEntry.emoji + ' ' + questionEntry.ja + '！ เก่งมาก!';
     speakWord('すごい！', 'ja');
     earnSticker(true);
   } else {
     card.classList.add('wrong');
-    resultEl.textContent = 'これは ' + entry.ja + ' だよ！' + questionEntry.ja + ' は こっち！';
+    resultEl.textContent = 'これは ' + entry.ja + ' だよ！' + questionEntry.ja + ' は こっち！ นี่คือ ' + entry.th + ' คำตอบคือ ' + questionEntry.th + '!';
     // 正解をハイライト
     allCards.forEach((c, i) => {
       if (i + 1 === quizAnswer || (i === 0 && quizAnswer === 1) || (i === 1 && quizAnswer === 2)) {
