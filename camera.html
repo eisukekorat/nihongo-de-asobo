@@ -955,6 +955,11 @@ async function buildZukan(cat) {
     });
   }
 
+  // タブのactive状態をリセット
+  tabsEl.querySelectorAll('.zukan-cat-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.cat === cat);
+  });
+
   renderZukan(cat);
 }
 
