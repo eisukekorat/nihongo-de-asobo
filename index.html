@@ -2298,6 +2298,8 @@ async function playSong(song) {
   document.getElementById('songSpeedToggle').style.display = 'flex';
   document.getElementById('songVisuals').classList.remove('active');
   document.getElementById('songVisuals').innerHTML = '';
+  document.getElementById('songLyricJp').textContent = '';
+  document.getElementById('songLyricThai').textContent = '';
 
   // 録音があれば録音を再生
   const blob = await getRecording(song.id);
@@ -2418,6 +2420,8 @@ function stopSong() {
   document.getElementById('songVisuals').innerHTML = '';
   document.getElementById('songMainEmoji').style.display = '';
   document.getElementById('songTitleLabel').style.display = '';
+  document.getElementById('songLyricJp').textContent = '';
+  document.getElementById('songLyricThai').textContent = '';
   synth.cancel();
   stopAllOscillators();
   currentSong = null;
