@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>にっぽんで あそぼう！</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="にっぽん">
+<meta name="theme-color" content="#ff8a4c">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #fff7ed;
+    --primary: #ff8a4c;
+    --baaba: #f06595;
+    --jiji: #339af0;
+    --me: #ffd43b;
+    --itoko: #51cf66;
+    --dark: #2d3436;
+    --gray: #adb5bd;
+    --card-radius: 28px;
+    --shadow: 0 8px 0px rgba(0,0,0,0.10);
+    --shadow-deep: 0 12px 32px rgba(0,0,0,0.12);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; overflow:hidden; }
+  body {
+    background: var(--sky);
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    color: var(--dark);
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(255,138,76,0.07) 0%, transparent 50%),
+      radial-gradient(circle at 90% 80%, rgba(51,154,240,0.07) 0%, transparent 50%);
+  }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  /* ===== APP CONTAINER ===== */
+  #app {
+    max-width: 540px;
+    margin: 0 auto;
+    height: 100vh; height: 100dvh;
+    display: flex; flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    padding: 14px 16px 8px;
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+  .header-title {
+    flex: 1;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--dark);
+  }
+  .header-title span:nth-child(1){color:#ff6b6b}
+  .header-title span:nth-child(2){color:#ffa94d}
+  .header-title span:nth-child(3){color:#51cf66}
+  .header-title span:nth-child(4){color:#339af0}
+  .header-title span:nth-child(5){color:#cc5de8}
+  .icon-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: var(--shadow);
+    font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s;
+  }
+  .icon-btn:active { transform: scale(0.92); }
+
+  /* ===== MODE TOGGLE ===== */
+  .mode-toggle {
+    display: flex;
+    margin: 4px 16px 12px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 50px;
+    padding: 4px;
+    flex-shrink: 0;
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--gray);
+    transition: all 0.2s;
+  }
+  .mode-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255,138,76,0.4);
+  }
+
+  /* ===== VIEW (scrollable content area) ===== */
+  .view {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 16px 24px;
+  }
+
+  /* ===== TILES (home) ===== */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    padding-top: 4px;
+  }
+  .tile {
+    aspect-ratio: 1 / 1;
+    background: white;
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow);
+    padding: 16px 10px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 6px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .tile:active { transform: translateY(3px); box-shadow: 0 4px 0 rgba(0,0,0,0.1); }
+  .tile-emoji { font-size: 3rem; line-height: 1; }
+  .tile-title { font-size: 1.1rem; font-weight: 900; color: var(--dark); }
+  .tile-sub { font-size: 0.7rem; color: var(--gray); font-weight: 700; }
+  .tile.locked { opacity: 0.45; pointer-events: none; }
+  .tile.locked::after {
+    content: '🔒'; position: absolute;
+    top: 8px; right: 10px; font-size: 0.9rem;
+  }
+  .tile-soon { font-size: 0.55rem; color: var(--gray); font-weight: 800; margin-top: 2px; }
+
+  /* ===== SCENE PLAYER ===== */
+  .scene-header {
+    padding: 14px 16px 8px;
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+  .back-btn {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: var(--shadow);
+    font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .back-btn:active { transform: scale(0.92); }
+  .scene-title {
+    flex: 1;
+    font-size: 1.2rem;
+    font-weight: 900;
+  }
+  .scene-context {
+    text-align: center;
+    padding: 12px 20px 16px;
+    flex-shrink: 0;
+  }
+  .scene-context-emoji { font-size: 4rem; line-height: 1; margin-bottom: 6px; }
+  .scene-context-text { font-size: 0.95rem; color: var(--gray); font-weight: 800; }
+
+  .turns {
+    padding: 0 16px;
+    display: flex; flex-direction: column;
+    gap: 14px;
+    padding-bottom: 30px;
+  }
+  .turn {
+    display: flex; gap: 10px;
+    align-items: flex-end;
+    opacity: 0.3;
+    transition: opacity 0.3s;
+  }
+  .turn.active, .turn.done { opacity: 1; }
+  .turn.me { flex-direction: row-reverse; }
+  .turn-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    background: white;
+    box-shadow: var(--shadow);
+  }
+  .turn-bubble {
+    flex: 1;
+    background: white;
+    border-radius: 22px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .turn[data-speaker="baaba"] .turn-avatar { background: var(--baaba); }
+  .turn[data-speaker="jiji"] .turn-avatar { background: var(--jiji); }
+  .turn[data-speaker="me"] .turn-avatar { background: var(--me); }
+  .turn[data-speaker="itoko"] .turn-avatar { background: var(--itoko); }
+  .turn[data-speaker="baaba"] .turn-bubble { background: #ffe9f0; }
+  .turn[data-speaker="jiji"] .turn-bubble { background: #e3f2fd; }
+  .turn[data-speaker="me"] .turn-bubble { background: #fff8d6; }
+  .turn[data-speaker="itoko"] .turn-bubble { background: #e8f5e9; }
+  .turn-speaker {
+    font-size: 0.7rem; font-weight: 800; color: var(--gray);
+    margin-bottom: 4px;
+  }
+  .turn-jp {
+    font-size: 1.25rem; font-weight: 800;
+    line-height: 1.3;
+  }
+  .turn-thai {
+    font-size: 0.75rem; color: var(--gray);
+    margin-top: 6px; font-weight: 700;
+    line-height: 1.4;
+  }
+  .turn-thai-kana {
+    font-size: 0.65rem; color: #c8c8c8;
+    font-weight: 700;
+  }
+  .turn-actions {
+    display: flex; gap: 6px; margin-top: 10px;
+    align-items: center;
+  }
+  .turn-action {
+    background: white;
+    border-radius: 50px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.08);
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: transform 0.1s;
+  }
+  .turn-action:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,0.08); }
+  .turn-action.primary {
+    background: var(--primary); color: white;
+    animation: pulse 1.4s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 3px 0 rgba(0,0,0,0.08), 0 0 0 0 rgba(255,138,76,0.6); }
+    50% { box-shadow: 0 3px 0 rgba(0,0,0,0.08), 0 0 0 12px rgba(255,138,76,0); }
+  }
+  .turn.done .turn-action { opacity: 0.6; }
+  .turn.done .turn-action.primary { animation: none; background: #b0b8c0; }
+  .turn-check {
+    display: none;
+    color: var(--itoko);
+    font-size: 1.1rem;
+    font-weight: 900;
+  }
+  .turn.done .turn-check { display: inline; }
+
+  /* ===== SCENE COMPLETE ===== */
+  .scene-complete {
+    text-align: center;
+    padding: 20px 16px;
+    animation: pop 0.5s;
+  }
+  @keyframes pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .scene-complete-emoji { font-size: 4rem; margin-bottom: 10px; }
+  .scene-complete-text { font-size: 1.4rem; font-weight: 900; color: var(--primary); }
+  .scene-complete-sub { font-size: 0.85rem; color: var(--gray); margin-top: 6px; font-weight: 700; }
+  .scene-complete-btn {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 12px 24px;
+    background: var(--primary); color: white;
+    border-radius: 50px;
+    font-size: 1rem; font-weight: 900;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.1);
+  }
+  .scene-complete-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
+
+  /* ===== BOOK READER ===== */
+  .book-page {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    text-align: center;
+    position: relative;
+  }
+  .book-emoji {
+    font-size: 7rem;
+    line-height: 1;
+    margin-bottom: 18px;
+    animation: bookEmoji 0.5s;
+  }
+  @keyframes bookEmoji {
+    0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  .book-jp {
+    font-size: 2rem; font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 14px;
+    color: var(--dark);
+  }
+  .book-thai {
+    font-size: 1rem; color: var(--gray);
+    font-weight: 800;
+    line-height: 1.4;
+  }
+  .book-thai-kana {
+    font-size: 0.78rem; color: #c8c8c8;
+    margin-top: 2px;
+    font-weight: 700;
+  }
+  .book-actions {
+    display: flex; gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+  }
+  .book-action {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: var(--shadow);
+    font-size: 1.4rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s;
+  }
+  .book-action:active { transform: scale(0.9); }
+  .book-action.recording {
+    background: #ff6b6b; color: white;
+    animation: recPulse 1s infinite;
+  }
+  @keyframes recPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,107,107,0.6); }
+    50% { box-shadow: 0 0 0 12px rgba(255,107,107,0); }
+  }
+  .book-action.has-recording {
+    background: var(--itoko); color: white;
+  }
+  .book-nav {
+    display: flex; justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px 18px;
+    flex-shrink: 0;
+  }
+  .book-nav-btn {
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: var(--shadow);
+    font-size: 1.3rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .book-nav-btn:active { transform: scale(0.92); }
+  .book-nav-btn:disabled { opacity: 0.3; box-shadow: none; }
+  .book-dots {
+    display: flex; gap: 6px;
+  }
+  .book-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.15);
+    transition: all 0.2s;
+  }
+  .book-dot.active {
+    background: var(--primary);
+    width: 24px;
+    border-radius: 4px;
+  }
+
+  /* ===== MODAL (settings, name input) ===== */
+  .modal-bg {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.2s;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: white;
+    border-radius: 28px;
+    padding: 24px 22px;
+    width: 100%; max-width: 360px;
+    box-shadow: var(--shadow-deep);
+  }
+  .modal-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 16px; text-align: center; }
+  .modal-sub { font-size: 0.85rem; color: var(--gray); text-align: center; margin-bottom: 18px; font-weight: 700; line-height: 1.5; }
+  .modal-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 3px solid #e5e7eb;
+    border-radius: 16px;
+    font-size: 1.2rem;
+    font-family: inherit;
+    font-weight: 800;
+    text-align: center;
+    outline: none;
+    margin-bottom: 16px;
+  }
+  .modal-input:focus { border-color: var(--primary); }
+  .modal-btn {
+    display: block; width: 100%;
+    padding: 14px;
+    background: var(--primary); color: white;
+    border-radius: 50px;
+    font-size: 1rem; font-weight: 900;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.1);
+  }
+  .modal-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.1); }
+  .modal-btn.secondary {
+    background: white; color: var(--gray);
+    box-shadow: 0 3px 0 rgba(0,0,0,0.06);
+    margin-top: 10px;
+  }
+
+  /* ===== SOUND WAVE INDICATOR ===== */
+  .sound-wave {
+    display: inline-flex; gap: 2px; align-items: center;
+    margin-left: 4px;
+  }
+  .sound-wave span {
+    display: inline-block;
+    width: 3px; height: 8px;
+    background: currentColor;
+    border-radius: 2px;
+    opacity: 0.3;
+  }
+  .sound-wave.active span {
+    animation: sw 0.6s infinite ease-in-out;
+  }
+  .sound-wave span:nth-child(2) { animation-delay: 0.15s; }
+  .sound-wave span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes sw {
+    0%, 100% { height: 6px; opacity: 0.3; }
+    50% { height: 14px; opacity: 1; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+'use strict';
+
+// ============================================================
+//   STATE
+// ============================================================
+const STATE = {
+  view: 'home',         // 'home' | 'scene' | 'book'
+  mode: 'journey',      // 'journey' | 'books'
+  childName: localStorage.getItem('bunsho_childName') || '',
+  currentSceneId: null,
+  sceneStep: 0,
+  currentBookId: null,
+  bookPage: 0,
+};
+
+// ============================================================
+//   DATA — SCENES
+// ============================================================
+const SCENES = [
+  {
+    id: 'asa',
+    title: 'あさ',
+    emoji: '🌅',
+    context: 'ばあばの おうちで めが さめた',
+    turns: [
+      { speaker: 'baaba', jp: '{name}ちゃ〜ん、おはよう！',  thai: 'อรุณสวัสดิ์จ๊ะ',       kana: '(アルンサワッディー ジャ)' },
+      { speaker: 'me',    jp: 'ばあば、おはよう！',            thai: 'ย่าครับ อรุณสวัสดิ์ครับ', kana: '(ヤークラップ アルンサワッディークラップ)' },
+      { speaker: 'jiji',  jp: 'よく ねた？',                    thai: 'หลับสบายไหม?',      kana: '(ラップサバーイ マイ?)' },
+      { speaker: 'me',    jp: 'うん、ねた！',                   thai: 'หลับสบายครับ',       kana: '(ラップサバーイクラップ)' },
+      { speaker: 'jiji',  jp: 'ぎゅーって しよう！',           thai: 'มากอดกันนะ',         kana: '(マー コート カン ナ)' },
+      { speaker: 'me',    jp: 'ぎゅー！',                       thai: 'กอด!',               kana: '(コート!)' },
+    ],
+  },
+  {
+    id: 'asagohan',
+    title: 'あさごはん',
+    emoji: '🍳',
+    context: 'ばあばが あさごはん つくってくれた',
+    turns: [
+      { speaker: 'baaba', jp: 'ごはん できたよ〜！',          thai: 'ข้าวเสร็จแล้วจ้า',   kana: '(カーオ セット レーオ ジャー)' },
+      { speaker: 'me',    jp: 'いただきます！',                 thai: 'ขอบคุณสำหรับอาหารครับ', kana: '(コープクン サムラップ アーハーン クラップ)' },
+      { speaker: 'baaba', jp: 'おいしい？',                     thai: 'อร่อยไหม?',         kana: '(アロイ マイ?)' },
+      { speaker: 'me',    jp: 'おいしい！',                     thai: 'อร่อยครับ',          kana: '(アロイクラップ)' },
+      { speaker: 'baaba', jp: 'もっと たべる？',               thai: 'กินอีกไหม?',         kana: '(キン イーク マイ?)' },
+      { speaker: 'me',    jp: 'もっと ちょうだい！',           thai: 'ขออีกครับ',           kana: '(コー イーク クラップ)' },
+    ],
+  },
+  {
+    id: 'itoko',
+    title: 'いとこ',
+    emoji: '👦',
+    context: 'いとこに あった！じこしょうかい',
+    turns: [
+      { speaker: 'itoko', jp: '{name}ちゃん、こんにちは！',    thai: 'สวัสดีจ้า',          kana: '(サワッディー ジャー)' },
+      { speaker: 'me',    jp: 'こんにちは！',                   thai: 'สวัสดีครับ',         kana: '(サワッディークラップ)' },
+      { speaker: 'itoko', jp: 'なんさい？',                     thai: 'อายุเท่าไหร่?',     kana: '(アーユ タオライ?)' },
+      { speaker: 'me',    jp: '3さい！',                         thai: '3 ขวบครับ',          kana: '(サーム クアップ クラップ)' },
+      { speaker: 'itoko', jp: 'いっしょに あそぶ？',           thai: 'เล่นด้วยกันไหม?',    kana: '(レン ドゥアイカン マイ?)' },
+      { speaker: 'me',    jp: 'いっしょに あそぼ！',           thai: 'เล่นด้วยกันนะครับ',  kana: '(レン ドゥアイカン ナ クラップ)' },
+    ],
+  },
+  {
+    id: 'nerumae',
+    title: 'ねるまえ',
+    emoji: '💤',
+    context: 'パジャマきて、もう ねるじかん',
+    turns: [
+      { speaker: 'baaba', jp: '{name}ちゃん、おやすみ〜',       thai: 'ราตรีสวัสดิ์จ้า',    kana: '(ラートリーサワット ジャー)' },
+      { speaker: 'me',    jp: 'ばあば、だいすき！',             thai: 'รักย่าครับ',         kana: '(ラック ヤー クラップ)' },
+      { speaker: 'baaba', jp: 'ばあばも だいすきよ',           thai: 'ย่าก็รักหนูเหมือนกัน', kana: '(ヤー ゴ ラック ヌー ムアンカン)' },
+      { speaker: 'me',    jp: 'おやすみなさい',                  thai: 'ราตรีสวัสดิ์ครับ',   kana: '(ラートリーサワット クラップ)' },
+    ],
+  },
+  {
+    id: 'sayonara',
+    title: 'さよなら',
+    emoji: '✈️',
+    context: 'にっぽんから かえる ひ',
+    turns: [
+      { speaker: 'baaba', jp: '{name}ちゃん、また あおうね',    thai: 'เจอกันใหม่นะ',        kana: '(ジューカン マイ ナ)' },
+      { speaker: 'me',    jp: 'ばあば、ありがとう！',           thai: 'ขอบคุณครับ',          kana: '(コープクン クラップ)' },
+      { speaker: 'jiji',  jp: 'また にっぽんに きてね',         thai: 'มาญี่ปุ่นอีกนะ',     kana: '(マー イープン イーク ナ)' },
+      { speaker: 'me',    jp: 'また こんど！',                   thai: 'ไว้เจอกันใหม่ครับ',   kana: '(ワイ ジューカン マイ クラップ)' },
+      { speaker: 'baaba', jp: 'げんきでね',                       thai: 'ดูแลตัวเองนะ',       kana: '(ドゥーレー トゥアエン ナ)' },
+      { speaker: 'me',    jp: 'バイバイ、また ね！',             thai: 'บ๊ายบาย เจอกันใหม่นะครับ', kana: '(バーイバーイ ジューカン マイ ナ クラップ)' },
+    ],
+  },
+];
+
+// プレースホルダー（v2以降）
+const SCENES_COMING_SOON = [
+  { id: 'osanpo',     title: 'おさんぽ',   emoji: '🚶' },
+  { id: 'asobu',      title: 'あそぶ',      emoji: '🎮' },
+  { id: 'hirugohan',  title: 'おひるごはん', emoji: '🍱' },
+  { id: 'odekake',    title: 'おでかけ',    emoji: '🛍️' },
+  { id: 'ofuro',      title: 'おふろ',      emoji: '🛁' },
+  { id: 'bangohan',   title: 'ばんごはん',  emoji: '🍚' },
+];
+
+// ============================================================
+//   DATA — BOOKS
+// ============================================================
+const BOOKS = [
+  {
+    id: 'kudamono',
+    title: 'くだもの',
+    cover: '🍎',
+    pages: [
+      { emoji: '🍎', jp: 'あかい りんご',     thai: 'แอปเปิ้ลสีแดง',   kana: '(ペンポンルー シー デーン)' },
+      { emoji: '🍌', jp: 'きいろい バナナ',   thai: 'กล้วยสีเหลือง',    kana: '(グルアイ シー ルアン)' },
+      { emoji: '🍇', jp: 'むらさきの ぶどう', thai: 'องุ่นสีม่วง',       kana: '(アングン シー ムアン)' },
+      { emoji: '🍊', jp: 'まあるい みかん',   thai: 'ส้มกลมๆ',          kana: '(ソム グロム グロム)' },
+      { emoji: '🍉', jp: 'おおきい スイカ',   thai: 'แตงโมลูกใหญ่',     kana: '(テンモー ルーク ヤイ)' },
+      { emoji: '🍓', jp: 'あまい いちご',     thai: 'สตรอเบอร์รี่หวาน',  kana: '(サトロベリー ワーン)' },
+      { emoji: '🍎🍌🍇', jp: 'みんな だいすき！', thai: 'ชอบทั้งหมดเลย!', kana: '(チョープ タンモット ルーイ!)' },
+    ],
+  },
+  {
+    id: 'doubutsu',
+    title: 'どうぶつ',
+    cover: '🐶',
+    pages: [
+      { emoji: '🐶', jp: 'いぬ、ワンワン',     thai: 'หมา',          kana: '(マー)' },
+      { emoji: '🐱', jp: 'ねこ、ニャーニャー', thai: 'แมว',          kana: '(メーオ)' },
+      { emoji: '🐮', jp: 'うし、モーモー',     thai: 'วัว',           kana: '(ウア)' },
+      { emoji: '🐷', jp: 'ぶた、ブーブー',     thai: 'หมู',          kana: '(ムー)' },
+      { emoji: '🐔', jp: 'にわとり、コケコッコー', thai: 'ไก่',     kana: '(ガイ)' },
+      { emoji: '🐸', jp: 'かえる、ケロケロ',   thai: 'กบ',           kana: '(ゴップ)' },
+      { emoji: '🐶🐱🐮🐷', jp: 'みんな ともだち！', thai: 'ทุกตัวเป็นเพื่อนกัน', kana: '(トゥックトゥア ペン プアンカン)' },
+    ],
+  },
+  {
+    id: 'aini',
+    title: 'あいに いこう',
+    cover: '✈️',
+    pages: [
+      { emoji: '✈️', jp: 'ひこうきに のる',   thai: 'ขึ้นเครื่องบิน',     kana: '(クン クルアンビン)' },
+      { emoji: '🌏', jp: 'にっぽんに ついた', thai: 'ถึงญี่ปุ่นแล้ว',     kana: '(トゥン イープン レーオ)' },
+      { emoji: '👵', jp: 'ばあばが まってる', thai: 'ย่ารออยู่',          kana: '(ヤー ロー ユー)' },
+      { emoji: '👴', jp: 'じいじも いるよ',   thai: 'ปู่ก็อยู่ด้วย',      kana: '(プー ゴ ユー ドゥアイ)' },
+      { emoji: '🤗', jp: 'ぎゅーって して',   thai: 'กอดกันแน่นๆ',        kana: '(コート カン ネーン ネーン)' },
+      { emoji: '👦', jp: 'いとこと あそぶ',   thai: 'เล่นกับลูกพี่ลูกน้อง', kana: '(レン カップ ルークピー ルークノーン)' },
+      { emoji: '🍣', jp: 'おいしい ごはん',   thai: 'อาหารอร่อย',         kana: '(アーハーン アロイ)' },
+      { emoji: '❤️', jp: 'みんな だいすき！', thai: 'รักทุกคน',           kana: '(ラック トゥックコン)' },
+    ],
+  },
+  {
+    id: 'daisuki',
+    title: 'だ〜いすき',
+    cover: '💕',
+    pages: [
+      { emoji: '👨', jp: 'パパ、だいすき！',   thai: 'รักพ่อ',         kana: '(ラック ポー)' },
+      { emoji: '👩', jp: 'ママ、だいすき！',   thai: 'รักแม่',         kana: '(ラック メー)' },
+      { emoji: '👵', jp: 'ばあば、だいすき！', thai: 'รักย่า',         kana: '(ラック ヤー)' },
+      { emoji: '👴', jp: 'じいじ、だいすき！', thai: 'รักปู่',         kana: '(ラック プー)' },
+      { emoji: '🐶', jp: 'わんわん、だいすき！', thai: 'รักหมา',      kana: '(ラック マー)' },
+      { emoji: '🍓', jp: 'いちご、だいすき！', thai: 'รักสตรอเบอร์รี่', kana: '(ラック サトロベリー)' },
+      { emoji: '💕', jp: 'みんな、だ〜いすき！', thai: 'รักทุกคนเลย', kana: '(ラック トゥックコン ルーイ)' },
+    ],
+  },
+];
+
+const BOOKS_COMING_SOON = [
+  { id: 'norimono', title: 'のりもの',    cover: '🚗' },
+  { id: 'ichinichi', title: 'いちにち',    cover: '🌅' },
+];
+
+// ============================================================
+//   TTS (Google Cloud TTS via Cloudflare Worker + IndexedDB cache)
+// ============================================================
+const TTS_WORKER_URL = 'https://nihongo-tts-proxy.eisukeoseto.workers.dev';
+
+const TTSCache = {
+  db: null,
+  open() {
+    return new Promise((resolve) => {
+      const req = indexedDB.open('nihongo-tts-cache', 1);
+      req.onupgradeneeded = (e) => { e.target.result.createObjectStore('audio'); };
+      req.onsuccess = (e) => { TTSCache.db = e.target.result; resolve(); };
+      req.onerror = () => resolve();
+    });
+  },
+  save(key, blob) {
+    return new Promise((resolve) => {
+      if (!TTSCache.db) return resolve();
+      const tx = TTSCache.db.transaction('audio', 'readwrite');
+      tx.objectStore('audio').put(blob, key);
+      tx.oncomplete = resolve;
+      tx.onerror = resolve;
+    });
+  },
+  get(key) {
+    return new Promise((resolve) => {
+      if (!TTSCache.db) return resolve(null);
+      const tx = TTSCache.db.transaction('audio', 'readonly');
+      const req = tx.objectStore('audio').get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  },
+};
+
+let currentAudio = null;
+
+function playBlob(blob) {
+  return new Promise((resolve) => {
+    if (currentAudio) {
+      try { currentAudio.pause(); } catch (_) {}
+    }
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    currentAudio = audio;
+    audio.onended = () => { URL.revokeObjectURL(url); resolve(); };
+    audio.onerror = () => { URL.revokeObjectURL(url); resolve(); };
+    audio.play().catch(() => { URL.revokeObjectURL(url); resolve(); });
+  });
+}
+
+async function speak(text, speed = 0.85) {
+  if (!text || !text.trim()) return;
+  const key = 'b_' + text + '_' + speed.toFixed(2);
+  const cached = await TTSCache.get(key);
+  if (cached) {
+    await playBlob(cached);
+    return;
+  }
+  try {
+    const res = await fetch(TTS_WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, speed }),
+    });
+    if (!res.ok) throw new Error('TTS ' + res.status);
+    const blob = await res.blob();
+    await TTSCache.save(key, blob);
+    await playBlob(blob);
+  } catch (e) {
+    // Fallback: SpeechSynthesis API
+    try {
+      const synth = window.speechSynthesis;
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'ja-JP';
+      u.rate = 0.85;
+      u.pitch = 1.2;
+      synth.speak(u);
+    } catch (_) {}
+  }
+}
+
+// ============================================================
+//   RECORDING (MediaRecorder + IndexedDB)
+// ============================================================
+const RecCache = {
+  db: null,
+  open() {
+    return new Promise((resolve) => {
+      const req = indexedDB.open('bunsho-recordings', 1);
+      req.onupgradeneeded = (e) => { e.target.result.createObjectStore('audio'); };
+      req.onsuccess = (e) => { RecCache.db = e.target.result; resolve(); };
+      req.onerror = () => resolve();
+    });
+  },
+  save(key, blob) {
+    return new Promise((resolve) => {
+      if (!RecCache.db) return resolve();
+      const tx = RecCache.db.transaction('audio', 'readwrite');
+      tx.objectStore('audio').put(blob, key);
+      tx.oncomplete = resolve;
+      tx.onerror = resolve;
+    });
+  },
+  get(key) {
+    return new Promise((resolve) => {
+      if (!RecCache.db) return resolve(null);
+      const tx = RecCache.db.transaction('audio', 'readonly');
+      const req = tx.objectStore('audio').get(key);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  },
+  has(key) {
+    return RecCache.get(key).then((b) => !!b);
+  },
+};
+
+let mediaRecorder = null;
+let recordingChunks = [];
+
+async function startRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    recordingChunks = [];
+    mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordingChunks.push(e.data); };
+    mediaRecorder.start();
+    return true;
+  } catch (e) {
+    alert('マイクの使用が許可されていません');
+    return false;
+  }
+}
+
+function stopRecording() {
+  return new Promise((resolve) => {
+    if (!mediaRecorder) return resolve(null);
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordingChunks, { type: 'audio/webm' });
+      mediaRecorder.stream.getTracks().forEach((t) => t.stop());
+      mediaRecorder = null;
+      resolve(blob);
+    };
+    mediaRecorder.stop();
+  });
+}
+
+// ============================================================
+//   HELPERS
+// ============================================================
+function fmtName(text) {
+  const name = STATE.childName || '○○';
+  return text.replace(/\{name\}/g, name);
+}
+
+function el(tag, props = {}, children = []) {
+  const e = document.createElement(tag);
+  for (const k in props) {
+    if (k === 'class') e.className = props[k];
+    else if (k === 'style') e.setAttribute('style', props[k]);
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2).toLowerCase(), props[k]);
+    else if (k === 'html') e.innerHTML = props[k];
+    else e.setAttribute(k, props[k]);
+  }
+  for (const c of children) {
+    if (c == null) continue;
+    if (typeof c === 'string') e.appendChild(document.createTextNode(c));
+    else e.appendChild(c);
+  }
+  return e;
+}
+
+// ============================================================
+//   VIEWS — HOME
+// ============================================================
+function renderHome() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+
+  // header
+  const header = el('div', { class: 'header' }, [
+    el('div', { class: 'header-title', html: '<span>に</span><span>っ</span><span>ぽ</span><span>ん</span><span>で</span> あそぼう' }),
+    el('button', { class: 'icon-btn', onClick: openSettings, 'aria-label': 'せってい' }, ['⚙️']),
+  ]);
+
+  // mode toggle
+  const toggle = el('div', { class: 'mode-toggle' }, [
+    el('button', {
+      class: 'mode-btn' + (STATE.mode === 'journey' ? ' active' : ''),
+      onClick: () => { STATE.mode = 'journey'; render(); },
+    }, ['🎌 にっぽんの 1にち']),
+    el('button', {
+      class: 'mode-btn' + (STATE.mode === 'books' ? ' active' : ''),
+      onClick: () => { STATE.mode = 'books'; render(); },
+    }, ['📖 えほん']),
+  ]);
+
+  // view
+  const view = el('div', { class: 'view' });
+  const tiles = el('div', { class: 'tiles' });
+
+  if (STATE.mode === 'journey') {
+    SCENES.forEach((s) => {
+      tiles.appendChild(el('button', {
+        class: 'tile',
+        onClick: () => { openScene(s.id); },
+      }, [
+        el('div', { class: 'tile-emoji' }, [s.emoji]),
+        el('div', { class: 'tile-title' }, [s.title]),
+      ]));
+    });
+    SCENES_COMING_SOON.forEach((s) => {
+      tiles.appendChild(el('button', { class: 'tile locked' }, [
+        el('div', { class: 'tile-emoji' }, [s.emoji]),
+        el('div', { class: 'tile-title' }, [s.title]),
+        el('div', { class: 'tile-soon' }, ['じゅんびちゅう']),
+      ]));
+    });
+  } else {
+    BOOKS.forEach((b) => {
+      tiles.appendChild(el('button', {
+        class: 'tile',
+        onClick: () => { openBook(b.id); },
+      }, [
+        el('div', { class: 'tile-emoji' }, [b.cover]),
+        el('div', { class: 'tile-title' }, [b.title]),
+      ]));
+    });
+    BOOKS_COMING_SOON.forEach((b) => {
+      tiles.appendChild(el('button', { class: 'tile locked' }, [
+        el('div', { class: 'tile-emoji' }, [b.cover]),
+        el('div', { class: 'tile-title' }, [b.title]),
+        el('div', { class: 'tile-soon' }, ['じゅんびちゅう']),
+      ]));
+    });
+  }
+
+  view.appendChild(tiles);
+
+  app.appendChild(header);
+  app.appendChild(toggle);
+  app.appendChild(view);
+}
+
+// ============================================================
+//   VIEWS — SCENE
+// ============================================================
+function openScene(id) {
+  STATE.view = 'scene';
+  STATE.currentSceneId = id;
+  STATE.sceneStep = 0;
+  render();
+}
+
+function renderScene() {
+  const scene = SCENES.find((s) => s.id === STATE.currentSceneId);
+  if (!scene) { goHome(); return; }
+
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+
+  const header = el('div', { class: 'scene-header' }, [
+    el('button', { class: 'back-btn', onClick: goHome }, ['←']),
+    el('div', { class: 'scene-title' }, [scene.emoji + ' ' + scene.title]),
+  ]);
+
+  const view = el('div', { class: 'view' });
+
+  const context = el('div', { class: 'scene-context' }, [
+    el('div', { class: 'scene-context-emoji' }, [scene.emoji]),
+    el('div', { class: 'scene-context-text' }, [scene.context]),
+  ]);
+  view.appendChild(context);
+
+  const turnsList = el('div', { class: 'turns' });
+
+  const isComplete = STATE.sceneStep >= scene.turns.length;
+
+  scene.turns.forEach((turn, i) => {
+    const isActive = i === STATE.sceneStep;
+    const isDone = i < STATE.sceneStep;
+    const cls = 'turn' + (turn.speaker === 'me' ? ' me' : '') + (isActive ? ' active' : '') + (isDone ? ' done' : '');
+
+    const speakerLabel = ({ baaba: 'ばあば', jiji: 'じいじ', me: 'ぼく', itoko: 'いとこ' })[turn.speaker];
+    const speakerEmoji = ({ baaba: '👵', jiji: '👴', me: '🧒', itoko: '👦' })[turn.speaker];
+
+    const bubble = el('div', { class: 'turn-bubble' }, [
+      el('div', { class: 'turn-speaker' }, [speakerLabel]),
+      el('div', { class: 'turn-jp' }, [fmtName(turn.jp)]),
+      el('div', { class: 'turn-thai' }, [turn.thai]),
+      el('div', { class: 'turn-thai-kana' }, [turn.kana]),
+      el('div', { class: 'turn-actions' }, [
+        el('button', {
+          class: 'turn-action' + (isActive ? ' primary' : ''),
+          onClick: async (ev) => {
+            ev.stopPropagation();
+            await speak(fmtName(turn.jp), turn.speaker === 'me' ? 0.85 : 0.9);
+            // 自分のターン or 他のターンを「進める」
+            if (i === STATE.sceneStep) {
+              STATE.sceneStep++;
+              render();
+            }
+          },
+        }, [
+          turn.speaker === 'me' ? '🎤' : '🔊',
+          turn.speaker === 'me' ? ' いってみる' : ' きく',
+        ]),
+        el('span', { class: 'turn-check' }, ['✓']),
+      ]),
+    ]);
+
+    const turnEl = el('div', { class: cls, 'data-speaker': turn.speaker }, [
+      el('div', { class: 'turn-avatar' }, [speakerEmoji]),
+      bubble,
+    ]);
+    turnsList.appendChild(turnEl);
+  });
+
+  if (isComplete) {
+    const complete = el('div', { class: 'scene-complete' }, [
+      el('div', { class: 'scene-complete-emoji' }, ['🎉']),
+      el('div', { class: 'scene-complete-text' }, ['できた〜！']),
+      el('div', { class: 'scene-complete-sub' }, ['もういっかい あそぼう！']),
+      el('button', {
+        class: 'scene-complete-btn',
+        onClick: () => { STATE.sceneStep = 0; render(); },
+      }, ['🔁 もういちど']),
+    ]);
+    turnsList.appendChild(complete);
+  }
+
+  view.appendChild(turnsList);
+
+  app.appendChild(header);
+  app.appendChild(view);
+
+  // active な turn にスクロール
+  setTimeout(() => {
+    const active = app.querySelector('.turn.active') || app.querySelector('.scene-complete');
+    if (active) active.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 50);
+}
+
+// ============================================================
+//   VIEWS — BOOK
+// ============================================================
+function openBook(id) {
+  STATE.view = 'book';
+  STATE.currentBookId = id;
+  STATE.bookPage = 0;
+  render();
+}
+
+async function renderBook() {
+  const book = BOOKS.find((b) => b.id === STATE.currentBookId);
+  if (!book) { goHome(); return; }
+  const page = book.pages[STATE.bookPage];
+
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+
+  const header = el('div', { class: 'scene-header' }, [
+    el('button', { class: 'back-btn', onClick: goHome }, ['←']),
+    el('div', { class: 'scene-title' }, ['📖 ' + book.title + '  ' + (STATE.bookPage + 1) + ' / ' + book.pages.length]),
+  ]);
+
+  const bookPage = el('div', { class: 'book-page' }, [
+    el('div', { class: 'book-emoji' }, [page.emoji]),
+    el('div', { class: 'book-jp' }, [page.jp]),
+    el('div', { class: 'book-thai' }, [page.thai]),
+    el('div', { class: 'book-thai-kana' }, [page.kana]),
+  ]);
+
+  const recKey = `${book.id}_${STATE.bookPage}`;
+  const hasRec = await RecCache.has(recKey);
+
+  const playBtn = el('button', {
+    class: 'book-action',
+    onClick: async () => {
+      const rec = await RecCache.get(recKey);
+      if (rec) {
+        await playBlob(rec);
+      } else {
+        await speak(page.jp, 0.8);
+      }
+    },
+  }, ['🔊']);
+
+  const recBtn = el('button', {
+    class: 'book-action' + (hasRec ? ' has-recording' : ''),
+    'data-rec-state': 'idle',
+    onClick: async (ev) => {
+      const btn = ev.currentTarget;
+      const state = btn.getAttribute('data-rec-state');
+      if (state === 'idle') {
+        const ok = await startRecording();
+        if (ok) {
+          btn.setAttribute('data-rec-state', 'recording');
+          btn.classList.add('recording');
+          btn.textContent = '⏹';
+        }
+      } else {
+        const blob = await stopRecording();
+        btn.classList.remove('recording');
+        btn.setAttribute('data-rec-state', 'idle');
+        btn.textContent = '🎙️';
+        if (blob) {
+          await RecCache.save(recKey, blob);
+          btn.classList.add('has-recording');
+          // すぐに再生して確認
+          await playBlob(blob);
+        }
+      }
+    },
+  }, ['🎙️']);
+
+  const actions = el('div', { class: 'book-actions' }, [playBtn, recBtn]);
+  bookPage.appendChild(actions);
+
+  // dots
+  const dots = el('div', { class: 'book-dots' });
+  book.pages.forEach((_, i) => {
+    dots.appendChild(el('div', { class: 'book-dot' + (i === STATE.bookPage ? ' active' : '') }));
+  });
+
+  const navBtns = el('div', { class: 'book-nav' }, [
+    el('button', {
+      class: 'book-nav-btn',
+      onClick: () => {
+        if (STATE.bookPage > 0) { STATE.bookPage--; render(); }
+      },
+      ...(STATE.bookPage === 0 ? { disabled: 'true' } : {}),
+    }, ['←']),
+    dots,
+    el('button', {
+      class: 'book-nav-btn',
+      onClick: () => {
+        if (STATE.bookPage < book.pages.length - 1) { STATE.bookPage++; render(); }
+      },
+      ...(STATE.bookPage === book.pages.length - 1 ? { disabled: 'true' } : {}),
+    }, ['→']),
+  ]);
+
+  app.appendChild(header);
+  app.appendChild(bookPage);
+  app.appendChild(navBtns);
+
+  // スワイプで前/次ページ
+  attachSwipe(bookPage, (dir) => {
+    if (dir === 'left' && STATE.bookPage < book.pages.length - 1) {
+      STATE.bookPage++; render();
+    } else if (dir === 'right' && STATE.bookPage > 0) {
+      STATE.bookPage--; render();
+    }
+  });
+}
+
+function attachSwipe(el, onSwipe) {
+  let sx = 0, sy = 0, ex = 0, ey = 0;
+  el.addEventListener('touchstart', (e) => {
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+  }, { passive: true });
+  el.addEventListener('touchend', (e) => {
+    ex = e.changedTouches[0].clientX; ey = e.changedTouches[0].clientY;
+    const dx = ex - sx, dy = ey - sy;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      onSwipe(dx > 0 ? 'right' : 'left');
+    }
+  }, { passive: true });
+}
+
+// ============================================================
+//   SETTINGS MODAL (name input)
+// ============================================================
+function openSettings() {
+  const existing = document.querySelector('.modal-bg');
+  if (existing) existing.remove();
+
+  const input = el('input', {
+    class: 'modal-input',
+    type: 'text',
+    value: STATE.childName,
+    placeholder: 'おなまえ',
+    maxlength: '10',
+  });
+
+  const save = () => {
+    const v = input.value.trim();
+    STATE.childName = v;
+    localStorage.setItem('bunsho_childName', v);
+    modal.remove();
+    render();
+  };
+
+  const modal = el('div', { class: 'modal-bg', onClick: (e) => { if (e.target === modal) modal.remove(); } }, [
+    el('div', { class: 'modal' }, [
+      el('div', { class: 'modal-title' }, ['おなまえ']),
+      el('div', { class: 'modal-sub' }, ['お子さまのおなまえを いれてください。きょうだいの ばあい、よく つかうほうの なまえを。']),
+      input,
+      el('button', { class: 'modal-btn', onClick: save }, ['ほぞん']),
+      el('button', { class: 'modal-btn secondary', onClick: () => modal.remove() }, ['キャンセル']),
+    ]),
+  ]);
+
+  document.body.appendChild(modal);
+  setTimeout(() => input.focus(), 100);
+}
+
+// ============================================================
+//   ROUTER
+// ============================================================
+function render() {
+  if (STATE.view === 'scene') renderScene();
+  else if (STATE.view === 'book') renderBook();
+  else renderHome();
+}
+
+function goHome() {
+  STATE.view = 'home';
+  STATE.currentSceneId = null;
+  STATE.currentBookId = null;
+  render();
+}
+
+// ============================================================
+//   INIT
+// ============================================================
+(async function init() {
+  await Promise.all([TTSCache.open(), RecCache.open()]);
+  render();
+})();
+</script>
+</body>
+</html>
