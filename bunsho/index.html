@@ -494,6 +494,20 @@ const SCENES = [
     ],
   },
   {
+    id: 'osanpo',
+    title: 'おさんぽ',
+    emoji: '🚶',
+    context: 'ばあばと こうえんへ おさんぽ',
+    turns: [
+      { speaker: 'baaba', jp: 'こうえん、いこうか？',          thai: 'ไปสวนกันไหม?',       kana: '(パイ スアン カン マイ?)' },
+      { speaker: 'me',    jp: 'いく いく！',                    thai: 'ไป ไป!',             kana: '(パイ パイ!)' },
+      { speaker: 'baaba', jp: 'て、つなごう',                  thai: 'จับมือกันนะ',        kana: '(ジャップ ムー カン ナ)' },
+      { speaker: 'me',    jp: 'うん！',                          thai: 'ครับ',               kana: '(クラップ)' },
+      { speaker: 'baaba', jp: 'あ、ことり！',                  thai: 'อ๊ะ นกน้อย',          kana: '(ア ノック ノーイ)' },
+      { speaker: 'me',    jp: 'みて みて！',                    thai: 'ดูสิครับ',           kana: '(ドゥー シ クラップ)' },
+    ],
+  },
+  {
     id: 'itoko',
     title: 'いとこ',
     emoji: '👦',
@@ -505,6 +519,76 @@ const SCENES = [
       { speaker: 'me',    jp: '3さい！',                         thai: '3 ขวบครับ',          kana: '(サーム クアップ クラップ)' },
       { speaker: 'itoko', jp: 'いっしょに あそぶ？',           thai: 'เล่นด้วยกันไหม?',    kana: '(レン ドゥアイカン マイ?)' },
       { speaker: 'me',    jp: 'いっしょに あそぼ！',           thai: 'เล่นด้วยกันนะครับ',  kana: '(レン ドゥアイカン ナ クラップ)' },
+    ],
+  },
+  {
+    id: 'asobu',
+    title: 'あそぶ',
+    emoji: '🎮',
+    context: 'いとこと おもちゃで あそぶ',
+    turns: [
+      { speaker: 'itoko', jp: 'これ、なに？',                   thai: 'นี่อะไร?',           kana: '(ニー アライ?)' },
+      { speaker: 'me',    jp: 'くるま！',                        thai: 'รถครับ',             kana: '(ロット クラップ)' },
+      { speaker: 'itoko', jp: 'これ、かして！',                 thai: 'ขอยืมหน่อย',         kana: '(コー ユーム ノーイ)' },
+      { speaker: 'me',    jp: 'いいよ、どうぞ',                 thai: 'ได้ครับ เชิญเลย',    kana: '(ダイクラップ チューン ルーイ)' },
+      { speaker: 'itoko', jp: 'たのしいね！',                   thai: 'สนุกจัง',             kana: '(サヌッ ジャン)' },
+      { speaker: 'me',    jp: 'たのしい！',                     thai: 'สนุกครับ',           kana: '(サヌッククラップ)' },
+    ],
+  },
+  {
+    id: 'hirugohan',
+    title: 'おひるごはん',
+    emoji: '🍱',
+    context: 'みんなで おひるごはん',
+    turns: [
+      { speaker: 'baaba', jp: 'おひるごはん、できたよ',        thai: 'อาหารกลางวันเสร็จแล้วจ้า', kana: '(アーハーン グラーンワン セット レーオ ジャー)' },
+      { speaker: 'me',    jp: 'いただきます！',                 thai: 'ขอบคุณสำหรับอาหารครับ', kana: '(コープクン サムラップ アーハーン クラップ)' },
+      { speaker: 'jiji',  jp: 'これ、たべてみて',              thai: 'ลองกินอันนี้สิ',     kana: '(ローング キン アンニー シ)' },
+      { speaker: 'me',    jp: 'おいしい！',                     thai: 'อร่อยครับ',           kana: '(アロイクラップ)' },
+      { speaker: 'baaba', jp: 'もっと たべる？',               thai: 'กินอีกไหม?',          kana: '(キン イーク マイ?)' },
+      { speaker: 'me',    jp: 'おなか いっぱい！',              thai: 'อิ่มแล้วครับ',        kana: '(イムレーオクラップ)' },
+    ],
+  },
+  {
+    id: 'odekake',
+    title: 'おでかけ',
+    emoji: '🛍️',
+    context: 'ばあばと おみせへ おでかけ',
+    turns: [
+      { speaker: 'baaba', jp: '{name}ちゃん、おでかけ いこう',  thai: 'ไปข้างนอกกันนะ',     kana: '(パイ カーン ノーク カン ナ)' },
+      { speaker: 'me',    jp: 'どこ、いくの？',                  thai: 'ไปไหนครับ?',          kana: '(パイ ナイ クラップ?)' },
+      { speaker: 'baaba', jp: 'おみせ、いくよ',                  thai: 'ไปร้านค้านะ',         kana: '(パイ ラーン カー ナ)' },
+      { speaker: 'me',    jp: 'やった！',                        thai: 'เย้!',               kana: '(イェー!)' },
+      { speaker: 'baaba', jp: 'なに、ほしい？',                  thai: 'อยากได้อะไร?',        kana: '(ヤーク ダイ アライ?)' },
+      { speaker: 'me',    jp: 'これ、ほしい！',                  thai: 'อยากได้อันนี้ครับ',   kana: '(ヤーク ダイ アンニー クラップ)' },
+    ],
+  },
+  {
+    id: 'ofuro',
+    title: 'おふろ',
+    emoji: '🛁',
+    context: 'ばあばと いっしょに おふろ',
+    turns: [
+      { speaker: 'baaba', jp: 'おふろ、いっしょに はいろう',    thai: 'อาบน้ำด้วยกันนะ',     kana: '(アープナーム ドゥアイカン ナ)' },
+      { speaker: 'me',    jp: 'うん！',                          thai: 'ครับ',                kana: '(クラップ)' },
+      { speaker: 'baaba', jp: 'あつくない？',                    thai: 'ร้อนไหม?',            kana: '(ローン マイ?)' },
+      { speaker: 'me',    jp: 'ちょうどいい！',                  thai: 'พอดีครับ',            kana: '(ポーディー クラップ)' },
+      { speaker: 'baaba', jp: 'きもちいいね〜',                  thai: 'สบายเนอะ',            kana: '(サバーイ ヌー)' },
+      { speaker: 'me',    jp: 'きもちいい！',                    thai: 'สบายครับ',            kana: '(サバーイクラップ)' },
+    ],
+  },
+  {
+    id: 'bangohan',
+    title: 'ばんごはん',
+    emoji: '🍚',
+    context: 'かぞくで ばんごはん',
+    turns: [
+      { speaker: 'jiji',  jp: 'ばんごはん、できたよ',           thai: 'อาหารเย็นเสร็จแล้ว',  kana: '(アーハーン イェン セット レーオ)' },
+      { speaker: 'me',    jp: 'いただきます！',                  thai: 'ขอบคุณสำหรับอาหารครับ', kana: '(コープクン サムラップ アーハーン クラップ)' },
+      { speaker: 'jiji',  jp: 'これ、すきかな？',                thai: 'ชอบไหม?',             kana: '(チョープ マイ?)' },
+      { speaker: 'me',    jp: 'すき！',                          thai: 'ชอบครับ',             kana: '(チョープクラップ)' },
+      { speaker: 'baaba', jp: 'いっぱい たべてね',               thai: 'กินเยอะๆ นะ',         kana: '(キン ユー ユー ナ)' },
+      { speaker: 'me',    jp: 'ごちそうさま！',                  thai: 'กินอิ่มแล้วครับ',     kana: '(キン イム レーオ クラップ)' },
     ],
   },
   {
@@ -535,15 +619,8 @@ const SCENES = [
   },
 ];
 
-// プレースホルダー（v2以降）
-const SCENES_COMING_SOON = [
-  { id: 'osanpo',     title: 'おさんぽ',   emoji: '🚶' },
-  { id: 'asobu',      title: 'あそぶ',      emoji: '🎮' },
-  { id: 'hirugohan',  title: 'おひるごはん', emoji: '🍱' },
-  { id: 'odekake',    title: 'おでかけ',    emoji: '🛍️' },
-  { id: 'ofuro',      title: 'おふろ',      emoji: '🛁' },
-  { id: 'bangohan',   title: 'ばんごはん',  emoji: '🍚' },
-];
+// プレースホルダー（v2以降の追加用）
+const SCENES_COMING_SOON = [];
 
 // ============================================================
 //   DATA — BOOKS
@@ -606,12 +683,37 @@ const BOOKS = [
       { emoji: '💕', jp: 'みんな、だ〜いすき！', thai: 'รักทุกคนเลย', kana: '(ラック トゥックコン ルーイ)' },
     ],
   },
+  {
+    id: 'norimono',
+    title: 'のりもの',
+    cover: '🚗',
+    pages: [
+      { emoji: '🚗', jp: 'くるま、ブッブー',     thai: 'รถ บี๊บๆ',        kana: '(ロット ビープ ビープ)' },
+      { emoji: '🚕', jp: 'タクシー',             thai: 'แท็กซี่',          kana: '(テクシー)' },
+      { emoji: '🚌', jp: 'バス',                 thai: 'รถบัส',           kana: '(ロットバット)' },
+      { emoji: '🚃', jp: 'でんしゃ、ガタンゴトン', thai: 'รถไฟ',          kana: '(ロットファイ)' },
+      { emoji: '✈️', jp: 'ひこうき、ブーン',     thai: 'เครื่องบิน',       kana: '(クルアンビン)' },
+      { emoji: '🚲', jp: 'じてんしゃ、リンリン', thai: 'จักรยาน',         kana: '(ジャックラヤーン)' },
+      { emoji: '🚗🚌🚃', jp: 'のりもの だいすき！', thai: 'ชอบทุกคันเลย!', kana: '(チョープ トゥッ カン ルーイ!)' },
+    ],
+  },
+  {
+    id: 'ichinichi',
+    title: 'いちにち',
+    cover: '🌅',
+    pages: [
+      { emoji: '🌅', jp: 'あさ、おはよう',        thai: 'ตื่นนอน อรุณสวัสดิ์', kana: '(トゥーンノーン アルンサワット)' },
+      { emoji: '🍳', jp: 'ごはん、もぐもぐ',      thai: 'กินข้าว หม่ำๆ',     kana: '(キンカーオ ムムム)' },
+      { emoji: '🪥', jp: 'はみがき、しゅこしゅこ', thai: 'แปรงฟัน',          kana: '(プレーン ファン)' },
+      { emoji: '🎮', jp: 'いっぱい あそぶ',        thai: 'เล่นเยอะๆ',        kana: '(レン ユー ユー)' },
+      { emoji: '🛁', jp: 'おふろ、ぴちゃぴちゃ',   thai: 'อาบน้ำ',           kana: '(アープナーム)' },
+      { emoji: '🌙', jp: 'よる、おやすみ',        thai: 'กลางคืน ราตรีสวัสดิ์', kana: '(グラーンクーン ラートリーサワット)' },
+      { emoji: '💤', jp: '{name}ちゃん、ぐっすり ねんね', thai: 'หลับฝันดีนะ', kana: '(ラップ ファンディー ナ)' },
+    ],
+  },
 ];
 
-const BOOKS_COMING_SOON = [
-  { id: 'norimono', title: 'のりもの',    cover: '🚗' },
-  { id: 'ichinichi', title: 'いちにち',    cover: '🌅' },
-];
+const BOOKS_COMING_SOON = [];
 
 // ============================================================
 //   TTS (Google Cloud TTS via Cloudflare Worker + IndexedDB cache)
@@ -968,10 +1070,16 @@ function openBook(id) {
   render();
 }
 
+let bookRenderToken = 0;
 async function renderBook() {
+  const myToken = ++bookRenderToken;
   const book = BOOKS.find((b) => b.id === STATE.currentBookId);
   if (!book) { goHome(); return; }
   const page = book.pages[STATE.bookPage];
+
+  const recKey = `${book.id}_${STATE.bookPage}`;
+  const hasRec = await RecCache.has(recKey);
+  if (myToken !== bookRenderToken) return; // 古い描画は破棄（ページ送り連打対策）
 
   const app = document.getElementById('app');
   app.innerHTML = '';
@@ -983,13 +1091,10 @@ async function renderBook() {
 
   const bookPage = el('div', { class: 'book-page' }, [
     el('div', { class: 'book-emoji' }, [page.emoji]),
-    el('div', { class: 'book-jp' }, [page.jp]),
+    el('div', { class: 'book-jp' }, [fmtName(page.jp)]),
     el('div', { class: 'book-thai' }, [page.thai]),
     el('div', { class: 'book-thai-kana' }, [page.kana]),
   ]);
-
-  const recKey = `${book.id}_${STATE.bookPage}`;
-  const hasRec = await RecCache.has(recKey);
 
   const playBtn = el('button', {
     class: 'book-action',
@@ -998,7 +1103,7 @@ async function renderBook() {
       if (rec) {
         await playBlob(rec);
       } else {
-        await speak(page.jp, 0.8);
+        await speak(fmtName(page.jp), 0.8);
       }
     },
   }, ['🔊']);
